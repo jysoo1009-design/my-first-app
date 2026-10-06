@@ -260,6 +260,51 @@
     .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
     .tab.active .count { color: rgba(255, 255, 255, 0.65); }
     .tab.all { padding-left: 14px; }
+    .tabs { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    .tab[data-cat]:not([data-cat="all"]) { touch-action: pan-x; }
+    .tab.dragging {
+      position: relative; z-index: 5; scale: 1.06; cursor: grabbing;
+      background: var(--primary); color: #fff; border-color: var(--primary);
+      box-shadow: 0 8px 20px rgba(91, 75, 219, 0.35);
+    }
+    .tab.dragging .count { color: rgba(255, 255, 255, 0.75); }
+    .tabs.sorting .tab:not(.dragging) { opacity: 0.85; }
+    .tab-edit { border-style: dashed; color: var(--primary); padding-left: 12px; }
+    .tab-edit:hover { background: var(--primary-soft); border-color: var(--primary); }
+    .order-hint {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      font-size: 0.82rem; color: var(--sub); margin: -2px 0 12px;
+    }
+    .order-hint button { color: var(--primary); font-weight: 700; font-size: 0.82rem; text-decoration: underline; text-underline-offset: 2px; }
+
+    .group-head {
+      grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 1.05rem; letter-spacing: -0.3px; margin-top: 10px;
+    }
+    .group-head:first-child { margin-top: 0; }
+    .group-head .ic { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .group-head .n { color: var(--sub); font-weight: 600; font-size: 0.85rem; }
+
+    /* 카테고리 순서 편집 */
+    .order-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .order-list li {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+      cursor: grab; touch-action: pan-y;
+    }
+    .order-list li:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .order-list li .ic { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .order-list li .oname { font-weight: 700; flex: 1; }
+    .order-list li .ocount { color: var(--sub); font-size: 0.85rem; }
+    .order-list li .grip { color: #b7b0c2; }
+    .order-list li .onum { width: 22px; text-align: center; font-weight: 800; color: var(--sub); font-size: 0.85rem; }
+    .order-list li.dragging {
+      position: relative; z-index: 5; scale: 1.03; cursor: grabbing;
+      border-color: var(--primary); background: var(--primary-soft);
+      box-shadow: 0 12px 28px rgba(31, 27, 46, 0.18);
+    }
+    .order-list.sorting li:not(.dragging) { opacity: 0.8; }
 
     .sortbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; color: var(--sub); font-size: 0.9rem; }
     .sortbar select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; max-width: 140px; }
@@ -592,7 +637,11 @@
         <button class="btn btn-primary add-desktop" id="addBtn"><span data-icon="plus"></span>옷 추가</button>
       </div>
 
-      <nav class="tabs" id="tabs" aria-label="종류 선택"></nav>
+      <nav class="tabs" id="tabs" aria-label="종류 선택" title="카테고리를 꼭 눌러 옆으로 옮기면 순서가 바뀌어요"></nav>
+      <p class="order-hint" id="orderHint" hidden>
+        <span>카테고리를 꼭 눌러 옆으로 옮기면 순서가 바뀌어요.</span>
+        <button type="button" id="orderHintBtn">순서 편집 창 열기</button>
+      </p>
 
       <div class="sortbar">
         <span id="resultText"></span>
@@ -600,6 +649,7 @@
           <select id="brandFilter" aria-label="브랜드로 보기"></select>
           <select id="sort" aria-label="정렬">
             <option value="new">최근 추가순</option>
+            <option value="category">카테고리 순서</option>
             <option value="old">오래된순</option>
             <option value="name">이름순</option>
             <option value="fav">즐겨찾기 먼저</option>
@@ -681,6 +731,23 @@
     </form>
   </div>
 
+  <!-- ===================== 카테고리 순서 창 ===================== -->
+  <div class="backdrop" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="orderTitle">카테고리 순서</h2>
+        <button type="button" class="icon-btn" id="orderCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <p class="hint" style="margin-top:0">항목을 <strong>꼭 누른 채</strong> 위아래로 옮겨 순서를 바꿔요. 바꾼 순서는 옷장 탭과 '카테고리 순서' 정렬에 그대로 적용돼요.</p>
+      <ul class="order-list" id="orderList" aria-label="카테고리 순서 (항목을 고른 뒤 위·아래 방향키로도 옮길 수 있어요)"></ul>
+      <div class="actions">
+        <button type="button" class="btn btn-soft" id="orderResetBtn">기본 순서로</button>
+        <button type="button" class="btn btn-primary" id="orderDoneBtn">완료</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== 브랜드 관리 창 ===================== -->
   <div class="backdrop" id="brandModal" role="dialog" aria-modal="true" aria-labelledby="brandTitle">
     <div class="sheet">
@@ -724,6 +791,8 @@
       x: '<path d="M6 6l12 12M18 6 6 18"/>',
       home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/>',
       tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
+      sort: '<path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3"/>',
+      grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/>',
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>'
     };
     function svg(name, size) {
@@ -782,6 +851,29 @@
     let photoData = '';
     let lastColor = '';
     let selectedBrand = '';
+
+    // ---------- 카테고리 순서·정렬 설정 ----------
+    const ORDER_KEY = 'my-closet-cat-order-v1';
+    const SORT_KEY = 'my-closet-sort-v1';
+    function loadOrder() {
+      let order = [];
+      try {
+        const saved = JSON.parse(localStorage.getItem(ORDER_KEY));
+        if (Array.isArray(saved)) order = saved.filter((id) => CATEGORIES.some((c) => c.id === id));
+      } catch (e) {}
+      order = Array.from(new Set(order));
+      CATEGORIES.forEach((c) => { if (!order.includes(c.id)) order.push(c.id); });
+      return order;
+    }
+    let catOrder = loadOrder();
+    function setOrder(newOrder) {
+      const changed = newOrder.join(',') !== catOrder.join(',');
+      catOrder = newOrder.slice();
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
+      return changed;
+    }
+    const orderedCats = () => catOrder.map((id) => CATEGORIES.find((c) => c.id === id));
+    const catRank = (id) => catOrder.indexOf(catOf(id).id);
 
     function load() {
       try {
@@ -882,7 +974,7 @@
 
     // ---------- 표지 ----------
     function renderCover() {
-      $('catShowcase').innerHTML = CATEGORIES.map((c) => '<span class="cat-pill">' + catIcon(c, 16) + c.name + '</span>').join('');
+      $('catShowcase').innerHTML = orderedCats().map((c) => '<span class="cat-pill">' + catIcon(c, 16) + c.name + '</span>').join('');
       $('coverCount').innerHTML = items.length
         ? svg('hanger', 18) + '<span>지금 옷장에 <strong>' + items.length + '벌</strong>이 정리돼 있어요</span>'
         : svg('hanger', 18) + '<span>아직 비어 있어요. 첫 옷을 넣어 볼까요?</span>';
@@ -902,11 +994,16 @@
 
     function renderTabs() {
       const all = '<button class="tab all' + (currentCat === 'all' ? ' active' : '') + '" data-cat="all">전체 <span class="count">' + items.length + '</span></button>';
-      $('tabs').innerHTML = all + CATEGORIES.map((c) => {
+      $('tabs').innerHTML = all + orderedCats().map((c) => {
         const n = items.filter((i) => i.category === c.id).length;
         return '<button class="tab' + (currentCat === c.id ? ' active' : '') + '" data-cat="' + c.id + '">' +
           catIcon(c, 15) + c.name + ' <span class="count">' + n + '</span></button>';
-      }).join('');
+      }).join('') +
+        '<button class="tab tab-edit" type="button" data-action="edit-order">' + svg('sort', 15) + '순서 편집</button>';
+    }
+
+    function updateOrderHint() {
+      $('orderHint').hidden = $('sort').value !== 'category';
     }
 
     function getFiltered() {
@@ -924,6 +1021,7 @@
         if (sort === 'old') return a.createdAt - b.createdAt;
         if (sort === 'name') return a.name.localeCompare(b.name, 'ko');
         if (sort === 'fav') return (b.fav - a.fav) || (b.createdAt - a.createdAt);
+        if (sort === 'category') return (catRank(a.category) - catRank(b.category)) || (b.createdAt - a.createdAt);
         return b.createdAt - a.createdAt;
       });
       return list;
@@ -941,8 +1039,16 @@
           (searching ? '' : '<br><button class="btn btn-primary" data-action="add">' + svg('plus', 18) + '옷 추가</button>') + '</div>';
         return;
       }
+      const grouped = $('sort').value === 'category' && currentCat === 'all';
+      let lastGroup = null;
       $('grid').innerHTML = list.map((i) => {
         const c = catOf(i.category);
+        let head = '';
+        if (grouped && c.id !== lastGroup) {
+          lastGroup = c.id;
+          const n = list.filter((x) => catOf(x.category).id === c.id).length;
+          head = '<div class="group-head">' + catIcon(c, 15) + c.name + ' <span class="n">' + n + '벌</span></div>';
+        }
         const thumb = i.photo
           ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '" loading="lazy">'
           : svg(c.id, 64);
@@ -950,7 +1056,7 @@
         const hex = colorHex(i.color);
         const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
         const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
-        return '<article class="card" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + ' 수정">' +
+        return head + '<article class="card" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + ' 수정">' +
           '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + thumb + '</div>' +
           '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
           '<button class="fav-btn' + (i.fav ? ' on' : '') + '" data-fav="' + i.id + '" aria-label="즐겨찾기 ' + (i.fav ? '해제' : '추가') + '">' + svg('star', 18) + '</button>' +
@@ -985,7 +1091,7 @@
       const isApp = location.hash === '#closet';
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
-      if (!isApp) { closeModal(); closeBrandModal(); }
+      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); }
       if (location.hash !== '#how') window.scrollTo(0, 0);
     }
     window.addEventListener('hashchange', route);
@@ -1029,7 +1135,8 @@
       editingId = item ? item.id : null;
       $('modalTitle').textContent = item ? '옷 수정하기' : '옷 추가하기';
       $('fName').value = item ? item.name : '';
-      const cat = item ? item.category : (currentCat !== 'all' ? currentCat : 'top');
+      renderCatPick();
+      const cat = item ? item.category : (currentCat !== 'all' ? currentCat : catOrder[0]);
       const radio = document.querySelector('input[name="cat"][value="' + cat + '"]');
       if (radio) radio.checked = true;
       $('fColorEtc').value = item && item.color === ETC ? (item.colorText || '') : '';
@@ -1077,6 +1184,122 @@
       if (!$('modal').classList.contains('open')) document.body.style.overflow = '';
     }
 
+    // ---------- 카테고리 순서 창 ----------
+    function renderOrderList() {
+      $('orderList').innerHTML = orderedCats().map((c, idx) => {
+        const n = items.filter((i) => i.category === c.id).length;
+        return '<li tabindex="0" data-cat="' + c.id + '" aria-label="' + (idx + 1) + '번째 ' + c.name + '">' +
+          '<span class="onum">' + (idx + 1) + '</span>' + catIcon(c, 18) +
+          '<span class="oname">' + c.name + '</span><span class="ocount">' + n + '벌</span>' +
+          '<span class="grip">' + svg('grip', 20) + '</span></li>';
+      }).join('');
+    }
+    function openOrderModal() {
+      renderOrderList();
+      $('orderModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeOrderModal() {
+      $('orderModal').classList.remove('open');
+      if (!$('modal').classList.contains('open') && !$('brandModal').classList.contains('open')) document.body.style.overflow = '';
+    }
+    function applyOrder(newOrder, msg) {
+      if (!setOrder(newOrder)) return;
+      render();
+      if ($('orderModal').classList.contains('open')) renderOrderList();
+      showToast(msg || '카테고리 순서를 바꿨어요');
+    }
+
+    // ---------- 꼭 눌러 옮기기 (마우스·터치 공통) ----------
+    function makeSortable(container, itemSel, axis, onDrop) {
+      const HOLD_MS = 350;
+      let timer = null, el = null, drag = null, pid = null;
+      let sx = 0, sy = 0, start = 0, scroll0 = 0, suppressClick = false;
+      const isX = axis === 'x';
+      const pos = (e) => (isX ? e.clientX : e.clientY);
+      const off = (n) => (isX ? n.offsetLeft : n.offsetTop);
+      const size = (n) => (isX ? n.offsetWidth : n.offsetHeight);
+      const scrollPos = () => (isX ? container.scrollLeft : 0);
+      const sib = (n, dir) => {
+        let s = dir > 0 ? n.nextElementSibling : n.previousElementSibling;
+        while (s && !s.matches(itemSel)) s = dir > 0 ? s.nextElementSibling : s.previousElementSibling;
+        return s;
+      };
+      const cancelPress = () => { clearTimeout(timer); timer = null; if (!drag) el = null; };
+
+      container.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        const item = e.target.closest(itemSel);
+        if (!item || !container.contains(item)) return;
+        el = item; pid = e.pointerId; sx = e.clientX; sy = e.clientY;
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          timer = null;
+          if (!el) return;
+          drag = el;
+          start = isX ? sx : sy;
+          scroll0 = scrollPos();
+          drag.classList.add('dragging');
+          container.classList.add('sorting');
+          try { drag.setPointerCapture(pid); } catch (err) {}
+          if (navigator.vibrate) navigator.vibrate(15);
+        }, HOLD_MS);
+      });
+
+      container.addEventListener('pointermove', (e) => {
+        if (!drag) {
+          if (el && Math.hypot(e.clientX - sx, e.clientY - sy) > 8) cancelPress();
+          return;
+        }
+        e.preventDefault();
+        if (isX) {
+          const r = container.getBoundingClientRect();
+          if (e.clientX > r.right - 40) container.scrollLeft += 10;
+          else if (e.clientX < r.left + 40) container.scrollLeft -= 10;
+        }
+        let d = pos(e) - start + (scrollPos() - scroll0);
+        const center = off(drag) + d + size(drag) / 2;
+        const next = sib(drag, 1), prev = sib(drag, -1);
+        if (next && center > off(next) + size(next) / 2) {
+          const before = off(drag);
+          container.insertBefore(next, drag);
+          start += off(drag) - before;
+        } else if (prev && center < off(prev) + size(prev) / 2) {
+          // 끌고 있는 항목 대신 옆 항목을 옮겨야 끌기가 끊기지 않아요
+          const before = off(drag);
+          container.insertBefore(prev, drag.nextSibling);
+          start += off(drag) - before;
+        }
+        d = pos(e) - start + (scrollPos() - scroll0);
+        drag.style.transform = isX ? 'translateX(' + d + 'px)' : 'translateY(' + d + 'px)';
+      });
+
+      const finish = () => {
+        clearTimeout(timer); timer = null;
+        if (drag) {
+          drag.style.transform = '';
+          drag.classList.remove('dragging');
+          container.classList.remove('sorting');
+          suppressClick = true;
+          setTimeout(() => { suppressClick = false; }, 300);
+          const order = Array.from(container.querySelectorAll(itemSel)).map((n) => n.dataset.cat);
+          drag = null;
+          onDrop(order);
+        }
+        el = null;
+      };
+      container.addEventListener('pointerup', finish);
+      container.addEventListener('pointercancel', finish);
+      document.addEventListener('pointerup', finish);
+      document.addEventListener('pointercancel', finish);
+      // 끌고 있는 동안 화면이 스크롤되거나 길게 누르기 메뉴가 뜨지 않게
+      container.addEventListener('touchmove', (e) => { if (drag) e.preventDefault(); }, { passive: false });
+      container.addEventListener('contextmenu', (e) => { if (e.target.closest(itemSel)) e.preventDefault(); });
+      container.addEventListener('click', (e) => {
+        if (suppressClick) { e.stopPropagation(); e.preventDefault(); suppressClick = false; }
+      }, true);
+    }
+
     function resizeImage(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1109,10 +1332,13 @@
     }
 
     // ---------- 초기 구성 ----------
-    $('fCats').innerHTML = CATEGORIES.map((c) =>
-      '<input type="radio" name="cat" id="cat-' + c.id + '" value="' + c.id + '">' +
-      '<label for="cat-' + c.id + '">' + catIcon(c, 18) + c.name + '</label>'
-    ).join('');
+    function renderCatPick() {
+      $('fCats').innerHTML = orderedCats().map((c) =>
+        '<input type="radio" name="cat" id="cat-' + c.id + '" value="' + c.id + '">' +
+        '<label for="cat-' + c.id + '">' + catIcon(c, 18) + c.name + '</label>'
+      ).join('');
+    }
+    renderCatPick();
     $('fSeasons').innerHTML = SEASONS.map((s, idx) =>
       '<input type="checkbox" id="season-' + idx + '" value="' + s + '"><label for="season-' + idx + '">' + s + '</label>'
     ).join('');
@@ -1131,11 +1357,38 @@
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-      if ($('brandModal').classList.contains('open')) closeBrandModal();
+      if ($('orderModal').classList.contains('open')) closeOrderModal();
+      else if ($('brandModal').classList.contains('open')) closeBrandModal();
       else closeModal();
     });
     $('search').addEventListener('input', renderGrid);
-    $('sort').addEventListener('change', renderGrid);
+    $('sort').addEventListener('change', () => {
+      try { localStorage.setItem(SORT_KEY, $('sort').value); } catch (err) {}
+      updateOrderHint();
+      renderGrid();
+    });
+
+    // 카테고리 순서: 탭을 꼭 눌러 좌우로, 편집 창에서는 위아래로
+    makeSortable($('tabs'), '.tab[data-cat]:not([data-cat="all"])', 'x', (order) => applyOrder(order));
+    makeSortable($('orderList'), 'li[data-cat]', 'y', (order) => applyOrder(order));
+    $('orderHintBtn').addEventListener('click', openOrderModal);
+    $('orderCloseBtn').addEventListener('click', closeOrderModal);
+    $('orderDoneBtn').addEventListener('click', closeOrderModal);
+    $('orderModal').addEventListener('click', (e) => { if (e.target === $('orderModal')) closeOrderModal(); });
+    $('orderResetBtn').addEventListener('click', () => applyOrder(CATEGORIES.map((c) => c.id), '기본 순서로 되돌렸어요'));
+    $('orderList').addEventListener('keydown', (e) => {
+      const li = e.target.closest('li[data-cat]');
+      if (!li || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+      e.preventDefault();
+      const order = catOrder.slice();
+      const idx = order.indexOf(li.dataset.cat);
+      const to = e.key === 'ArrowUp' ? idx - 1 : idx + 1;
+      if (to < 0 || to >= order.length) return;
+      order.splice(to, 0, order.splice(idx, 1)[0]);
+      applyOrder(order);
+      const moved = $('orderList').querySelector('li[data-cat="' + li.dataset.cat + '"]');
+      if (moved) moved.focus();
+    });
     $('brandFilter').addEventListener('change', (e) => { currentBrand = e.target.value; renderGrid(); });
 
     // 색상: 고르기 / 같은 색을 다시 누르면 선택 해제
@@ -1205,6 +1458,7 @@
     $('tabs').addEventListener('click', (e) => {
       const btn = e.target.closest('.tab');
       if (!btn) return;
+      if (btn.dataset.action === 'edit-order') return openOrderModal();
       currentCat = btn.dataset.cat;
       renderTabs();
       renderGrid();
@@ -1310,6 +1564,12 @@
       if (localStorage.getItem(STORAGE_KEY) !== null) save();
     } catch (e) {}
     saveBrands();
+
+    try {
+      const savedSort = localStorage.getItem(SORT_KEY);
+      if (savedSort && $('sort').querySelector('option[value="' + savedSort + '"]')) $('sort').value = savedSort;
+    } catch (e) {}
+    updateOrderHint();
 
     render();
     route();
