@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#6c5ce7">
+  <title>나의 옷장</title>
+  <style>
+    :root {
+      --bg: #f6f5fb;
+      --card: #ffffff;
+      --text: #222233;
+      --sub: #6b6b80;
+      --line: #e6e4f0;
+      --main: #6c5ce7;
+      --main-dark: #5443d6;
+      --danger: #e5484d;
+      --radius: 14px;
+      --shadow: 0 2px 10px rgba(40, 30, 90, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Malgun Gothic", "Noto Sans KR", sans-serif;
+      line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+
+    header {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      color: #fff;
+      padding: 22px 16px 18px;
+      padding-top: calc(22px + env(safe-area-inset-top));
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+    header p { opacity: 0.9; font-size: 0.95rem; margin-top: 2px; }
+
+    .stats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .stat {
+      background: rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+    }
+
+    main { padding: 16px; }
+
+    .toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
+    .search {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+      font-size: 16px;
+    }
+    .search:focus, .field input:focus, .field select:focus, .field textarea:focus {
+      outline: 2px solid var(--main);
+      outline-offset: -1px;
+      border-color: transparent;
+    }
+    .btn {
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-weight: 700;
+      background: var(--main);
+      color: #fff;
+      white-space: nowrap;
+    }
+    .btn:hover { background: var(--main-dark); }
+    .btn.ghost { background: #ecebf7; color: var(--text); }
+    .btn.ghost:hover { background: #e0def2; }
+    .btn.danger { background: #fdecec; color: var(--danger); }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.92rem;
+    }
+    .tab .count { color: var(--sub); margin-left: 4px; font-size: 0.85em; }
+    .tab.active { background: var(--text); color: #fff; border-color: var(--text); }
+    .tab.active .count { color: #c9c9d6; }
+
+    .sortbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--sub);
+      font-size: 0.9rem;
+    }
+    .sortbar select {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (min-width: 600px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (min-width: 900px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      border: none;
+      padding: 0;
+    }
+    .thumb {
+      aspect-ratio: 1 / 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      position: relative;
+    }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .fav {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255,255,255,0.9);
+      color: #f5a623;
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .info { padding: 10px 12px 12px; }
+    .name {
+      font-weight: 700;
+      font-size: 0.98rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta { color: var(--sub); font-size: 0.8rem; margin-top: 2px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .chip {
+      font-size: 0.72rem;
+      background: #f0eff8;
+      color: #4a4a60;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--sub);
+      padding: 48px 16px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .empty strong { display: block; color: var(--text); font-size: 1.1rem; margin-bottom: 6px; }
+    .empty .btn { margin-top: 16px; }
+
+    /* 모달 */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 15, 50, 0.45);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 50;
+    }
+    .backdrop.open { display: flex; }
+    .sheet {
+      background: var(--card);
+      width: 100%;
+      max-width: 520px;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 20px 20px 0 0;
+      padding: 20px 18px;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      animation: up 0.2s ease-out;
+    }
+    @media (min-width: 600px) {
+      .backdrop { align-items: center; }
+      .sheet { border-radius: 20px; }
+    }
+    @keyframes up { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .sheet h2 { font-size: 1.2rem; margin-bottom: 14px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 0.85rem; color: var(--sub); margin-bottom: 4px; font-weight: 600; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 16px;
+    }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .seasons { display: flex; flex-wrap: wrap; gap: 6px; }
+    .seasons label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      color: var(--text);
+      font-weight: 500;
+      margin: 0;
+      cursor: pointer;
+    }
+    .seasons input { width: auto; }
+    .photo-preview {
+      margin-top: 8px;
+      width: 96px;
+      height: 96px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: none;
+    }
+    .check { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+    .check input { width: 18px; height: 18px; }
+    .actions { display: flex; gap: 8px; margin-top: 16px; }
+    .actions .btn { flex: 1; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      background: #222233;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 60;
+    }
+    .toast.show { opacity: 1; }
+
+    footer { text-align: center; color: var(--sub); font-size: 0.8rem; padding: 24px 16px 32px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>나의 옷장</h1>
+      <p>가지고 있는 옷을 종류별로 정리해 보세요</p>
+      <div class="stats" id="stats"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="옷 이름, 색상, 브랜드 검색">
+      <button class="btn" id="addBtn">+ 옷 추가</button>
+    </div>
+
+    <nav class="tabs" id="tabs" aria-label="종류 선택"></nav>
+
+    <div class="sortbar">
+      <span id="resultText"></span>
+      <select id="sort" aria-label="정렬">
+        <option value="new">최근 추가순</option>
+        <option value="old">오래된순</option>
+        <option value="name">이름순</option>
+        <option value="fav">즐겨찾기 먼저</option>
+      </select>
+    </div>
+
+    <section class="grid" id="grid"></section>
+  </main>
+
+  <footer>옷 정보는 이 기기의 브라우저에만 저장돼요.</footer>
+
+  <div class="backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <form class="sheet" id="form">
+      <h2 id="modalTitle">옷 추가하기</h2>
+
+      <div class="field">
+        <label for="fName">이름 *</label>
+        <input id="fName" required maxlength="40" placeholder="예: 흰색 셔츠">
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="fCategory">종류 *</label>
+          <select id="fCategory" required></select>
+        </div>
+        <div class="field">
+          <label for="fColor">색상</label>
+          <input id="fColor" maxlength="20" placeholder="예: 흰색">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fBrand">브랜드</label>
+        <input id="fBrand" maxlength="30" placeholder="예: 유니클로">
+      </div>
+
+      <div class="field">
+        <label>계절</label>
+        <div class="seasons" id="fSeasons"></div>
+      </div>
+
+      <div class="field">
+        <label for="fPhoto">사진 (선택)</label>
+        <input id="fPhoto" type="file" accept="image/*">
+        <img class="photo-preview" id="photoPreview" alt="사진 미리보기">
+      </div>
+
+      <div class="field">
+        <label for="fMemo">메모</label>
+        <textarea id="fMemo" maxlength="200" placeholder="예: 세탁 시 뒤집어서 빨기"></textarea>
+      </div>
+
+      <label class="check"><input type="checkbox" id="fFav"> 즐겨찾기</label>
+
+      <div class="actions">
+        <button type="button" class="btn danger" id="deleteBtn" style="display:none">삭제</button>
+        <button type="button" class="btn ghost" id="cancelBtn">취소</button>
+        <button type="submit" class="btn">저장</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'my-closet-items-v1';
+    const CATEGORIES = [
+      { id: 'top', name: '상의', color: '#74b9ff' },
+      { id: 'bottom', name: '하의', color: '#55efc4' },
+      { id: 'outer', name: '아우터', color: '#a29bfe' },
+      { id: 'dress', name: '원피스', color: '#fd79a8' },
+      { id: 'shoes', name: '신발', color: '#fdcb6e' },
+      { id: 'bag', name: '가방', color: '#e17055' },
+      { id: 'acc', name: '액세서리', color: '#00cec9' },
+      { id: 'etc', name: '기타', color: '#b2bec3' }
+    ];
+    const SEASONS = ['봄', '여름', '가을', '겨울'];
+
+    const $ = (id) => document.getElementById(id);
+    let items = load();
+    let currentCat = 'all';
+    let editingId = null;
+    let photoData = '';
+
+    function load() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (Array.isArray(saved)) return saved;
+      } catch (e) {}
+      const now = Date.now();
+      return [
+        { id: 's1', name: '흰색 옥스포드 셔츠', category: 'top', color: '흰색', brand: '', seasons: ['봄', '가을'], memo: '', fav: true, photo: '', createdAt: now - 3000 },
+        { id: 's2', name: '데님 청바지', category: 'bottom', color: '파랑', brand: '', seasons: ['봄', '가을', '겨울'], memo: '', fav: false, photo: '', createdAt: now - 2000 },
+        { id: 's3', name: '검정 패딩', category: 'outer', color: '검정', brand: '', seasons: ['겨울'], memo: '드라이클리닝', fav: false, photo: '', createdAt: now - 1000 }
+      ];
+    }
+
+    let storageWarned = false;
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        return true;
+      } catch (e) {
+        const isQuota = e && (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014);
+        if (isQuota) {
+          showToast('저장 공간이 부족해요. 사진 수를 줄여 주세요.');
+          return false;
+        }
+        // 저장소를 쓸 수 없는 환경(사생활 보호 모드 등): 화면에서는 계속 사용 가능
+        if (!storageWarned) {
+          storageWarned = true;
+          setTimeout(() => showToast('이 브라우저에서는 저장이 안 돼요. 새로고침하면 사라져요.'), 1900);
+        }
+        return true;
+      }
+    }
+
+    function catOf(id) {
+      return CATEGORIES.find((c) => c.id === id) || CATEGORIES[CATEGORIES.length - 1];
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+
+    function renderStats() {
+      const favCount = items.filter((i) => i.fav).length;
+      const usedCats = new Set(items.map((i) => i.category)).size;
+      $('stats').innerHTML =
+        '<span class="stat">전체 ' + items.length + '벌</span>' +
+        '<span class="stat">종류 ' + usedCats + '가지</span>' +
+        '<span class="stat">즐겨찾기 ' + favCount + '벌</span>';
+    }
+
+    function renderTabs() {
+      const list = [{ id: 'all', name: '전체' }].concat(CATEGORIES);
+      $('tabs').innerHTML = list.map((c) => {
+        const n = c.id === 'all' ? items.length : items.filter((i) => i.category === c.id).length;
+        return '<button class="tab' + (currentCat === c.id ? ' active' : '') + '" data-cat="' + c.id + '">' +
+          c.name + '<span class="count">' + n + '</span></button>';
+      }).join('');
+    }
+
+    function getFiltered() {
+      const q = $('search').value.trim().toLowerCase();
+      let list = items.filter((i) => currentCat === 'all' || i.category === currentCat);
+      if (q) {
+        list = list.filter((i) =>
+          [i.name, i.color, i.brand, i.memo, catOf(i.category).name].join(' ').toLowerCase().includes(q)
+        );
+      }
+      const sort = $('sort').value;
+      list.sort((a, b) => {
+        if (sort === 'old') return a.createdAt - b.createdAt;
+        if (sort === 'name') return a.name.localeCompare(b.name, 'ko');
+        if (sort === 'fav') return (b.fav - a.fav) || (b.createdAt - a.createdAt);
+        return b.createdAt - a.createdAt;
+      });
+      return list;
+    }
+
+    function renderGrid() {
+      const list = getFiltered();
+      $('resultText').textContent = list.length + '벌';
+      if (list.length === 0) {
+        const searching = $('search').value.trim() !== '';
+        $('grid').style.display = 'block';
+        $('grid').innerHTML =
+          '<div class="empty"><strong>' + (searching ? '검색 결과가 없어요' : '아직 옷이 없어요') + '</strong>' +
+          (searching ? '다른 단어로 검색해 보세요.' : '첫 번째 옷을 추가해 보세요.') +
+          (searching ? '' : '<br><button class="btn" data-action="add">+ 옷 추가</button>') + '</div>';
+        return;
+      }
+      $('grid').style.display = '';
+      $('grid').innerHTML = list.map((i) => {
+        const c = catOf(i.category);
+        const thumb = i.photo
+          ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '">'
+          : '<span>' + escapeHtml(i.name.charAt(0) || c.name.charAt(0)) + '</span>';
+        const chips = (i.seasons || []).map((s) => '<span class="chip">' + s + '</span>').join('');
+        const meta = [c.name, i.color, i.brand].filter(Boolean).map(escapeHtml).join(' · ');
+        return '<button class="card" data-id="' + i.id + '">' +
+          '<div class="thumb" style="background:' + c.color + '">' + thumb +
+          (i.fav ? '<span class="fav" aria-label="즐겨찾기">&#9733;</span>' : '') + '</div>' +
+          '<div class="info"><div class="name">' + escapeHtml(i.name) + '</div>' +
+          '<div class="meta">' + meta + '</div>' +
+          (chips ? '<div class="chips">' + chips + '</div>' : '') +
+          '</div></button>';
+      }).join('');
+    }
+
+    function render() {
+      renderStats();
+      renderTabs();
+      renderGrid();
+    }
+
+    function openModal(item) {
+      editingId = item ? item.id : null;
+      $('modalTitle').textContent = item ? '옷 수정하기' : '옷 추가하기';
+      $('fName').value = item ? item.name : '';
+      $('fCategory').value = item ? item.category : (currentCat !== 'all' ? currentCat : 'top');
+      $('fColor').value = item ? item.color : '';
+      $('fBrand').value = item ? item.brand : '';
+      $('fMemo').value = item ? item.memo : '';
+      $('fFav').checked = item ? !!item.fav : false;
+      document.querySelectorAll('#fSeasons input').forEach((el) => {
+        el.checked = item ? (item.seasons || []).includes(el.value) : false;
+      });
+      photoData = item ? (item.photo || '') : '';
+      $('fPhoto').value = '';
+      updatePreview();
+      $('deleteBtn').style.display = item ? '' : 'none';
+      $('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => $('fName').focus(), 50);
+    }
+
+    function closeModal() {
+      $('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function updatePreview() {
+      const img = $('photoPreview');
+      if (photoData) {
+        img.src = photoData;
+        img.style.display = 'block';
+      } else {
+        img.removeAttribute('src');
+        img.style.display = 'none';
+      }
+    }
+
+    function resizeImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const max = 400;
+            const scale = Math.min(1, max / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.75));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const t = $('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+    }
+
+    // 초기 화면 구성
+    $('fCategory').innerHTML = CATEGORIES.map((c) => '<option value="' + c.id + '">' + c.name + '</option>').join('');
+    $('fSeasons').innerHTML = SEASONS.map((s) => '<label><input type="checkbox" value="' + s + '"> ' + s + '</label>').join('');
+
+    // 이벤트
+    $('addBtn').addEventListener('click', () => openModal(null));
+    $('cancelBtn').addEventListener('click', closeModal);
+    $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    $('search').addEventListener('input', renderGrid);
+    $('sort').addEventListener('change', renderGrid);
+
+    $('tabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.tab');
+      if (!btn) return;
+      currentCat = btn.dataset.cat;
+      renderTabs();
+      renderGrid();
+    });
+
+    $('grid').addEventListener('click', (e) => {
+      if (e.target.closest('[data-action="add"]')) return openModal(null);
+      const card = e.target.closest('.card');
+      if (!card) return;
+      const item = items.find((i) => i.id === card.dataset.id);
+      if (item) openModal(item);
+    });
+
+    $('fPhoto').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        photoData = await resizeImage(file);
+        updatePreview();
+      } catch (err) {
+        showToast('사진을 불러오지 못했어요.');
+      }
+    });
+
+    $('deleteBtn').addEventListener('click', () => {
+      if (!editingId) return;
+      if (!confirm('이 옷을 삭제할까요?')) return;
+      items = items.filter((i) => i.id !== editingId);
+      save();
+      closeModal();
+      render();
+      showToast('삭제했어요');
+    });
+
+    $('form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('fName').value.trim();
+      if (!name) { $('fName').focus(); return; }
+      const data = {
+        name: name,
+        category: $('fCategory').value,
+        color: $('fColor').value.trim(),
+        brand: $('fBrand').value.trim(),
+        memo: $('fMemo').value.trim(),
+        fav: $('fFav').checked,
+        seasons: Array.from(document.querySelectorAll('#fSeasons input:checked')).map((el) => el.value),
+        photo: photoData
+      };
+      const backup = JSON.stringify(items);
+      if (editingId) {
+        items = items.map((i) => (i.id === editingId ? Object.assign({}, i, data) : i));
+      } else {
+        items.push(Object.assign({ id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6), createdAt: Date.now() }, data));
+      }
+      if (!save()) { items = JSON.parse(backup); return; }
+      const wasEditing = !!editingId;
+      closeModal();
+      render();
+      showToast(wasEditing ? '수정했어요' : '옷장에 추가했어요');
+    });
+
+    render();
+  </script>
+</body>
+</html>
