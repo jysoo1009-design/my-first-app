@@ -155,7 +155,8 @@
     .section-title p { color: var(--sub); margin-top: 6px; }
 
     .features { display: grid; gap: 14px; }
-    @media (min-width: 720px) { .features { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+    @media (min-width: 720px) { .features { grid-template-columns: repeat(2, 1fr); gap: 18px; } }
+    @media (min-width: 1000px) { .features { grid-template-columns: repeat(4, 1fr); } }
     .feature {
       background: var(--surface); border-radius: var(--radius); padding: 22px;
       box-shadow: var(--shadow-sm); border: 1px solid var(--line);
@@ -440,6 +441,38 @@
     .brand-list .del:hover { background: #fdecec; }
     .brand-list .brand-empty { justify-content: center; color: var(--sub); padding: 24px 12px; }
 
+    /* 계정·기기 연동 */
+    .acct-btn { position: relative; }
+    .acct-btn.logged { width: auto; max-width: 170px; padding: 0 13px 0 10px; gap: 6px; font-weight: 700; font-size: 0.88rem; }
+    .acct-btn .acct-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    @media (max-width: 480px) {
+      .acct-btn .acct-name { display: none; }
+      .acct-btn.logged { width: 42px; padding: 0; }
+    }
+    .sdot { position: absolute; top: 5px; right: 5px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; display: none; }
+    .sdot.ok { display: block; background: #2fb67c; }
+    .sdot.syncing { display: block; background: #f5a524; }
+    .sdot.error { display: block; background: var(--danger); }
+    .seg { display: flex; background: #f1eee9; border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 16px; }
+    .seg button { flex: 1; padding: 9px; border-radius: 9px; font-weight: 700; color: var(--sub); }
+    .seg button.on { background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); }
+    .field input[type=password] {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px;
+      background: #fcfbf9; font-size: 16px;
+    }
+    .form-error { color: var(--danger); font-size: 0.88rem; font-weight: 600; min-height: 1.3em; margin: -4px 0 10px; }
+    .acct-card { display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 14px; }
+    .acct-avatar {
+      width: 52px; height: 52px; border-radius: 16px; background: var(--primary); color: #fff;
+      font-weight: 800; font-size: 1.35rem; display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+    }
+    .acct-card strong { display: block; font-size: 1.12rem; }
+    .acct-status { display: flex; align-items: center; gap: 6px; color: var(--sub); font-size: 0.88rem; }
+    .acct-status i { width: 8px; height: 8px; border-radius: 50%; background: #c9c4d4; flex: 0 0 auto; }
+    .stack { display: flex; flex-direction: column; gap: 8px; }
+    .stack .btn { width: 100%; border-radius: 14px; }
+    .btn:disabled { opacity: 0.6; cursor: default; }
+
     .seasons { display: flex; flex-wrap: wrap; gap: 8px; }
     .seasons input { position: absolute; opacity: 0; pointer-events: none; }
     .seasons label {
@@ -569,6 +602,11 @@
             <h3>사진으로 한눈에</h3>
             <p>휴대폰으로 옷 사진을 찍어 올리면 진짜 옷장처럼 보여요.</p>
           </div>
+          <div class="feature">
+            <div class="ic" style="background:#fff1d6;color:#c98a00" data-icon="sync"></div>
+            <h3>휴대폰·컴퓨터 함께</h3>
+            <p>닉네임으로 로그인하면 어느 기기에서든 같은 옷장을 볼 수 있어요.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -615,6 +653,7 @@
       <div class="wrap">
         <a href="#" class="logo" aria-label="표지로 돌아가기"><span class="logo-mark" data-icon="hanger"></span>나의 옷장</a>
         <div class="appbar-actions">
+          <button type="button" class="icon-btn acct-btn" id="acctBtn" aria-label="계정·기기 연동" title="로그인하고 기기 연동"><span data-icon="user"></span><span class="acct-name" id="acctBtnName"></span><i class="sdot" id="acctBtnDot"></i></button>
           <button type="button" class="icon-btn" id="brandMgrBtn" aria-label="브랜드 관리" title="브랜드 관리" data-icon="tag"></button>
           <a href="#" class="icon-btn" aria-label="표지로" title="표지로" data-icon="home"></a>
         </div>
@@ -731,6 +770,70 @@
     </form>
   </div>
 
+  <!-- ===================== 계정·기기 연동 창 ===================== -->
+  <div class="backdrop" id="acctModal" role="dialog" aria-modal="true" aria-labelledby="acctTitle">
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="acctTitle">계정 · 기기 연동</h2>
+        <button type="button" class="icon-btn" id="acctCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+
+      <div id="acctOut">
+        <p class="hint" style="margin:0 0 14px">닉네임과 비밀번호로 로그인하면 휴대폰과 컴퓨터에서 같은 옷장을 볼 수 있어요.</p>
+        <div class="seg">
+          <button type="button" id="segLogin" class="on">로그인</button>
+          <button type="button" id="segSignup">새로 가입</button>
+        </div>
+        <form id="acctForm" novalidate>
+          <div class="field">
+            <label for="aNick">닉네임</label>
+            <input id="aNick" type="text" maxlength="20" autocomplete="username" placeholder="2~20자">
+          </div>
+          <div class="field">
+            <label for="aPass">비밀번호</label>
+            <input id="aPass" type="password" maxlength="72" autocomplete="current-password" placeholder="6자 이상">
+          </div>
+          <div class="field" id="aPass2Wrap" hidden>
+            <label for="aPass2">비밀번호 확인</label>
+            <input id="aPass2" type="password" maxlength="72" autocomplete="new-password" placeholder="한 번 더 입력">
+          </div>
+          <p class="form-error" id="acctError" role="alert"></p>
+          <button type="submit" class="btn btn-primary" id="acctSubmit" style="width:100%;border-radius:14px">로그인</button>
+        </form>
+        <p class="hint" style="margin-top:12px">· 로그인하면 이 기기에 있던 옷도 계정에 합쳐져요.<br>· 이메일을 쓰지 않아서 비밀번호를 찾을 수 없어요. 꼭 기억해 두세요.</p>
+      </div>
+
+      <div id="acctIn" hidden>
+        <div class="acct-card">
+          <div class="acct-avatar" id="acctAvatar"></div>
+          <div>
+            <strong id="acctNick"></strong>
+            <span class="acct-status"><i id="acctDot"></i><span id="acctStatus"></span></span>
+          </div>
+        </div>
+        <div class="stack">
+          <button type="button" class="btn btn-primary" id="syncNowBtn">지금 동기화</button>
+          <button type="button" class="btn btn-soft" id="pwToggleBtn">비밀번호 바꾸기</button>
+          <form id="pwForm" hidden novalidate style="padding:14px;border:1px solid var(--line);border-radius:14px">
+            <div class="field">
+              <label for="pwOld">지금 비밀번호</label>
+              <input id="pwOld" type="password" maxlength="72" autocomplete="current-password">
+            </div>
+            <div class="field">
+              <label for="pwNew">새 비밀번호 (6자 이상)</label>
+              <input id="pwNew" type="password" maxlength="72" autocomplete="new-password">
+            </div>
+            <p class="form-error" id="pwError" role="alert"></p>
+            <button type="submit" class="btn btn-primary" id="pwSubmit" style="width:100%;border-radius:14px">비밀번호 바꾸기</button>
+          </form>
+          <button type="button" class="btn btn-danger" id="logoutBtn">로그아웃</button>
+        </div>
+        <p class="hint" style="margin-top:12px">로그아웃하면 이 기기에 저장된 옷 정보는 지워져요. 다시 로그인하면 계정에서 불러와요.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== 카테고리 순서 창 ===================== -->
   <div class="backdrop" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
     <div class="sheet">
@@ -792,6 +895,8 @@
       home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/>',
       tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
       sort: '<path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3"/>',
+      user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+      sync: '<path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20.5V16h-4.5"/>',
       grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/>',
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>'
     };
@@ -870,6 +975,7 @@
       const changed = newOrder.join(',') !== catOrder.join(',');
       catOrder = newOrder.slice();
       try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
+      if (changed) markOrderChanged();
       return changed;
     }
     const orderedCats = () => catOrder.map((id) => CATEGORIES.find((c) => c.id === id));
@@ -882,9 +988,10 @@
       } catch (e) {}
       const now = Date.now();
       return [
-        { id: 's1', name: '흰색 옥스포드 셔츠', category: 'top', color: 'WHITE', brand: '', seasons: ['봄', '가을'], memo: '', fav: true, photo: '', createdAt: now - 3000 },
-        { id: 's2', name: '데님 청바지', category: 'bottom', color: 'DENIM', brand: '', seasons: ['봄', '가을', '겨울'], memo: '', fav: false, photo: '', createdAt: now - 2000 },
-        { id: 's3', name: '검정 패딩', category: 'outer', color: 'BLACK', brand: '', seasons: ['겨울'], memo: '드라이클리닝', fav: false, photo: '', createdAt: now - 1000 }
+        // 처음 열었을 때 보여 주는 예시 옷 (sample: 로그인하면 계정에 섞이지 않아요)
+        { id: 's1', name: '흰색 옥스포드 셔츠', category: 'top', color: 'WHITE', brand: '', seasons: ['봄', '가을'], memo: '', fav: true, photo: '', createdAt: now - 3000, updatedAt: 1, sample: true },
+        { id: 's2', name: '데님 청바지', category: 'bottom', color: 'DENIM', brand: '', seasons: ['봄', '가을', '겨울'], memo: '', fav: false, photo: '', createdAt: now - 2000, updatedAt: 1, sample: true },
+        { id: 's3', name: '검정 패딩', category: 'outer', color: 'BLACK', brand: '', seasons: ['겨울'], memo: '드라이클리닝', fav: false, photo: '', createdAt: now - 1000, updatedAt: 1, sample: true }
       ];
     }
 
@@ -902,6 +1009,7 @@
       }
       if (!raw) i.color = '';
       i.brand = String(i.brand || '').trim();
+      if (!i.updatedAt) i.updatedAt = i.createdAt || 1;
       return i;
     }
 
@@ -938,6 +1046,7 @@
       brands.push(name);
       sortBrands(brands);
       saveBrands();
+      markBrandsChanged();
       showToast("'" + name + "' 브랜드를 추가했어요");
       return name;
     }
@@ -1091,7 +1200,7 @@
       const isApp = location.hash === '#closet';
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
-      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); }
+      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); }
       if (location.hash !== '#how') window.scrollTo(0, 0);
     }
     window.addEventListener('hashchange', route);
@@ -1456,8 +1565,9 @@
         : "'" + b + "' 브랜드를 지울까요?";
       if (!confirm(msg)) return;
       brands = brands.filter((x) => x !== b);
-      items.forEach((i) => { if (i.brand === b) i.brand = ''; });
+      items.forEach((i) => { if (i.brand === b) { i.brand = ''; touchItem(i); } });
       saveBrands();
+      markBrandsChanged();
       save();
       render();
       renderBrandList();
@@ -1480,6 +1590,7 @@
         const it = items.find((i) => i.id === favBtn.dataset.fav);
         if (it) {
           it.fav = !it.fav;
+          touchItem(it);
           save();
           render();
           showToast(it.fav ? '즐겨찾기에 추가했어요' : '즐겨찾기에서 뺐어요');
@@ -1518,6 +1629,7 @@
     $('deleteBtn').addEventListener('click', () => {
       if (!editingId) return;
       if (!confirm('이 옷을 옷장에서 뺄까요?')) return;
+      markDeleted(editingId);
       items = items.filter((i) => i.id !== editingId);
       save();
       closeModal();
@@ -1553,20 +1665,446 @@
         memo: $('fMemo').value.trim(),
         fav: $('fFav').checked,
         seasons: Array.from(document.querySelectorAll('#fSeasons input:checked')).map((el) => el.value),
-        photo: photoData
+        photo: photoData,
+        updatedAt: Date.now(),
+        sample: false
       };
       const backup = JSON.stringify(items);
+      const savedId = editingId || ('i' + Date.now() + Math.random().toString(36).slice(2, 6));
       if (editingId) {
         items = items.map((i) => (i.id === editingId ? Object.assign({}, i, data) : i));
       } else {
-        items.push(Object.assign({ id: 'i' + Date.now() + Math.random().toString(36).slice(2, 6), createdAt: Date.now() }, data));
+        items.push(Object.assign({ id: savedId, createdAt: Date.now() }, data));
       }
       if (!save()) { items = JSON.parse(backup); return; }
+      markPending(savedId);
       const wasEditing = !!editingId;
       closeModal();
       render();
       showToast(wasEditing ? '수정했어요' : '옷장에 추가했어요');
     });
+
+    // =====================================================================
+    // 계정·기기 연동 (Supabase)
+    //  - 닉네임 + 비밀번호 로그인 (서버 함수 closet_signup / closet_login)
+    //  - 옷은 한 벌씩, 더 나중에 고친 쪽이 이겨요 (updatedAt 비교)
+    //  - 브랜드 목록·카테고리 순서도 나중에 바꾼 쪽이 이겨요
+    // =====================================================================
+    const SB_URL = 'https://bhcsktvtdrqpdcsfbfco.supabase.co';
+    const SB_KEY = 'sb_publishable_OoAMAIj0cThMEFzIxBlorg_xVauc8i5'; // 브라우저에 공개해도 되는 키
+    const SESSION_KEY = 'my-closet-session-v1';
+    const SYNC_KEY = 'my-closet-sync-v1';
+    const META_KEY = 'my-closet-meta-v1';
+    const readJSON = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (e) { return d; } };
+    const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    const emptySync = () => ({ cursor: null, pending: {}, deleted: {}, settingsDirty: false });
+
+    let session = readJSON(SESSION_KEY, null);
+    let sync = Object.assign(emptySync(), readJSON(SYNC_KEY, {}));
+    let meta = Object.assign({ brandsUpdated: 0, orderUpdated: 0 }, readJSON(META_KEY, {}));
+    let syncState = session ? 'ok' : 'off';
+    let syncError = '';
+    let lastSyncAt = null;
+    let pushTimer = null, pushing = false, pushAgain = false, retryTimer = null, syncing = false;
+    const saveSync = () => writeJSON(SYNC_KEY, sync);
+    const saveMeta = () => writeJSON(META_KEY, meta);
+    const hasPending = () => Object.keys(sync.pending).length > 0 || sync.settingsDirty;
+
+    // 이 기기에서 바뀐 것 표시
+    function markPending(id) { sync.pending[id] = true; saveSync(); schedulePush(); }
+    function touchItem(item) { item.updatedAt = Date.now(); item.sample = false; markPending(item.id); }
+    function markDeleted(id) { sync.deleted[id] = Date.now(); markPending(id); }
+    function markBrandsChanged() { meta.brandsUpdated = Date.now(); saveMeta(); sync.settingsDirty = true; saveSync(); schedulePush(); }
+    function markOrderChanged() { meta.orderUpdated = Date.now(); saveMeta(); sync.settingsDirty = true; saveSync(); schedulePush(); }
+
+    const ERR_TEXT = {
+      BAD_NICKNAME: '닉네임은 2~20자로 정해 주세요.',
+      BAD_PASSWORD: '비밀번호는 6자 이상으로 정해 주세요.',
+      NICKNAME_TAKEN: '이미 쓰고 있는 닉네임이에요. 다른 닉네임을 골라 주세요.',
+      INVALID_LOGIN: '닉네임 또는 비밀번호가 맞지 않아요.',
+      SESSION_EXPIRED: '로그인이 만료됐어요. 다시 로그인해 주세요.',
+      NETWORK: '서버에 연결되지 않아요. 인터넷 연결을 확인해 주세요.'
+    };
+    function errText(code, res) {
+      if (code === 'LOCKED') {
+        const min = Math.max(1, Math.ceil(((res && res.retryAfter) || 300) / 60));
+        return '비밀번호를 여러 번 틀려서 잠깐 잠겼어요. ' + min + '분 뒤에 다시 해 주세요.';
+      }
+      return ERR_TEXT[code] || ERR_TEXT.NETWORK;
+    }
+
+    async function rpc(fn, body) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      try {
+        const r = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+          method: 'POST',
+          headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          signal: ctrl.signal
+        });
+        if (!r.ok) throw new Error('NETWORK');
+        return await r.json();
+      } catch (e) {
+        throw new Error(e && ERR_TEXT[e.message] ? e.message : 'NETWORK');
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function setSyncState(state, err) {
+      syncState = state;
+      syncError = err || '';
+      if (state === 'ok') lastSyncAt = new Date();
+      updateAcctUI();
+    }
+    function handleSyncError(e) {
+      const code = e && e.message;
+      if (code === 'SESSION_EXPIRED') {
+        // 로그인만 풀고 이 기기의 옷은 남겨 둠 (다시 로그인하면 합쳐짐)
+        session = null;
+        try { localStorage.removeItem(SESSION_KEY); } catch (err) {}
+        sync.cursor = null;
+        saveSync();
+        setSyncState('off');
+        showToast(ERR_TEXT.SESSION_EXPIRED);
+        return;
+      }
+      setSyncState('error', '연결이 안 돼서 잠시 뒤 다시 시도할게요');
+      clearTimeout(retryTimer);
+      retryTimer = setTimeout(() => { if (session) syncNow(false); }, 20000);
+    }
+
+    function schedulePush() {
+      if (!session) return;
+      clearTimeout(pushTimer);
+      pushTimer = setTimeout(pushNow, 800);
+      if (syncState !== 'error') setSyncState('syncing');
+    }
+
+    // 바뀐 것 올리기
+    async function pushNow() {
+      if (!session) return true;
+      if (pushing) { pushAgain = true; return false; }
+      pushing = true;
+      clearTimeout(pushTimer);
+      try {
+        const payload = [];
+        Object.keys(sync.pending).forEach((id) => {
+          const it = items.find((i) => i.id === id);
+          if (it) payload.push({ id: id, data: it, updatedAt: it.updatedAt || 1 });
+          else if (sync.deleted[id]) payload.push({ id: id, deleted: true, updatedAt: sync.deleted[id] });
+          else delete sync.pending[id];
+        });
+        const sendSettings = sync.settingsDirty;
+        const sentB = meta.brandsUpdated, sentO = meta.orderUpdated;
+        const settings = sendSettings
+          ? { brands: brands, brandsUpdated: sentB, catOrder: catOrder, orderUpdated: sentO }
+          : null;
+        const chunks = [];
+        for (let i = 0; i < payload.length; i += 20) chunks.push(payload.slice(i, i + 20));
+        if (!chunks.length && sendSettings) chunks.push([]);
+        const token = session.token;
+        for (let c = 0; c < chunks.length; c++) {
+          const res = await rpc('closet_push', { p_token: token, p_items: chunks[c], p_settings: c === 0 ? settings : null });
+          if (!session || session.token !== token) return false;
+          if (res.error) throw new Error(res.error);
+          chunks[c].forEach((p) => {
+            const cur = items.find((i) => i.id === p.id);
+            const curTs = cur ? cur.updatedAt : sync.deleted[p.id];
+            if (curTs === p.updatedAt) {
+              delete sync.pending[p.id];
+              if (p.deleted) delete sync.deleted[p.id];
+            }
+          });
+          if (c === 0 && sendSettings && meta.brandsUpdated === sentB && meta.orderUpdated === sentO) sync.settingsDirty = false;
+          saveSync();
+        }
+        if (!session) return true;
+        if (hasPending()) schedulePush(); else setSyncState('ok');
+        return true;
+      } catch (e) {
+        handleSyncError(e);
+        return false;
+      } finally {
+        pushing = false;
+        if (pushAgain) { pushAgain = false; schedulePush(); }
+      }
+    }
+
+    function normalizeOrder(list) {
+      let order = (Array.isArray(list) ? list : []).filter((id) => CATEGORIES.some((c) => c.id === id));
+      order = Array.from(new Set(order));
+      CATEGORIES.forEach((c) => { if (!order.includes(c.id)) order.push(c.id); });
+      return order;
+    }
+
+    // 계정에서 받은 내용을 이 기기에 합치기
+    function applyRemote(res, isFull) {
+      let changed = false;
+      const remoteIds = new Set();
+      (res.items || []).forEach((r) => {
+        remoteIds.add(r.id);
+        const idx = items.findIndex((i) => i.id === r.id);
+        const local = idx >= 0 ? items[idx] : null;
+        const localTs = local ? (local.updatedAt || 0) : (sync.deleted[r.id] || 0);
+        if (r.updatedAt > localTs) {
+          if (r.deleted) {
+            if (idx >= 0) { items.splice(idx, 1); changed = true; }
+          } else if (r.data) {
+            const it = normalizeItem(Object.assign({}, r.data, { id: r.id, updatedAt: r.updatedAt, sample: false }));
+            if (idx >= 0) items[idx] = it; else items.push(it);
+            changed = true;
+          }
+          delete sync.pending[r.id];
+          delete sync.deleted[r.id];
+        } else if (r.updatedAt < localTs) {
+          sync.pending[r.id] = true;
+        }
+      });
+
+      if (isFull) {
+        // 계정에 없는 이 기기의 옷: 예시 옷은 빼고, 나머지는 계정으로 올리기
+        const before = items.length;
+        items = items.filter((i) => remoteIds.has(i.id) || !i.sample);
+        if (items.length !== before) changed = true;
+        items.forEach((i) => { if (!remoteIds.has(i.id)) sync.pending[i.id] = true; });
+      }
+
+      const s = res.settings;
+      if (s) {
+        const remoteBrands = (Array.isArray(s.brands) ? s.brands : []).filter((b) => typeof b === 'string' && b.trim());
+        if (isFull) {
+          // 처음 연결할 때는 브랜드 목록을 합치기
+          const merged = remoteBrands.slice();
+          brands.forEach((b) => { if (!merged.some((x) => x.toLowerCase() === b.toLowerCase())) merged.push(b); });
+          sortBrands(merged);
+          if (merged.join('\u0001') !== brands.join('\u0001')) { brands = merged; saveBrands(); changed = true; }
+          if (merged.length !== remoteBrands.length) {
+            meta.brandsUpdated = Math.max(Date.now(), (s.brandsUpdated || 0) + 1);
+            sync.settingsDirty = true;
+          } else {
+            meta.brandsUpdated = s.brandsUpdated || 0;
+          }
+        } else if ((s.brandsUpdated || 0) > meta.brandsUpdated) {
+          brands = sortBrands(remoteBrands);
+          saveBrands();
+          meta.brandsUpdated = s.brandsUpdated;
+          changed = true;
+        } else if ((s.brandsUpdated || 0) < meta.brandsUpdated) {
+          sync.settingsDirty = true;
+        }
+        if (Array.isArray(s.catOrder) && (s.orderUpdated || 0) > meta.orderUpdated) {
+          catOrder = normalizeOrder(s.catOrder);
+          try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
+          meta.orderUpdated = s.orderUpdated;
+          changed = true;
+        } else if ((s.orderUpdated || 0) < meta.orderUpdated) {
+          sync.settingsDirty = true;
+        }
+        saveMeta();
+      } else if (isFull) {
+        if (brands.length) { if (!meta.brandsUpdated) meta.brandsUpdated = Date.now(); sync.settingsDirty = true; }
+        if (meta.orderUpdated) sync.settingsDirty = true;
+        saveMeta();
+      }
+
+      if (changed) { save(); render(); }
+      saveSync();
+    }
+
+    // 계정에서 바뀐 것 받기
+    async function pullNow(full) {
+      if (!session) return;
+      const since = full ? null : sync.cursor;
+      const token = session.token;
+      const res = await rpc('closet_pull', { p_token: token, p_since: since });
+      // 기다리는 동안 로그아웃했거나 다른 계정으로 바뀌었으면 결과를 버려요
+      if (!session || session.token !== token) return;
+      if (res.error) throw new Error(res.error);
+      applyRemote(res, since === null);
+      // 다른 기기가 동시에 올린 것을 놓치지 않게 1분 격쳐서 다음에 다시 확인
+      sync.cursor = new Date(new Date(res.now).getTime() - 60000).toISOString();
+      if (res.nickname && res.nickname !== session.nickname) { session.nickname = res.nickname; writeJSON(SESSION_KEY, session); }
+      saveSync();
+    }
+
+    async function syncNow(full) {
+      if (!session || syncing) return;
+      syncing = true;
+      setSyncState('syncing');
+      try {
+        await pullNow(full);
+      } catch (e) {
+        syncing = false;
+        handleSyncError(e);
+        return;
+      }
+      syncing = false;
+      if (!session) return;
+      if (hasPending()) await pushNow(); else setSyncState('ok');
+    }
+
+    // 로그인 / 가입
+    async function doAuth(mode) {
+      const nick = $('aNick').value.trim();
+      const pw = $('aPass').value;
+      const showErr = (msg) => { $('acctError').textContent = msg; };
+      if (nick.length < 2 || nick.length > 20) return showErr(ERR_TEXT.BAD_NICKNAME);
+      if (pw.length < 6) return showErr(ERR_TEXT.BAD_PASSWORD);
+      if (mode === 'signup' && pw !== $('aPass2').value) return showErr('비밀번호 확인이 서로 달라요.');
+      showErr('');
+      const btn = $('acctSubmit');
+      const label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '잠시만요…';
+      try {
+        const res = await rpc(mode === 'signup' ? 'closet_signup' : 'closet_login', { p_nickname: nick, p_password: pw });
+        if (res.error) return showErr(errText(res.error, res));
+        session = { token: res.token, nickname: res.nickname };
+        writeJSON(SESSION_KEY, session);
+        sync.cursor = null;
+        saveSync();
+        $('aPass').value = '';
+        $('aPass2').value = '';
+        updateAcctUI();
+        await syncNow(true);
+        showToast(mode === 'signup' ? '가입했어요. 이제 다른 기기에서도 같은 닉네임으로 로그인하세요' : '로그인했어요. 옷장을 동기화했어요');
+      } catch (e) {
+        showErr(errText(e && e.message));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+      }
+    }
+
+    async function doChangePassword() {
+      const showErr = (msg) => { $('pwError').textContent = msg; };
+      if ($('pwNew').value.length < 6) return showErr(ERR_TEXT.BAD_PASSWORD);
+      $('pwSubmit').disabled = true;
+      try {
+        const res = await rpc('closet_change_password', { p_token: session.token, p_old: $('pwOld').value, p_new: $('pwNew').value });
+        if (res.error) return showErr(res.error === 'INVALID_LOGIN' ? '지금 비밀번호가 맞지 않아요.' : errText(res.error, res));
+        $('pwOld').value = '';
+        $('pwNew').value = '';
+        $('pwForm').hidden = true;
+        showErr('');
+        showToast('비밀번호를 바꿨어요');
+      } catch (e) {
+        showErr(errText(e && e.message));
+      } finally {
+        $('pwSubmit').disabled = false;
+      }
+    }
+
+    function clearLocalCloset() {
+      session = null;
+      try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+      sync = emptySync();
+      saveSync();
+      meta = { brandsUpdated: 0, orderUpdated: 0 };
+      saveMeta();
+      items = [];
+      save();
+      brands = [];
+      saveBrands();
+      catOrder = CATEGORIES.map((c) => c.id);
+      try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
+      setSyncState('off');
+      render();
+    }
+
+    async function doLogout() {
+      if (!session) return;
+      if (hasPending()) {
+        const ok = await pushNow();
+        if ((!ok || hasPending()) && !confirm('아직 계정에 올리지 못한 변경이 있어요. 그래도 로그아웃할까요?')) return;
+      }
+      if (!confirm('로그아웃할까요?\n이 기기에 저장된 옷 정보는 지워지고, 다시 로그인하면 계정에서 불러와요.')) return;
+      const token = session.token;
+      clearTimeout(pushTimer);
+      clearTimeout(retryTimer);
+      clearLocalCloset();
+      try { await rpc('closet_logout', { p_token: token }); } catch (e) {}
+      showToast('로그아웃했어요');
+    }
+
+    function statusText() {
+      if (syncState === 'syncing') return '동기화하는 중…';
+      if (syncState === 'error') return syncError || '연결이 안 돼요';
+      if (lastSyncAt) return '동기화됨 · ' + lastSyncAt.toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' });
+      return '동기화 켜짐';
+    }
+    function updateAcctUI() {
+      const logged = !!session;
+      const btn = $('acctBtn');
+      btn.classList.toggle('logged', logged);
+      $('acctBtnName').textContent = logged ? session.nickname : '';
+      btn.title = logged ? session.nickname + ' · ' + statusText() : '로그인하고 기기 연동';
+      $('acctBtnDot').className = 'sdot' + (logged ? ' ' + syncState : '');
+      $('acctOut').hidden = logged;
+      $('acctIn').hidden = !logged;
+      if (logged) {
+        $('acctAvatar').textContent = session.nickname.charAt(0);
+        $('acctNick').textContent = session.nickname;
+        $('acctStatus').textContent = statusText();
+        $('acctDot').style.background = syncState === 'ok' ? '#2fb67c' : syncState === 'error' ? '#e5484d' : '#f5a524';
+      }
+    }
+    function openAcctModal() {
+      updateAcctUI();
+      $('acctError').textContent = '';
+      $('pwForm').hidden = true;
+      $('acctModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (!session && window.matchMedia('(min-width: 700px)').matches) setTimeout(() => $('aNick').focus(), 60);
+    }
+    function closeAcctModal() {
+      $('acctModal').classList.remove('open');
+      const anyOpen = ['modal', 'brandModal', 'orderModal'].some((id) => $(id).classList.contains('open'));
+      if (!anyOpen) document.body.style.overflow = '';
+    }
+
+    // ---------- 계정·기기 연동 창 이벤트 ----------
+    let authMode = 'login';
+    function setAuthMode(mode) {
+      authMode = mode;
+      $('segLogin').classList.toggle('on', mode === 'login');
+      $('segSignup').classList.toggle('on', mode === 'signup');
+      $('aPass2Wrap').hidden = mode !== 'signup';
+      $('aPass').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
+      $('acctSubmit').textContent = mode === 'signup' ? '가입하고 연동하기' : '로그인';
+      $('acctError').textContent = '';
+    }
+    $('segLogin').addEventListener('click', () => setAuthMode('login'));
+    $('segSignup').addEventListener('click', () => setAuthMode('signup'));
+    $('acctBtn').addEventListener('click', openAcctModal);
+    $('acctCloseBtn').addEventListener('click', closeAcctModal);
+    $('acctModal').addEventListener('click', (e) => { if (e.target === $('acctModal')) closeAcctModal(); });
+    $('acctForm').addEventListener('submit', (e) => { e.preventDefault(); doAuth(authMode); });
+    $('syncNowBtn').addEventListener('click', async () => {
+      $('syncNowBtn').disabled = true;
+      await syncNow(true);
+      $('syncNowBtn').disabled = false;
+      if (syncState === 'ok') showToast('동기화했어요');
+    });
+    $('pwToggleBtn').addEventListener('click', () => {
+      $('pwForm').hidden = !$('pwForm').hidden;
+      $('pwError').textContent = '';
+      if (!$('pwForm').hidden) $('pwOld').focus();
+    });
+    $('pwForm').addEventListener('submit', (e) => { e.preventDefault(); doChangePassword(); });
+    $('logoutBtn').addEventListener('click', doLogout);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && $('acctModal').classList.contains('open')) { e.stopImmediatePropagation(); closeAcctModal(); }
+    }, true);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && session) syncNow(false);
+    });
+    window.addEventListener('online', () => { if (session) syncNow(false); });
+    setInterval(() => {
+      if (session && document.visibilityState === 'visible' && !pushing) syncNow(false);
+    }, 30000);
 
     // 새 형식으로 옮긴 내용을 한 번 저장
     try {
@@ -1582,6 +2120,8 @@
 
     render();
     route();
+    updateAcctUI();
+    if (session) syncNow(false);
   </script>
 </body>
 </html>
