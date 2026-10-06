@@ -217,6 +217,37 @@
       background: var(--surface); border: 1px solid var(--line);
     }
     .icon-btn:hover { background: #fbfaf8; }
+    .nav-btn {
+      position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; min-width: 52px; height: 50px; padding: 4px 8px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--line); font-size: 0.7rem; font-weight: 700; color: var(--ink);
+    }
+    .nav-btn:hover { background: #fbfaf8; }
+    .nav-btn .nav-label { max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1; }
+    .appbar-actions { gap: 6px; }
+
+    /* 저장 상태 · 샘플 안내 */
+    .save-status {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+      padding: 10px 12px; margin-top: 12px;
+    }
+    .save-status .ss-ic { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .save-status .ss-text { flex: 1; min-width: 170px; line-height: 1.35; }
+    .save-status .ss-text strong { display: block; font-size: 0.92rem; }
+    .save-status .ss-text span { color: var(--sub); font-size: 0.82rem; }
+    .save-status .btn, .sample-banner .btn { padding: 8px 14px; font-size: 0.85rem; border-radius: 10px; }
+    .sample-banner {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: #fff7e6; border: 1px solid #f3d99f; border-radius: 14px; padding: 10px 12px; margin-top: 10px;
+      font-size: 0.86rem; color: #6b5420;
+    }
+    .sample-banner .sb-text { flex: 1; min-width: 180px; }
+    .sample-banner strong { color: #3d2f0f; margin-right: 4px; }
+    .sample-tag {
+      display: inline-block; background: #ffb020; color: #fff; font-size: 0.68rem; font-weight: 800;
+      padding: 2px 7px; border-radius: 999px; margin-right: 5px; vertical-align: 2px;
+    }
 
     .app-head { padding: 18px 0 8px; }
     .app-head h1 { font-size: clamp(1.6rem, 5vw, 2.1rem); letter-spacing: -0.8px; font-weight: 800; }
@@ -226,7 +257,13 @@
     .sum-card {
       background: var(--surface); border-radius: 16px; padding: 14px;
       border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+      text-align: left; width: 100%; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.12s;
     }
+    .sum-card:hover { border-color: #cfc8f5; }
+    .sum-card:active { transform: scale(0.98); }
+    .sum-card .label { display: flex; align-items: center; gap: 4px; }
+    .sum-card.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .sum-card.active .label, .sum-card.active .value small { color: rgba(255, 255, 255, 0.7); }
     .sum-card .label { color: var(--sub); font-size: 0.8rem; font-weight: 600; }
     .sum-card .value { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; margin-top: 2px; }
     .sum-card .value small { font-size: 0.85rem; font-weight: 600; color: var(--sub); margin-left: 2px; }
@@ -271,6 +308,29 @@
     .tab.dragging .count { color: rgba(255, 255, 255, 0.75); }
     .tabs.sorting .tab:not(.dragging) { opacity: 0.85; }
     .tab-edit { border-style: dashed; color: var(--primary); padding-left: 12px; }
+    .tabs-wrap { position: relative; margin-bottom: 6px; }
+    .tabs-wrap .tabs { margin: 0; padding-right: 4px; width: calc(100% - 50px); }
+    .tabs-wrap::before, .tabs-wrap::after {
+      content: ""; position: absolute; top: 0; bottom: 8px; width: 34px; pointer-events: none;
+      opacity: 0; transition: opacity 0.2s; z-index: 2;
+    }
+    .tabs-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg) 20%, rgba(247, 244, 239, 0)); }
+    .tabs-wrap::after { right: 50px; background: linear-gradient(270deg, var(--bg) 20%, rgba(247, 244, 239, 0)); }
+    .tabs-wrap.fade-l::before, .tabs-wrap.fade-r::after { opacity: 1; }
+    .all-cats-btn {
+      position: absolute; right: 0; top: 2px; z-index: 3; width: 42px; height: 42px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; justify-content: center; color: var(--ink);
+    }
+    .all-cats-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .cat-grid button {
+      display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 4px;
+      border: 1.5px solid var(--line); border-radius: 14px; background: #fff; font-weight: 700; font-size: 0.88rem;
+    }
+    .cat-grid button .ic { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .cat-grid button small { color: var(--sub); font-weight: 600; font-size: 0.78rem; }
+    .cat-grid button.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
     .tab-edit:hover { background: var(--primary-soft); border-color: var(--primary); }
     .order-hint {
       display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
@@ -406,6 +466,20 @@
     .cat-pick input:checked + label { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
     .cat-pick input:focus-visible + label { outline: 2px solid var(--primary); }
 
+    .swatch-pick { display: flex; flex-wrap: wrap; gap: 10px; padding: 4px 2px; }
+    .swatch-pick input { position: absolute; opacity: 0; pointer-events: none; }
+    .swatch-pick label {
+      width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.16);
+      cursor: pointer; position: relative; transition: transform 0.12s;
+    }
+    .swatch-pick label:hover { transform: scale(1.1); }
+    .swatch-pick input:checked + label::after {
+      content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2.5px solid var(--primary);
+    }
+    .swatch-pick input:focus-visible + label { outline: 2px solid var(--primary); outline-offset: 5px; }
+    .swatch-pick label.etc { background: conic-gradient(#e04848, #f6d04d, #4caf7a, #3f7fd9, #8e6be0, #e04848); }
+    .color-name { display: inline-flex; align-items: center; gap: 5px; margin-left: 6px; color: var(--ink); font-weight: 800; }
+    .color-name .none { color: var(--sub); font-weight: 600; }
     .pick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .pick-chips input { position: absolute; opacity: 0; pointer-events: none; }
     .pick-chips label, .chip-btn {
@@ -472,6 +546,21 @@
     .stack { display: flex; flex-direction: column; gap: 8px; }
     .stack .btn { width: 100%; border-radius: 14px; }
     .btn:disabled { opacity: 0.6; cursor: default; }
+    .recovery-box { border: 2px dashed var(--primary); border-radius: 16px; padding: 16px; background: var(--primary-soft); text-align: center; }
+    .recovery-box strong { font-size: 0.95rem; }
+    .recovery-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 1.2rem; font-weight: 800;
+      letter-spacing: 1px; margin: 8px 0 12px; word-break: break-all; color: var(--ink); user-select: all;
+    }
+    .row-btns { display: flex; gap: 8px; }
+    .row-btns .btn { flex: 1; border-radius: 12px; padding: 11px 10px; font-size: 0.9rem; }
+    .check-line { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.92rem; font-weight: 700; margin: 14px 0 10px; }
+    .check-line input { width: 18px; height: 18px; }
+    .text-link { color: var(--primary); font-weight: 700; font-size: 0.88rem; text-decoration: underline; text-underline-offset: 2px; padding: 4px 0; }
+    .section-title-sm { font-size: 0.82rem; font-weight: 800; color: var(--sub); margin: 20px 0 8px; }
+    .logout-panel { border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+    .logout-panel .lp-title { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1rem; }
+    .logout-panel .lp-text { color: var(--sub); font-size: 0.9rem; margin: 6px 0 14px; }
 
     .seasons { display: flex; flex-wrap: wrap; gap: 8px; }
     .seasons input { position: absolute; opacity: 0; pointer-events: none; }
@@ -638,7 +727,7 @@
       <div class="wrap">
         <div class="cta-band">
           <h2>지금 옷장을 정리해 볼까요?</h2>
-          <p>입력한 정보는 이 기기의 브라우저에만 저장돼요.</p>
+          <p>로그인 전에는 이 브라우저에만 저장되고, 닉네임으로 로그인하면 다른 기기에서도 함께 쓸 수 있어요.</p>
           <a href="#closet" class="btn btn-lg">내 옷장 열기 <span data-icon="arrow"></span></a>
         </div>
       </div>
@@ -653,9 +742,9 @@
       <div class="wrap">
         <a href="#" class="logo" aria-label="표지로 돌아가기"><span class="logo-mark" data-icon="hanger"></span>나의 옷장</a>
         <div class="appbar-actions">
-          <button type="button" class="icon-btn acct-btn" id="acctBtn" aria-label="계정·기기 연동" title="로그인하고 기기 연동"><span data-icon="user"></span><span class="acct-name" id="acctBtnName"></span><i class="sdot" id="acctBtnDot"></i></button>
-          <button type="button" class="icon-btn" id="brandMgrBtn" aria-label="브랜드 관리" title="브랜드 관리" data-icon="tag"></button>
-          <a href="#" class="icon-btn" aria-label="표지로" title="표지로" data-icon="home"></a>
+          <button type="button" class="nav-btn" id="acctBtn" aria-label="계정·기기 연동" title="로그인하고 기기 연동"><span data-icon="user"></span><span class="nav-label" id="acctBtnName">로그인</span><i class="sdot" id="acctBtnDot"></i></button>
+          <button type="button" class="nav-btn" id="brandMgrBtn" aria-label="브랜드 관리" title="브랜드 관리"><span data-icon="tag"></span><span class="nav-label">브랜드</span></button>
+          <a href="#" class="nav-btn" aria-label="처음 화면으로" title="처음 화면으로"><span data-icon="home"></span><span class="nav-label">처음</span></a>
         </div>
       </div>
     </header>
@@ -664,6 +753,8 @@
       <div class="app-head">
         <h1>내 옷장</h1>
         <p id="greeting"></p>
+        <div class="save-status" id="saveStatus"></div>
+        <div class="sample-banner" id="sampleBanner" hidden></div>
       </div>
 
       <div class="summary" id="summary"></div>
@@ -676,7 +767,10 @@
         <button class="btn btn-primary add-desktop" id="addBtn"><span data-icon="plus"></span>옷 추가</button>
       </div>
 
-      <nav class="tabs" id="tabs" aria-label="종류 선택" title="카테고리를 꼭 눌러 옆으로 옮기면 순서가 바뀌어요"></nav>
+      <div class="tabs-wrap" id="tabsWrap">
+        <nav class="tabs" id="tabs" aria-label="종류 선택" title="옆으로 넘겨 더 볼 수 있어요. 꼭 눌러 옮기면 순서가 바뀌어요"></nav>
+        <button type="button" class="all-cats-btn" id="allCatsBtn" aria-label="전체 분류 보기" title="전체 분류 보기" data-icon="grid"></button>
+      </div>
       <p class="order-hint" id="orderHint" hidden>
         <span>카테고리를 꼭 눌러 옆으로 옮기면 순서가 바뀌어요.</span>
         <button type="button" id="orderHintBtn">순서 편집 창 열기</button>
@@ -722,12 +816,12 @@
       </div>
 
       <div class="field">
-        <span class="field-label">색상</span>
-        <div class="pick-chips" id="fColors" role="radiogroup" aria-label="색상"></div>
+        <span class="field-label">색상 <span class="color-name" id="colorName"><span class="none">선택 안 함</span></span></span>
+        <div class="swatch-pick" id="fColors" role="radiogroup" aria-label="색상"></div>
         <div class="etc-input" id="colorEtcWrap" hidden>
           <input id="fColorEtc" type="text" maxlength="20" placeholder="예: 체크, 스트라이프, 머스터드" autocomplete="off" aria-label="기타 색상 직접 입력">
         </div>
-        <p class="hint">목록에 없는 색이나 무늬는 '기타'를 골라 직접 적어 주세요. 한 번 더 누르면 선택이 풀려요.</p>
+        <p class="hint">원을 누르면 색이 골라져요. 목록에 없는 색이나 체크·줄무늬는 맨 끝 무지개 원(기타)을 눌러 직접 적어 주세요. 한 번 더 누르면 선택이 풀려요.</p>
       </div>
 
       <div class="field">
@@ -780,8 +874,8 @@
       </div>
 
       <div id="acctOut">
-        <p class="hint" style="margin:0 0 14px">닉네임과 비밀번호로 로그인하면 휴대폰과 컴퓨터에서 같은 옷장을 볼 수 있어요.</p>
-        <div class="seg">
+        <p class="hint" style="margin:0 0 14px" id="acctIntro">닉네임과 비밀번호로 로그인하면 휴대폰과 컴퓨터에서 같은 옷장을 볼 수 있어요.</p>
+        <div class="seg" id="acctSeg">
           <button type="button" id="segLogin" class="on">로그인</button>
           <button type="button" id="segSignup">새로 가입</button>
         </div>
@@ -790,8 +884,12 @@
             <label for="aNick">닉네임</label>
             <input id="aNick" type="text" maxlength="20" autocomplete="username" placeholder="2~20자">
           </div>
+          <div class="field" id="aCodeWrap" hidden>
+            <label for="aCode">복구 코드</label>
+            <input id="aCode" type="text" maxlength="40" autocomplete="off" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" style="text-transform:uppercase">
+          </div>
           <div class="field">
-            <label for="aPass">비밀번호</label>
+            <label for="aPass" id="aPassLabel">비밀번호</label>
             <input id="aPass" type="password" maxlength="72" autocomplete="current-password" placeholder="6자 이상">
           </div>
           <div class="field" id="aPass2Wrap" hidden>
@@ -801,7 +899,25 @@
           <p class="form-error" id="acctError" role="alert"></p>
           <button type="submit" class="btn btn-primary" id="acctSubmit" style="width:100%;border-radius:14px">로그인</button>
         </form>
-        <p class="hint" style="margin-top:12px">· 로그인하면 이 기기에 있던 옷도 계정에 합쳐져요.<br>· 이메일을 쓰지 않아서 비밀번호를 찾을 수 없어요. 꼭 기억해 두세요.</p>
+        <div style="text-align:center;margin-top:8px">
+          <button type="button" class="text-link" id="forgotBtn">비밀번호를 잊었어요</button>
+          <button type="button" class="text-link" id="backToLoginBtn" hidden>로그인으로 돌아가기</button>
+        </div>
+        <p class="hint" style="margin-top:10px">· 로그인하면 이 기기에 있던 옷도 계정에 합쳐져요.<br>· 가입하면 <strong>복구 코드</strong>를 드려요. 비밀번호를 잊었을 때 닉네임과 복구 코드로 다시 정할 수 있어요.</p>
+      </div>
+
+      <div id="recoveryView" hidden>
+        <div class="recovery-box">
+          <strong>복구 코드</strong>
+          <div class="recovery-code" id="recoveryCode"></div>
+          <div class="row-btns">
+            <button type="button" class="btn btn-light" id="copyCodeBtn">복사하기</button>
+            <button type="button" class="btn btn-light" id="saveCodeBtn">파일로 저장</button>
+          </div>
+        </div>
+        <p class="hint" style="margin-top:12px" id="recoveryIntro"></p>
+        <label class="check-line"><input type="checkbox" id="codeSavedChk"> 복구 코드를 안전한 곳에 저장했어요</label>
+        <button type="button" class="btn btn-primary" id="codeDoneBtn" style="width:100%;border-radius:14px" disabled>확인</button>
       </div>
 
       <div id="acctIn" hidden>
@@ -812,7 +928,7 @@
             <span class="acct-status"><i id="acctDot"></i><span id="acctStatus"></span></span>
           </div>
         </div>
-        <div class="stack">
+        <div class="stack" id="acctMain">
           <button type="button" class="btn btn-primary" id="syncNowBtn">지금 동기화</button>
           <button type="button" class="btn btn-soft" id="pwToggleBtn">비밀번호 바꾸기</button>
           <form id="pwForm" hidden novalidate style="padding:14px;border:1px solid var(--line);border-radius:14px">
@@ -827,9 +943,48 @@
             <p class="form-error" id="pwError" role="alert"></p>
             <button type="submit" class="btn btn-primary" id="pwSubmit" style="width:100%;border-radius:14px">비밀번호 바꾸기</button>
           </form>
+          <button type="button" class="btn btn-soft" id="recToggleBtn">복구 코드 새로 받기</button>
+          <form id="recForm" hidden novalidate style="padding:14px;border:1px solid var(--line);border-radius:14px">
+            <p class="hint" style="margin:0 0 10px">비밀번호를 확인하고 새 복구 코드를 드려요. 예전 코드는 더 이상 쓸 수 없어요.</p>
+            <div class="field">
+              <label for="recPw">지금 비밀번호</label>
+              <input id="recPw" type="password" maxlength="72" autocomplete="current-password">
+            </div>
+            <p class="form-error" id="recError" role="alert"></p>
+            <button type="submit" class="btn btn-primary" id="recSubmit" style="width:100%;border-radius:14px">새 복구 코드 받기</button>
+          </form>
           <button type="button" class="btn btn-danger" id="logoutBtn">로그아웃</button>
         </div>
-        <p class="hint" style="margin-top:12px">로그아웃하면 이 기기에 저장된 옷 정보는 지워져요. 다시 로그인하면 계정에서 불러와요.</p>
+        <div class="logout-panel" id="logoutPanel" hidden>
+          <div class="lp-title" id="lpTitle"></div>
+          <p class="lp-text" id="lpText"></p>
+          <div class="stack" id="lpBtns"></div>
+        </div>
+      </div>
+
+      <div id="backupSection">
+        <p class="section-title-sm">백업</p>
+        <div class="row-btns">
+          <button type="button" class="btn btn-soft" id="exportBtn">백업 파일 내보내기</button>
+          <button type="button" class="btn btn-soft" id="importBtn">백업 불러오기</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+        <p class="hint" style="margin-top:8px">옷·사진·브랜드·카테고리 순서를 파일 하나로 저장하거나, 저장해 둔 파일에서 다시 불러와요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== 전체 분류 창 ===================== -->
+  <div class="backdrop" id="catModal" role="dialog" aria-modal="true" aria-labelledby="catTitle">
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="catTitle">분류 선택</h2>
+        <button type="button" class="icon-btn" id="catCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <div class="cat-grid" id="catGrid"></div>
+      <div class="actions">
+        <button type="button" class="btn btn-soft" id="catOrderBtn">순서 편집</button>
       </div>
     </div>
   </div>
@@ -896,6 +1051,10 @@
       tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
       sort: '<path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3"/>',
       user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+      device: '<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
+      cloud: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5H7Z"/>',
+      check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+      alert: '<path d="M12 4 2.8 19.5h18.4L12 4Z"/><path d="M12 10v4.5M12 17.2v.1"/>',
       sync: '<path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20.5V16h-4.5"/>',
       grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/>',
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>'
@@ -950,7 +1109,18 @@
 
     const $ = (id) => document.getElementById(id);
     let items = load().map(normalizeItem);
+    // 예전 버전이 넣어 둔 예시 옷(s1~s3)을 '예시'로 표시 (로그인하지 않은 기기만)
+    (function markOldSamples() {
+      let hasSession = false;
+      try { hasSession = !!localStorage.getItem('my-closet-session-v1'); } catch (e) {}
+      if (hasSession) return;
+      const SEED_NAMES = { s1: '흰색 옥스포드 셔츠', s2: '데님 청바지', s3: '검정 패딩' };
+      items.forEach((i) => {
+        if (i.sample === undefined && SEED_NAMES[i.id] === i.name) { i.sample = true; i.updatedAt = 1; }
+      });
+    })();
     let currentCat = 'all';
+    let currentQuick = 'all'; // 요약 카드 필터: all | season | fav
     let currentBrand = 'all';
     let editingId = null;
     let photoData = '';
@@ -1084,9 +1254,13 @@
     // ---------- 표지 ----------
     function renderCover() {
       $('catShowcase').innerHTML = orderedCats().map((c) => '<span class="cat-pill">' + catIcon(c, 16) + c.name + '</span>').join('');
-      $('coverCount').innerHTML = items.length
-        ? svg('hanger', 18) + '<span>지금 옷장에 <strong>' + items.length + '벌</strong>이 정리돼 있어요</span>'
-        : svg('hanger', 18) + '<span>아직 비어 있어요. 첫 옷을 넣어 볼까요?</span>';
+      const real = items.filter((i) => !i.sample).length;
+      const samples = items.length - real;
+      let msg;
+      if (real) msg = '지금 옷장에 내 옷 <strong>' + real + '벌</strong>이 정리돼 있어요' + (samples ? ' (예시 ' + samples + '벌 별도)' : '');
+      else if (samples) msg = '지금은 예시 옷 ' + samples + '벌이 들어 있는 <strong>샘플 옷장</strong>이에요';
+      else msg = '아직 비어 있어요. 첫 옷을 넣어 볼까요?';
+      $('coverCount').innerHTML = svg('hanger', 18) + '<span>' + msg + '</span>';
     }
 
     // ---------- 옷장 ----------
@@ -1094,10 +1268,15 @@
       const season = currentSeason();
       const seasonCount = items.filter((i) => (i.seasons || []).includes(season)).length;
       const favCount = items.filter((i) => i.fav).length;
-      $('summary').innerHTML =
-        '<div class="sum-card dark"><div class="label">전체</div><div class="value">' + items.length + '<small>벌</small></div></div>' +
-        '<div class="sum-card"><div class="label">이번 계절(' + season + ')</div><div class="value">' + seasonCount + '<small>벌</small></div></div>' +
-        '<div class="sum-card"><div class="label">즐겨찾기</div><div class="value">' + favCount + '<small>벌</small></div></div>';
+      const cards = [
+        ['all', '전체', items.length, '모든 옷 보기'],
+        ['season', '이번 계절(' + season + ')', seasonCount, season + '에 입는 옷만 보기'],
+        ['fav', '즐겨찾기', favCount, '즐겨찾기한 옷만 보기']
+      ];
+      $('summary').innerHTML = cards.map((c) =>
+        '<button type="button" class="sum-card' + (currentQuick === c[0] ? ' active' : '') + '" data-quick="' + c[0] + '" aria-pressed="' + (currentQuick === c[0]) + '" title="' + c[3] + '">' +
+        '<div class="label">' + c[1] + '</div><div class="value">' + c[2] + '<small>벌</small></div></button>'
+      ).join('');
       $('greeting').textContent = items.length ? season + '에 입기 좋은 옷이 ' + seasonCount + '벌 있어요.' : '첫 번째 옷을 추가해 보세요.';
     }
 
@@ -1109,6 +1288,22 @@
           catIcon(c, 15) + c.name + ' <span class="count">' + n + '</span></button>';
       }).join('') +
         '<button class="tab tab-edit" type="button" data-action="edit-order">' + svg('sort', 15) + '순서 편집</button>';
+      const active = $('tabs').querySelector('.tab.active');
+      if (active && currentCat !== 'all') {
+        // 고른 분류가 가려져 있으면 옆으로만 넘겨서 보여주기 (화면 위아래는 움직이지 않음)
+        const t = $('tabs');
+        const tr = t.getBoundingClientRect(), ar = active.getBoundingClientRect();
+        if (ar.left < tr.left) t.scrollLeft -= (tr.left - ar.left) + 30;
+        else if (ar.right > tr.right) t.scrollLeft += (ar.right - tr.right) + 30;
+      }
+      updateTabFade();
+    }
+
+    // 분류 메뉴가 옆으로 더 있을 때 가장자리를 흐리게 해서 넘길 수 있다는 걸 알려줘요
+    function updateTabFade() {
+      const t = $('tabs');
+      $('tabsWrap').classList.toggle('fade-l', t.scrollLeft > 4);
+      $('tabsWrap').classList.toggle('fade-r', t.scrollLeft + t.clientWidth < t.scrollWidth - 4);
     }
 
     function updateOrderHint() {
@@ -1118,6 +1313,8 @@
     function getFiltered() {
       const q = $('search').value.trim().toLowerCase();
       let list = items.filter((i) => currentCat === 'all' || i.category === currentCat);
+      if (currentQuick === 'fav') list = list.filter((i) => i.fav);
+      else if (currentQuick === 'season') list = list.filter((i) => (i.seasons || []).includes(currentSeason()));
       if (q) {
         list = list.filter((i) =>
           [i.name, colorLabel(i), i.brand, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
@@ -1138,14 +1335,21 @@
 
     function renderGrid() {
       const list = getFiltered();
-      $('resultText').textContent = (currentCat === 'all' ? '전체' : catOf(currentCat).name) + ' ' + list.length + '벌';
+      const quickLabel = currentQuick === 'fav' ? '즐겨찾기 · ' : currentQuick === 'season' ? '이번 계절(' + currentSeason() + ') · ' : '';
+      $('resultText').textContent = quickLabel + (currentCat === 'all' ? '전체' : catOf(currentCat).name) + ' ' + list.length + '벌';
       if (list.length === 0) {
         const searching = $('search').value.trim() !== '';
+        let title, text, showAdd = false;
+        if (searching) { title = '검색 결과가 없어요'; text = '다른 단어로 검색해 보세요.'; }
+        else if (currentQuick === 'fav') { title = '즐겨찾기한 옷이 없어요'; text = '옷 카드의 별을 누르면 여기에 모여요.'; }
+        else if (currentQuick === 'season') { title = '이번 계절 옷이 없어요'; text = '옷을 추가하거나 고칠 때 계절을 골라 보세요.'; }
+        else { title = '여기는 아직 비어 있어요'; text = '옷을 추가하면 여기에 보여요.'; showAdd = true; }
         $('grid').innerHTML =
-          '<div class="empty"><div class="ic">' + svg(searching ? 'search' : 'hanger', 34) + '</div>' +
-          '<strong>' + (searching ? '검색 결과가 없어요' : '여기는 아직 비어 있어요') + '</strong>' +
-          (searching ? '다른 단어로 검색해 보세요.' : '옷을 추가하면 여기에 보여요.') +
-          (searching ? '' : '<br><button class="btn btn-primary" data-action="add">' + svg('plus', 18) + '옷 추가</button>') + '</div>';
+          '<div class="empty"><div class="ic">' + svg(searching ? 'search' : currentQuick === 'fav' ? 'star' : 'hanger', 34) + '</div>' +
+          '<strong>' + title + '</strong>' + text +
+          (showAdd ? '<br><button class="btn btn-primary" data-action="add">' + svg('plus', 18) + '옷 추가</button>' : '') +
+          (currentQuick !== 'all' && !searching ? '<br><button class="btn btn-light" data-action="quick-all">전체 보기</button>' : '') +
+          '</div>';
         return;
       }
       const grouped = $('sort').value === 'category' && currentCat === 'all';
@@ -1169,7 +1373,7 @@
           '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + thumb + '</div>' +
           '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
           '<button class="fav-btn' + (i.fav ? ' on' : '') + '" data-fav="' + i.id + '" aria-label="즐겨찾기 ' + (i.fav ? '해제' : '추가') + '">' + svg('star', 18) + '</button>' +
-          '<div class="info"><div class="name">' + escapeHtml(i.name) + '</div>' +
+          '<div class="info"><div class="name">' + (i.sample ? '<span class="sample-tag">예시</span>' : '') + escapeHtml(i.name) + '</div>' +
           '<div class="meta">' + dot + '<span>' + metaText + '</span></div>' +
           (chips ? '<div class="chips">' + chips + '</div>' : '') +
           '</div></article>';
@@ -1187,12 +1391,24 @@
       sel.style.display = brands.length ? '' : 'none';
     }
 
+    function renderSampleBanner() {
+      const n = items.filter((i) => i.sample).length;
+      const el = $('sampleBanner');
+      el.hidden = n === 0;
+      if (n) {
+        el.innerHTML = '<span class="sb-text"><strong>샘플 옷장이에요.</strong>예시 옷 ' + n + '벌이 들어 있어요. 내 옷을 추가하고 예시는 지워 보세요.</span>' +
+          '<button type="button" class="btn btn-light" data-action="clear-samples">예시 옷 지우기</button>';
+      }
+    }
+
     function render() {
       renderCover();
       renderSummary();
+      renderSampleBanner();
       renderTabs();
       renderBrandFilter();
       renderGrid();
+      if ($('catModal').classList.contains('open')) renderCatGrid();
     }
 
     // ---------- 화면 전환 ----------
@@ -1200,7 +1416,8 @@
       const isApp = location.hash === '#closet';
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
-      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); }
+      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); closeCatModal(); }
+      if (isApp) setTimeout(updateTabFade, 50);
       if (location.hash !== '#how') window.scrollTo(0, 0);
     }
     window.addEventListener('hashchange', route);
@@ -1214,6 +1431,16 @@
     function updateColorEtc() {
       const isEtc = lastColor === ETC;
       $('colorEtcWrap').hidden = !isEtc;
+      // 라벨 옆에 고른 색 이름 보여주기
+      const nameEl = $('colorName');
+      if (!lastColor) {
+        nameEl.innerHTML = '<span class="none">선택 안 함</span>';
+      } else if (isEtc) {
+        const t = $('fColorEtc').value.trim();
+        nameEl.innerHTML = '<i class="color-dot etc"></i>기타' + (t ? ' · ' + escapeHtml(t) : ' <span class="none">(아래에 적어 주세요)</span>');
+      } else {
+        nameEl.innerHTML = '<i class="color-dot" style="background:' + colorHex(lastColor) + '"></i>' + lastColor;
+      }
     }
     function setColor(code) {
       lastColor = code || '';
@@ -1451,12 +1678,14 @@
     $('fSeasons').innerHTML = SEASONS.map((s, idx) =>
       '<input type="checkbox" id="season-' + idx + '" value="' + s + '"><label for="season-' + idx + '">' + s + '</label>'
     ).join('');
+    // 색상: 색칠된 원만 나열 (이름은 고르면 라벨 옆에 표시, 마우스를 올리면 풍선 도움말)
     $('fColors').innerHTML = COLORS.map((c, idx) =>
       '<input type="radio" name="color" id="color-' + idx + '" value="' + c[0] + '">' +
-      '<label for="color-' + idx + '"><i class="color-dot" style="background:' + c[1] + '"></i>' + c[0] + '</label>'
+      '<label for="color-' + idx + '" title="' + c[0] + '" aria-label="' + c[0] + '" style="background:' + c[1] + '"></label>'
     ).join('') +
       '<input type="radio" name="color" id="color-etc" value="' + ETC + '">' +
-      '<label for="color-etc"><i class="color-dot etc"></i>기타</label>';
+      '<label for="color-etc" class="etc" title="기타 (직접 입력)" aria-label="기타 (직접 입력)"></label>';
+    $('fColorEtc').addEventListener('input', updateColorEtc);
 
     // 한글처럼 글자를 조합하는 중에 누른 Enter는 무시해요.
     // 조합 중 Enter와 조합이 끝난 뒤 Enter가 두 번 들어와서,
@@ -1475,7 +1704,8 @@
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-      if ($('orderModal').classList.contains('open')) closeOrderModal();
+      if ($('catModal').classList.contains('open')) closeCatModal();
+      else if ($('orderModal').classList.contains('open')) closeOrderModal();
       else if ($('brandModal').classList.contains('open')) closeBrandModal();
       else closeModal();
     });
@@ -1585,6 +1815,7 @@
 
     $('grid').addEventListener('click', (e) => {
       if (e.target.closest('[data-action="add"]')) return openModal(null);
+      if (e.target.closest('[data-action="quick-all"]')) { currentQuick = 'all'; renderSummary(); renderGrid(); return; }
       const favBtn = e.target.closest('[data-fav]');
       if (favBtn) {
         const it = items.find((i) => i.id === favBtn.dataset.fav);
@@ -1949,33 +2180,178 @@
     async function doAuth(mode) {
       const nick = $('aNick').value.trim();
       const pw = $('aPass').value;
+      const code = $('aCode').value.replace(/[^0-9a-fA-F]/g, '');
       const showErr = (msg) => { $('acctError').textContent = msg; };
       if (nick.length < 2 || nick.length > 20) return showErr(ERR_TEXT.BAD_NICKNAME);
+      if (mode === 'reset' && code.length !== 20) return showErr('복구 코드 20자리를 정확히 입력해 주세요.');
       if (pw.length < 6) return showErr(ERR_TEXT.BAD_PASSWORD);
-      if (mode === 'signup' && pw !== $('aPass2').value) return showErr('비밀번호 확인이 서로 달라요.');
+      if (mode !== 'login' && pw !== $('aPass2').value) return showErr('비밀번호 확인이 서로 달라요.');
       showErr('');
       const btn = $('acctSubmit');
       const label = btn.textContent;
       btn.disabled = true;
       btn.textContent = '잠시만요…';
       try {
-        const res = await rpc(mode === 'signup' ? 'closet_signup' : 'closet_login', { p_nickname: nick, p_password: pw });
-        if (res.error) return showErr(errText(res.error, res));
+        const res = mode === 'reset'
+          ? await rpc('closet_reset_password', { p_nickname: nick, p_code: code, p_new: pw })
+          : await rpc(mode === 'signup' ? 'closet_signup' : 'closet_login', { p_nickname: nick, p_password: pw });
+        if (res.error) {
+          return showErr(res.error === 'INVALID_RECOVERY' ? '닉네임 또는 복구 코드가 맞지 않아요.' : errText(res.error, res));
+        }
         session = { token: res.token, nickname: res.nickname };
         writeJSON(SESSION_KEY, session);
         sync.cursor = null;
         saveSync();
         $('aPass').value = '';
         $('aPass2').value = '';
+        $('aCode').value = '';
+        setAuthMode('login');
+        if (res.recoveryCode) {
+          showRecovery(res.recoveryCode, res.nickname, mode === 'reset'
+            ? '비밀번호를 다시 정했어요. 위는 새 복구 코드예요. 예전 코드는 이제 쓸 수 없고, 다른 기기는 로그아웃됐어요.'
+            : '비밀번호를 잊었을 때 닉네임과 이 코드로 비밀번호를 다시 정할 수 있어요. 이 코드는 지금만 보여요. 메모 앱이나 비밀번호 관리자에 저장해 두세요.');
+        }
         updateAcctUI();
         await syncNow(true);
-        showToast(mode === 'signup' ? '가입했어요. 이제 다른 기기에서도 같은 닉네임으로 로그인하세요' : '로그인했어요. 옷장을 동기화했어요');
+        showToast(mode === 'signup' ? '가입했어요. 복구 코드를 꼭 저장해 두세요'
+          : mode === 'reset' ? '비밀번호를 다시 정하고 로그인했어요' : '로그인했어요. 옷장을 동기화했어요');
       } catch (e) {
         showErr(errText(e && e.message));
       } finally {
         btn.disabled = false;
-        btn.textContent = label;
+        btn.textContent = authMode === 'signup' ? '가입하고 연동하기' : authMode === 'reset' ? '비밀번호 다시 정하기' : '로그인';
       }
+    }
+
+    // ---------- 복구 코드 ----------
+    let recoveryShowing = false;
+    let recoveryNick = '';
+    function showRecovery(code, nick, intro) {
+      recoveryShowing = true;
+      recoveryNick = nick || '';
+      $('recoveryCode').textContent = code;
+      $('recoveryIntro').textContent = intro;
+      $('codeSavedChk').checked = false;
+      $('codeDoneBtn').disabled = true;
+      $('recForm').hidden = true;
+      updateAcctUI();
+      if (!$('acctModal').classList.contains('open')) openAcctModal();
+    }
+    function hideRecovery() {
+      recoveryShowing = false;
+      $('recoveryCode').textContent = '';
+      updateAcctUI();
+    }
+    function downloadFile(name, text, type) {
+      const blob = new Blob([text], { type: type || 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+    const today = () => { const d = new Date(); return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0'); };
+
+    // ---------- 백업 내보내기 / 불러오기 ----------
+    function exportBackup() {
+      const mine = items.filter((i) => !i.sample);
+      const data = { app: 'my-closet', version: 1, exportedAt: new Date().toISOString(), items: mine, brands: brands, catOrder: catOrder };
+      downloadFile('나의옷장-백업-' + today() + '.json', JSON.stringify(data, null, 2), 'application/json');
+      showToast('백업 파일을 저장했어요 (옷 ' + mine.length + '벌)');
+    }
+    function importBackup(text) {
+      let data;
+      try { data = JSON.parse(text); } catch (e) { data = null; }
+      if (!data || data.app !== 'my-closet' || !Array.isArray(data.items)) {
+        showToast('나의 옷장 백업 파일이 아니에요');
+        return;
+      }
+      const incoming = data.items.filter((it) => it && typeof it.id === 'string' && it.id.length <= 64 && typeof it.name === 'string');
+      let added = 0, updated = 0;
+      incoming.forEach((it) => {
+        const cur = items.find((i) => i.id === it.id);
+        if (!cur) added++;
+        else if ((it.updatedAt || 0) > (cur.updatedAt || 0)) updated++;
+      });
+      const newBrands = (Array.isArray(data.brands) ? data.brands : []).filter((b) => typeof b === 'string' && b.trim() && !brands.some((x) => x.toLowerCase() === b.toLowerCase()));
+      if (!added && !updated && !newBrands.length) { showToast('백업 파일의 내용이 이미 모두 들어 있어요'); return; }
+      const msg = '백업 파일에서 옷 ' + incoming.length + '벌을 찾았어요.\n' +
+        '· 새로 추가: ' + added + '벌\n· 더 최신 내용으로 바꿈: ' + updated + '벌' +
+        (newBrands.length ? '\n· 브랜드 추가: ' + newBrands.length + '개' : '') + '\n\n지금 옷장에 합칠까요? (지금 있는 옷은 지워지지 않아요)';
+      if (!confirm(msg)) return;
+      incoming.forEach((it) => {
+        const idx = items.findIndex((i) => i.id === it.id);
+        const copy = normalizeItem(Object.assign({}, it, { sample: false, updatedAt: it.updatedAt || Date.now() }));
+        if (idx < 0) { items.push(copy); sync.pending[copy.id] = true; }
+        else if ((it.updatedAt || 0) > (items[idx].updatedAt || 0)) { items[idx] = copy; sync.pending[copy.id] = true; }
+      });
+      if (newBrands.length) {
+        brands = sortBrands(brands.concat(newBrands.map((b) => b.trim())));
+        saveBrands();
+        markBrandsChanged();
+      }
+      if (Array.isArray(data.catOrder) && !meta.orderUpdated) {
+        setOrder(normalizeOrder(data.catOrder));
+      }
+      if (!save()) return;
+      saveSync();
+      schedulePush();
+      render();
+      showToast('백업에서 옷 ' + (added + updated) + '벌을 불러왔어요');
+    }
+
+    // ---------- 저장 상태 표시 ----------
+    function renderSaveStatus() {
+      const el = $('saveStatus');
+      if (!session) {
+        el.innerHTML = '<span class="ss-ic" style="background:#f1eee9;color:#6f6a7d">' + svg('device', 18) + '</span>' +
+          '<span class="ss-text"><strong>이 브라우저에만 저장돼요</strong><span>로그인하면 휴대폰·컴퓨터에서 같은 옷장을 쓸 수 있어요</span></span>' +
+          '<button type="button" class="btn btn-primary" data-action="open-acct">로그인 · 가입</button>';
+        return;
+      }
+      const bg = syncState === 'error' ? '#fdecec' : syncState === 'ok' ? '#e0f6ee' : '#fff3dc';
+      const fg = syncState === 'error' ? '#e5484d' : syncState === 'ok' ? '#2f9d73' : '#c98a00';
+      el.innerHTML = '<span class="ss-ic" style="background:' + bg + ';color:' + fg + '">' + svg('cloud', 18) + '</span>' +
+        '<span class="ss-text"><strong>' + escapeHtml(session.nickname) + ' 계정에 저장돼요</strong><span>' + escapeHtml(statusText()) + ' · 다른 기기에서도 같은 옷장이 보여요</span></span>' +
+        (syncState === 'error' ? '<button type="button" class="btn btn-light" data-action="sync-now">다시 시도</button>' : '');
+    }
+
+    // ---------- 로그아웃 전 확인 ----------
+    function pendingCount() { return Object.keys(sync.pending).length + (sync.settingsDirty ? 1 : 0); }
+    function showLogoutPanel(show) {
+      $('logoutPanel').hidden = !show;
+      $('acctMain').hidden = show;
+      $('backupSection').hidden = show || recoveryShowing;
+    }
+    function renderLogoutPanel(state) {
+      const mine = items.filter((i) => !i.sample).length;
+      const btn = (act, cls, text) => '<button type="button" class="btn ' + cls + '" data-lp="' + act + '">' + text + '</button>';
+      if (state === 'checking') {
+        $('lpTitle').innerHTML = svg('sync', 18) + '동기화 확인 중…';
+        $('lpText').textContent = '로그아웃하기 전에 모든 변경이 계정에 저장됐는지 확인하고 있어요.';
+        $('lpBtns').innerHTML = btn('cancel', 'btn-soft', '취소');
+      } else if (state === 'safe') {
+        $('lpTitle').innerHTML = '<span style="color:#2f9d73;display:flex">' + svg('check', 20) + '</span>모두 계정에 저장돼 있어요';
+        $('lpText').textContent = '옷 ' + mine + '벌이 계정에 안전하게 저장돼 있어요. 로그아웃하면 이 기기에서는 지워지고, 다시 로그인하면 불러와요.';
+        $('lpBtns').innerHTML = btn('logout', 'btn-danger', '로그아웃') + btn('cancel', 'btn-soft', '취소');
+      } else {
+        $('lpTitle').innerHTML = '<span style="color:#e5484d;display:flex">' + svg('alert', 20) + '</span>아직 저장되지 않은 변경이 있어요';
+        $('lpText').textContent = '계정에 올리지 못한 변경이 ' + pendingCount() + '건 있어요. 인터넷 연결을 확인해 주세요. 지금 로그아웃하면 이 변경은 사라져요.';
+        $('lpBtns').innerHTML = btn('retry', 'btn-primary', '다시 동기화') + btn('backup-logout', 'btn-soft', '백업 파일 받고 로그아웃') +
+          btn('logout', 'btn-danger', '그래도 로그아웃') + btn('cancel', 'btn-soft', '취소');
+      }
+    }
+    async function startLogout() {
+      if (!session) return;
+      showLogoutPanel(true);
+      renderLogoutPanel('checking');
+      // 이미 진행 중인 동기화가 있으면 끝날 때까지 기다렸다가 다시 확인
+      for (let i = 0; i < 30 && (syncing || pushing); i++) await new Promise((r) => setTimeout(r, 500));
+      await syncNow(true);
+      if (!session || $('logoutPanel').hidden) return;
+      renderLogoutPanel(!hasPending() && syncState === 'ok' ? 'safe' : 'unsafe');
     }
 
     async function doChangePassword() {
@@ -2016,11 +2392,7 @@
 
     async function doLogout() {
       if (!session) return;
-      if (hasPending()) {
-        const ok = await pushNow();
-        if ((!ok || hasPending()) && !confirm('아직 계정에 올리지 못한 변경이 있어요. 그래도 로그아웃할까요?')) return;
-      }
-      if (!confirm('로그아웃할까요?\n이 기기에 저장된 옷 정보는 지워지고, 다시 로그인하면 계정에서 불러와요.')) return;
+      showLogoutPanel(false);
       const token = session.token;
       clearTimeout(pushTimer);
       clearTimeout(retryTimer);
@@ -2039,11 +2411,15 @@
       const logged = !!session;
       const btn = $('acctBtn');
       btn.classList.toggle('logged', logged);
-      $('acctBtnName').textContent = logged ? session.nickname : '';
+      $('acctBtnName').textContent = logged ? session.nickname : '로그인';
       btn.title = logged ? session.nickname + ' · ' + statusText() : '로그인하고 기기 연동';
       $('acctBtnDot').className = 'sdot' + (logged ? ' ' + syncState : '');
-      $('acctOut').hidden = logged;
-      $('acctIn').hidden = !logged;
+      $('acctOut').hidden = logged || recoveryShowing;
+      $('acctIn').hidden = !logged || recoveryShowing;
+      $('recoveryView').hidden = !recoveryShowing;
+      $('backupSection').hidden = recoveryShowing || !$('logoutPanel').hidden;
+      $('acctTitle').textContent = recoveryShowing ? '복구 코드를 저장해 주세요' : '계정 · 기기 연동';
+      renderSaveStatus();
       if (logged) {
         $('acctAvatar').textContent = session.nickname.charAt(0);
         $('acctNick').textContent = session.nickname;
@@ -2052,16 +2428,43 @@
       }
     }
     function openAcctModal() {
+      if (!recoveryShowing) showLogoutPanel(false);
       updateAcctUI();
       $('acctError').textContent = '';
       $('pwForm').hidden = true;
+      $('recForm').hidden = true;
       $('acctModal').classList.add('open');
       document.body.style.overflow = 'hidden';
       if (!session && window.matchMedia('(min-width: 700px)').matches) setTimeout(() => $('aNick').focus(), 60);
     }
     function closeAcctModal() {
+      if (recoveryShowing && $('acctModal').classList.contains('open') && !$('codeSavedChk').checked) {
+        if (!confirm('복구 코드를 저장하셨나요?\n창을 닫으면 이 코드는 다시 볼 수 없어요. (계정 화면에서 새 코드를 받을 수는 있어요)')) return;
+      }
+      if (recoveryShowing) hideRecovery();
       $('acctModal').classList.remove('open');
-      const anyOpen = ['modal', 'brandModal', 'orderModal'].some((id) => $(id).classList.contains('open'));
+      showLogoutPanel(false);
+      const anyOpen = ['modal', 'brandModal', 'orderModal', 'catModal'].some((id) => $(id).classList.contains('open'));
+      if (!anyOpen) document.body.style.overflow = '';
+    }
+
+    // ---------- 전체 분류 창 ----------
+    function renderCatGrid() {
+      const list = [{ id: 'all', name: '전체' }].concat(orderedCats());
+      $('catGrid').innerHTML = list.map((c) => {
+        const n = c.id === 'all' ? items.length : items.filter((i) => i.category === c.id).length;
+        const icon = c.id === 'all' ? '<span class="ic" style="background:#ebe8e3;color:#1f1b2e">' + svg('grid', 18) + '</span>' : catIcon(c, 18);
+        return '<button type="button" class="' + (currentCat === c.id ? 'active' : '') + '" data-cat="' + c.id + '">' + icon + c.name + '<small>' + n + '벌</small></button>';
+      }).join('');
+    }
+    function openCatModal() {
+      renderCatGrid();
+      $('catModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCatModal() {
+      $('catModal').classList.remove('open');
+      const anyOpen = ['modal', 'brandModal', 'orderModal', 'acctModal'].some((id) => $(id).classList.contains('open'));
       if (!anyOpen) document.body.style.overflow = '';
     }
 
@@ -2069,11 +2472,20 @@
     let authMode = 'login';
     function setAuthMode(mode) {
       authMode = mode;
+      const reset = mode === 'reset';
       $('segLogin').classList.toggle('on', mode === 'login');
       $('segSignup').classList.toggle('on', mode === 'signup');
-      $('aPass2Wrap').hidden = mode !== 'signup';
-      $('aPass').setAttribute('autocomplete', mode === 'signup' ? 'new-password' : 'current-password');
-      $('acctSubmit').textContent = mode === 'signup' ? '가입하고 연동하기' : '로그인';
+      $('acctSeg').hidden = reset;
+      $('aCodeWrap').hidden = !reset;
+      $('aPass2Wrap').hidden = mode === 'login';
+      $('aPassLabel').textContent = reset ? '새 비밀번호' : '비밀번호';
+      $('aPass').setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
+      $('acctSubmit').textContent = mode === 'signup' ? '가입하고 연동하기' : reset ? '비밀번호 다시 정하기' : '로그인';
+      $('forgotBtn').hidden = mode !== 'login';
+      $('backToLoginBtn').hidden = !reset;
+      $('acctIntro').textContent = reset
+        ? '가입할 때 받은 복구 코드로 비밀번호를 다시 정해요. 다른 기기에서는 로그아웃돼요.'
+        : '닉네임과 비밀번호로 로그인하면 휴대폰과 컴퓨터에서 같은 옷장을 볼 수 있어요.';
       $('acctError').textContent = '';
     }
     $('segLogin').addEventListener('click', () => setAuthMode('login'));
@@ -2094,7 +2506,100 @@
       if (!$('pwForm').hidden) $('pwOld').focus();
     });
     $('pwForm').addEventListener('submit', (e) => { e.preventDefault(); doChangePassword(); });
-    $('logoutBtn').addEventListener('click', doLogout);
+    $('logoutBtn').addEventListener('click', startLogout);
+    $('lpBtns').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-lp]');
+      if (!b) return;
+      const act = b.dataset.lp;
+      if (act === 'cancel') showLogoutPanel(false);
+      else if (act === 'retry') startLogout();
+      else if (act === 'backup-logout') { exportBackup(); doLogout(); }
+      else if (act === 'logout') doLogout();
+    });
+    $('forgotBtn').addEventListener('click', () => setAuthMode('reset'));
+    $('backToLoginBtn').addEventListener('click', () => setAuthMode('login'));
+    $('codeSavedChk').addEventListener('change', () => { $('codeDoneBtn').disabled = !$('codeSavedChk').checked; });
+    $('codeDoneBtn').addEventListener('click', () => { hideRecovery(); showToast('이제 다른 기기에서도 같은 닉네임으로 로그인하세요'); });
+    $('copyCodeBtn').addEventListener('click', async () => {
+      const code = $('recoveryCode').textContent;
+      try { await navigator.clipboard.writeText(code); showToast('복구 코드를 복사했어요'); }
+      catch (e) {
+        const r = document.createRange(); r.selectNodeContents($('recoveryCode'));
+        const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        showToast('코드를 선택했어요. 복사해 주세요');
+      }
+    });
+    $('saveCodeBtn').addEventListener('click', () => {
+      const code = $('recoveryCode').textContent;
+      downloadFile('나의옷장-복구코드-' + (recoveryNick || '계정') + '.txt',
+        '나의 옷장 복구 코드\n\n닉네임: ' + recoveryNick + '\n복구 코드: ' + code + '\n만든 날: ' + new Date().toLocaleString('ko-KR') +
+        '\n\n비밀번호를 잊었을 때 로그인 화면의 "비밀번호를 잊었어요"에서 닉네임과 이 코드를 입력하세요.\n다른 사람에게 보여 주지 마세요.\n');
+      showToast('복구 코드 파일을 저장했어요');
+    });
+    $('recToggleBtn').addEventListener('click', () => {
+      $('recForm').hidden = !$('recForm').hidden;
+      $('recError').textContent = '';
+      if (!$('recForm').hidden) $('recPw').focus();
+    });
+    $('recForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const showErr = (m) => { $('recError').textContent = m; };
+      if (!$('recPw').value) return showErr('지금 비밀번호를 입력해 주세요.');
+      $('recSubmit').disabled = true;
+      try {
+        const res = await rpc('closet_new_recovery_code', { p_token: session.token, p_password: $('recPw').value });
+        if (res.error) return showErr(res.error === 'INVALID_LOGIN' ? '지금 비밀번호가 맞지 않아요.' : errText(res.error, res));
+        $('recPw').value = '';
+        showErr('');
+        showRecovery(res.recoveryCode, session.nickname, '새 복구 코드예요. 예전 코드는 이제 쓸 수 없어요. 이 코드는 지금만 보여요.');
+      } catch (err) {
+        showErr(errText(err && err.message));
+      } finally {
+        $('recSubmit').disabled = false;
+      }
+    });
+    $('exportBtn').addEventListener('click', exportBackup);
+    $('importBtn').addEventListener('click', () => $('importFile').click());
+    $('importFile').addEventListener('change', async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      importBackup(await f.text());
+      e.target.value = '';
+    });
+    $('saveStatus').addEventListener('click', (e) => {
+      if (e.target.closest('[data-action="open-acct"]')) openAcctModal();
+      else if (e.target.closest('[data-action="sync-now"]')) syncNow(true);
+    });
+    $('sampleBanner').addEventListener('click', (e) => {
+      if (!e.target.closest('[data-action="clear-samples"]')) return;
+      const n = items.filter((i) => i.sample).length;
+      items = items.filter((i) => !i.sample);
+      save();
+      render();
+      showToast('예시 옷 ' + n + '벌을 지웠어요');
+    });
+    $('summary').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-quick]');
+      if (!b) return;
+      const k = b.dataset.quick;
+      currentQuick = currentQuick === k && k !== 'all' ? 'all' : k;
+      renderSummary();
+      renderGrid();
+    });
+    $('tabs').addEventListener('scroll', updateTabFade, { passive: true });
+    window.addEventListener('resize', updateTabFade);
+    $('allCatsBtn').addEventListener('click', openCatModal);
+    $('catCloseBtn').addEventListener('click', closeCatModal);
+    $('catModal').addEventListener('click', (e) => { if (e.target === $('catModal')) closeCatModal(); });
+    $('catGrid').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-cat]');
+      if (!b) return;
+      currentCat = b.dataset.cat;
+      closeCatModal();
+      renderTabs();
+      renderGrid();
+    });
+    $('catOrderBtn').addEventListener('click', () => { closeCatModal(); openOrderModal(); });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && $('acctModal').classList.contains('open')) { e.stopImmediatePropagation(); closeAcctModal(); }
     }, true);
