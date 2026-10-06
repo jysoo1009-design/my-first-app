@@ -307,7 +307,57 @@
     .closet-hero p { color: rgba(251, 243, 230, 0.86); }
     .sheet-head h2 { font-family: var(--serif); font-weight: 700; }
 
-    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0 18px; }
+    .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0 18px; }
+
+    /* 정렬 줄: 스위치 · 보기 방식 */
+    .sort-toggles { display: flex; gap: 6px; flex-wrap: wrap; }
+    .view-seg { display: inline-flex; background: #efe4d5; border-radius: 12px; padding: 3px; gap: 2px; }
+    .view-seg button {
+      display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 9px;
+      font-size: 0.84rem; font-weight: 700; color: var(--sub);
+    }
+    .view-seg button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+    /* 리스트 보기 */
+    .grid.list { grid-template-columns: 1fr !important; gap: 8px; }
+    .grid.list .card.row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; }
+    .grid.list .card.row:hover { transform: none; box-shadow: var(--shadow-sm); border-color: #dcc4a6; }
+    .row-name { flex: 1; min-width: 0; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row-go { color: #b9a994; display: flex; }
+    body.selecting .row-go { display: none; }
+    .grid.list .sel-check { position: static; width: 28px; height: 28px; flex: 0 0 auto; }
+    .grid.list .group-head { margin-top: 12px; }
+    .grid.list .group-head:first-child { margin-top: 0; }
+
+    /* 옷 자세히 보기 */
+    .id-photo {
+      position: relative; height: min(260px, 34vh); border-radius: 18px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; background: var(--c); color: var(--ink2);
+    }
+    .id-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .id-info {
+      display: grid; grid-template-columns: 88px 1fr; margin-top: 14px;
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fffaf3;
+    }
+    .id-info dt, .id-info dd { padding: 11px 14px; border-top: 1px solid var(--line); }
+    .id-info dt:first-of-type, .id-info dd:first-of-type { border-top: none; }
+    .id-info dt { color: var(--sub); font-size: 0.85rem; font-weight: 700; background: #f6eee3; }
+    .id-info dd { font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; white-space: pre-wrap; word-break: break-word; }
+    .id-info .none { color: #b9a994; font-weight: 500; }
+    .id-info .ic { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+    /* 수정·삭제 버튼은 창 아래에 항상 보이게 */
+    .item-detail .row-btns {
+      position: sticky; bottom: 0; background: var(--surface); padding: 12px 0 4px;
+      box-shadow: 0 -10px 16px -12px rgba(46, 36, 28, 0.25);
+    }
+    .id-outfits { margin-top: 14px; }
+    .id-outfits:empty { display: none; }
+    .id-outfits .t { font-size: 0.82rem; font-weight: 800; color: var(--sub); margin-bottom: 8px; }
+    .id-outfits button {
+      display: inline-flex; align-items: center; gap: 6px; margin: 0 6px 6px 0;
+      border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 0.85rem;
+    }
+    .id-outfits button:hover { border-color: var(--primary); color: var(--primary); }
     .sum-card {
       background: var(--surface); border-radius: 16px; padding: 14px;
       border: 1px solid var(--line); box-shadow: var(--shadow-sm);
@@ -390,7 +440,10 @@
     @media (max-width: 600px) {
       /* 휴대폰: 첫 줄에 '전체 N벌'과 스위치, 둘째 줄에 브랜드·정렬 */
       .sortbar-right { display: contents; }
-      .sort-selects { margin-left: auto; }
+      #resultText { order: 1; flex: 1; }
+      .view-seg { order: 2; }
+      .sort-toggles { order: 3; width: 100%; }
+      .sort-selects { order: 4; margin-left: auto; }
     }
     /* 카테고리별 보기 스위치 */
     .group-toggle {
@@ -766,7 +819,7 @@
       </div>
       <div class="hero-cards" aria-hidden="true">
         <div class="float-card fc-1"><span class="ic" style="background:#f5e6c8;color:#9a7420" data-icon="star"></span><div>즐겨찾기<small>자주 입는 옷만 모아 보기</small></div></div>
-        <div class="float-card fc-2"><span class="ic" style="background:#e3e8da;color:#5c7a4e" data-icon="leaf"></span><div>계절별 정리<small>봄·여름·가을·겨울</small></div></div>
+        <div class="float-card fc-2"><span class="ic" style="background:#e3e8da;color:#5c7a4e" data-icon="layers"></span><div>코디 저장<small>함께 입을 옷을 묶어 두기</small></div></div>
       </div>
     </section>
 
@@ -785,8 +838,8 @@
           </div>
           <div class="feature">
             <div class="ic" style="background:#f3dfd2;color:#a45a3c" data-icon="palette"></div>
-            <h3>색상·계절까지 기록</h3>
-            <p>색상은 목록에서 고르고, 브랜드는 한 번 추가해 두면 골라 쓸 수 있어요.</p>
+            <h3>색상·사이즈까지 기록</h3>
+            <p>색상은 목록에서 고르고, 브랜드·사이즈·산 날짜·가격까지 남겨 둘 수 있어요.</p>
           </div>
           <div class="feature">
             <div class="ic" style="background:#e3e8da;color:#5c7a4e" data-icon="camera"></div>
@@ -821,7 +874,7 @@
         </div>
         <div class="steps">
           <div class="step"><h3>옷 추가하기</h3><p>'옷 추가' 버튼을 누르고 이름과 종류를 골라요.</p></div>
-          <div class="step"><h3>정보 채우기</h3><p>색상, 계절, 사진을 넣으면 더 보기 좋아져요.</p></div>
+          <div class="step"><h3>정보 채우기</h3><p>색상, 사이즈, 사진을 넣으면 더 보기 좋아져요.</p></div>
           <div class="step"><h3>찾아 입기</h3><p>종류 탭과 검색으로 오늘 입을 옷을 골라요.</p></div>
         </div>
       </div>
@@ -889,19 +942,27 @@
       <div class="sortbar">
         <span id="resultText"></span>
         <div class="sortbar-right">
-        <label class="group-toggle" id="groupToggleWrap" title="켜면 카테고리별로 묶어서, 끄면 고른 순서대로 한 줄로 보여줘요">
-          <input type="checkbox" id="groupToggle" role="switch"> 카테고리별 보기
-        </label>
+        <div class="sort-toggles">
+          <label class="group-toggle" id="groupToggleWrap" title="켜면 카테고리별로 묶어서, 끄면 고른 순서대로 한 줄로 보여줘요">
+            <input type="checkbox" id="groupToggle" role="switch"> 카테고리별 보기
+          </label>
+          <label class="group-toggle" id="favToggleWrap" title="켜면 즐겨찾기한 옷이 먼저, 끄면 정렬 기준대로 보여줘요">
+            <input type="checkbox" id="favToggle" role="switch"> 즐겨찾기 먼저
+          </label>
+        </div>
         <div class="sort-selects">
           <select id="brandFilter" aria-label="브랜드로 보기"></select>
           <select id="sort" aria-label="정렬">
             <option value="new">최근 추가순</option>
             <option value="old">오래된순</option>
             <option value="name">이름순</option>
-            <option value="fav">즐겨찾기 먼저</option>
             <option value="bought">산 날짜 최신순</option>
             <option value="price">가격 높은순</option>
           </select>
+        </div>
+        <div class="view-seg" id="viewSeg" role="radiogroup" aria-label="보기 방식">
+          <button type="button" role="radio" data-view="list"><span data-icon="list"></span>리스트</button>
+          <button type="button" role="radio" data-view="icon"><span data-icon="grid"></span>아이콘</button>
         </div>
         </div>
       </div>
@@ -975,10 +1036,6 @@
         <div class="size-chips" id="sizeChips" aria-label="자주 쓰는 사이즈"></div>
       </div>
 
-      <div class="field">
-        <span class="field-label">계절</span>
-        <div class="seasons" id="fSeasons"></div>
-      </div>
 
       <div class="row">
         <div class="field">
@@ -1178,6 +1235,24 @@
     </div>
   </div>
 
+  <!-- ===================== 옷 자세히 보기 창 ===================== -->
+  <div class="backdrop" id="itemDetailModal" role="dialog" aria-modal="true" aria-labelledby="idTitle">
+    <div class="sheet item-detail">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="idTitle"></h2>
+        <button type="button" class="icon-btn" id="idCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <div class="id-photo" id="idPhoto"></div>
+      <dl class="id-info" id="idInfo"></dl>
+      <div class="id-outfits" id="idOutfits"></div>
+      <div class="row-btns" style="margin-top:18px">
+        <button type="button" class="btn btn-primary" id="idEditBtn"><span data-icon="edit"></span>수정</button>
+        <button type="button" class="btn btn-danger" id="idDeleteBtn"><span data-icon="trash"></span>삭제</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== 전체 분류 창 ===================== -->
   <div class="backdrop" id="catModal" role="dialog" aria-modal="true" aria-labelledby="catTitle">
     <div class="sheet">
@@ -1235,6 +1310,10 @@
       tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
       layers: '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
       sort: '<path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3"/>',
+      list: '<path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/>',
+      chev: '<path d="m9 6 6 6-6 6"/>',
+      edit: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/>',
+      trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
       user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
       device: '<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
       cloud: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5H7Z"/>',
@@ -1268,7 +1347,6 @@
       { id: 'acc', name: '액세서리', bg: '#dfe3d9', ink: '#4f6a5c' },
       { id: 'etc', name: '기타', bg: '#e7e0d6', ink: '#6e6257' }
     ];
-    const SEASONS = ['봄', '여름', '가을', '겨울'];
     // 고를 수 있는 색상 목록 (목록에 없는 색·무늬는 '기타'로 직접 입력)
     const COLORS = [
       ['BLACK', '#1f1f1f'], ['WHITE', '#ffffff'], ['IVORY', '#f6f1e1'], ['GRAY', '#9e9e9e'], ['CHARCOAL', '#45474d'],
@@ -1311,6 +1389,14 @@
     const GROUP_KEY = 'my-closet-group-v1';
     let groupByCat = false;    // 카테고리별 보기 스위치
     try { groupByCat = localStorage.getItem(GROUP_KEY) === '1'; } catch (e) {}
+    const FAV_KEY = 'my-closet-favfirst-v1';
+    let favFirst = false;      // 즐겨찾기 먼저 스위치
+    try { favFirst = localStorage.getItem(FAV_KEY) === '1'; } catch (e) {}
+    const VIEW_KEY = 'my-closet-view-v1';
+    let listView = false;      // 리스트 / 아이콘 보기
+    try { listView = localStorage.getItem(VIEW_KEY) === 'list'; } catch (e) {}
+    let detailItemId = null;   // 자세히 보고 있는 옷
+    let returnToDetailId = null; // 자세히 보기에서 수정으로 들어간 옷
 
     // ---------- 코디(옷 여러 벌 묶음) ----------
     const OUTFIT_KEY = 'my-closet-outfits-v1';
@@ -1456,13 +1542,6 @@
 
     const catOf = (id) => CATEGORIES.find((c) => c.id === id) || CATEGORIES[CATEGORIES.length - 1];
     const escapeHtml = (s) => String(s || '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-    function currentSeason() {
-      const m = new Date().getMonth() + 1;
-      if (m >= 3 && m <= 5) return '봄';
-      if (m >= 6 && m <= 8) return '여름';
-      if (m >= 9 && m <= 11) return '가을';
-      return '겨울';
-    }
     const catIcon = (c, size) => '<span class="ic" style="background:' + c.bg + ';color:' + c.ink + '">' + svg(c.id, size || 16) + '</span>';
 
     // ---------- 표지 ----------
@@ -1479,12 +1558,9 @@
 
     // ---------- 옷장 ----------
     function renderSummary() {
-      const season = currentSeason();
-      const seasonCount = items.filter((i) => (i.seasons || []).includes(season)).length;
       const favCount = items.filter((i) => i.fav).length;
       const cards = [
         ['all', '전체', items.length, '모든 옷 보기'],
-        ['season', '이번 계절(' + season + ')', seasonCount, season + '에 입는 옷만 보기'],
         ['fav', '즐겨찾기', favCount, '즐겨찾기한 옷만 보기']
       ];
       $('summary').innerHTML = cards.map((c) =>
@@ -1493,7 +1569,7 @@
       ).join('');
       const total = items.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
       $('greeting').textContent = items.length
-        ? season + '에 입기 좋은 옷이 ' + seasonCount + '벌 있어요.' + (total ? ' 기록한 옷값은 모두 ' + formatWon(total) + '이에요.' : '')
+        ? '옷 ' + items.length + '벌을 정리하고 있어요.' + (total ? ' 기록한 옷값은 모두 ' + formatWon(total) + '이에요.' : '')
         : '첫 번째 옷을 추가해 보세요.';
     }
 
@@ -1525,16 +1601,23 @@
     function updateOrderHint() {
       $('groupToggle').checked = groupByCat;
       $('groupToggleWrap').classList.toggle('on', groupByCat);
+      $('favToggle').checked = favFirst;
+      $('favToggleWrap').classList.toggle('on', favFirst);
+      $('grid').classList.toggle('list', listView);
+      document.querySelectorAll('#viewSeg [data-view]').forEach((b) => {
+        const on = (b.dataset.view === 'list') === listView;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-checked', on);
+      });
     }
 
     function getFiltered() {
       const q = $('search').value.trim().toLowerCase();
       let list = items.filter((i) => currentCat === 'all' || i.category === currentCat);
       if (currentQuick === 'fav') list = list.filter((i) => i.fav);
-      else if (currentQuick === 'season') list = list.filter((i) => (i.seasons || []).includes(currentSeason()));
       if (q) {
         list = list.filter((i) =>
-          [i.name, colorLabel(i), i.brand, i.size, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
+          [i.name, colorLabel(i), i.brand, i.size, i.memo, catOf(i.category).name].join(' ').toLowerCase().includes(q)
         );
       }
       if (currentBrand === 'none') list = list.filter((i) => !i.brand);
@@ -1547,9 +1630,10 @@
           const g = catRank(a.category) - catRank(b.category);
           if (g) return g;
         }
+        // 즐겨찾기 먼저: 즐겨찾기한 옷을 앞에, 그 안에서는 고른 정렬을 따름
+        if (favFirst && !!a.fav !== !!b.fav) return a.fav ? -1 : 1;
         if (sort === 'old') return a.createdAt - b.createdAt;
         if (sort === 'name') return a.name.localeCompare(b.name, 'ko');
-        if (sort === 'fav') return (b.fav - a.fav) || (b.createdAt - a.createdAt);
         if (sort === 'bought') return (buyKey(b) - buyKey(a)) || (b.createdAt - a.createdAt);
         if (sort === 'price') return ((Number(b.price) || -1) - (Number(a.price) || -1)) || (b.createdAt - a.createdAt);
         return b.createdAt - a.createdAt;
@@ -1559,14 +1643,13 @@
 
     function renderGrid() {
       const list = getFiltered();
-      const quickLabel = currentQuick === 'fav' ? '즐겨찾기 · ' : currentQuick === 'season' ? '이번 계절(' + currentSeason() + ') · ' : '';
+      const quickLabel = currentQuick === 'fav' ? '즐겨찾기 · ' : '';
       $('resultText').textContent = quickLabel + (currentCat === 'all' ? '전체' : catOf(currentCat).name) + ' ' + list.length + '벌';
       if (list.length === 0) {
         const searching = $('search').value.trim() !== '';
         let title, text, showAdd = false;
         if (searching) { title = '검색 결과가 없어요'; text = '다른 단어로 검색해 보세요.'; }
         else if (currentQuick === 'fav') { title = '즐겨찾기한 옷이 없어요'; text = '옷 카드의 별을 누르면 여기에 모여요.'; }
-        else if (currentQuick === 'season') { title = '이번 계절 옷이 없어요'; text = '옷을 추가하거나 고칠 때 계절을 골라 보세요.'; }
         else { title = '여기는 아직 비어 있어요'; text = '옷을 추가하면 여기에 보여요.'; showAdd = true; }
         $('grid').innerHTML =
           '<div class="empty"><div class="ic">' + svg(searching ? 'search' : currentQuick === 'fav' ? 'star' : 'hanger', 34) + '</div>' +
@@ -1586,17 +1669,24 @@
           const n = list.filter((x) => catOf(x.category).id === c.id).length;
           head = '<div class="group-head">' + catIcon(c, 15) + c.name + ' <span class="n">' + n + '벌</span></div>';
         }
+        const sel = selectMode && selectedIds.has(i.id);
+        const label = escapeHtml(i.name) + (selectMode ? (sel ? ' 선택됨' : ' 선택') : ' 자세히 보기');
+        if (listView) {
+          // 리스트 보기: 이름만
+          return head + '<article class="card row' + (sel ? ' selected' : '') + '" tabindex="0" data-id="' + i.id + '" aria-label="' + label + '">' +
+            '<span class="row-name">' + (i.sample ? '<span class="sample-tag">예시</span>' : '') + escapeHtml(i.name) + '</span>' +
+            '<span class="sel-check" aria-hidden="true">' + svg('check', 16) + '</span>' +
+            '<span class="row-go" aria-hidden="true">' + svg('chev', 18) + '</span></article>';
+        }
         const thumb = i.photo
           ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '" loading="lazy">'
           : svg(c.id, 64);
-        const chips = (i.size ? '<span class="chip size" title="사이즈">' + escapeHtml(i.size) + '</span>' : '') +
-          (i.seasons || []).map((s) => '<span class="chip">' + s + '</span>').join('');
+        const chips = i.size ? '<span class="chip size" title="사이즈">' + escapeHtml(i.size) + '</span>' : '';
         const hex = colorHex(i.color);
         const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
         const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
         const buyText = [buyLabel(i), i.price ? formatWon(i.price) : ''].filter(Boolean).join(' · ');
-        const sel = selectMode && selectedIds.has(i.id);
-        return head + '<article class="card' + (sel ? ' selected' : '') + '" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + (selectMode ? (sel ? ' 선택됨' : ' 선택') : ' 수정') + '">' +
+        return head + '<article class="card' + (sel ? ' selected' : '') + '" tabindex="0" data-id="' + i.id + '" aria-label="' + label + '">' +
           '<span class="sel-check" aria-hidden="true">' + svg('check', 18) + '</span>' +
           '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + thumb + '</div>' +
           '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
@@ -1808,6 +1898,70 @@
       renderOutfits();
       if ($('catModal').classList.contains('open')) renderCatGrid();
       if (detailOutfitId) renderOutfitDetail();
+      if (detailItemId) renderItemDetail();
+    }
+
+    // ---------- 옷 자세히 보기 ----------
+    function renderItemDetail() {
+      const i = items.find((x) => x.id === detailItemId);
+      if (!i) { closeItemDetail(); return; }
+      const c = catOf(i.category);
+      const none = '<span class="none">-</span>';
+      $('idTitle').innerHTML = (i.sample ? '<span class="sample-tag">예시</span>' : '') + escapeHtml(i.name);
+      $('idPhoto').style.cssText = '--c:' + c.bg + ';--ink2:' + c.ink;
+      $('idPhoto').innerHTML = (i.photo ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '">' : svg(c.id, 88)) +
+        '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
+        '<button type="button" class="fav-btn' + (i.fav ? ' on' : '') + '" id="idFavBtn" aria-label="즐겨찾기 ' + (i.fav ? '해제' : '추가') + '">' + svg('star', 18) + '</button>';
+      const hex = colorHex(i.color);
+      const colorHtml = i.color
+        ? (i.color === ETC ? '<i class="swatch-dot etc"></i>' : '<i class="swatch-dot" style="background:' + hex + '"></i>') + escapeHtml(colorLabel(i))
+        : none;
+      const rows = [
+        ['종류', catIcon(c, 14) + c.name],
+        ['색상', colorHtml],
+        ['브랜드', i.brand ? escapeHtml(i.brand) : none],
+        ['사이즈', i.size ? '<span class="chip size">' + escapeHtml(i.size) + '</span>' : none],
+        ['산 날짜', buyLabel(i) || none],
+        ['가격', i.price ? formatWon(i.price) : none],
+        ['메모', i.memo ? escapeHtml(i.memo) : none]
+      ];
+      $('idInfo').innerHTML = rows.map((r) => '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>').join('');
+      const inOutfits = outfits.filter((o) => o.itemIds.includes(i.id));
+      $('idOutfits').innerHTML = inOutfits.length
+        ? '<p class="t">이 옷이 들어간 코디 ' + inOutfits.length + '개</p>' +
+          inOutfits.map((o) => '<button type="button" data-oid="' + o.id + '">' + svg('layers', 14) + escapeHtml(o.name) + '</button>').join('')
+        : '';
+    }
+    function openItemDetail(id) {
+      detailItemId = id;
+      renderItemDetail();
+      $('itemDetailModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeItemDetail() {
+      detailItemId = null;
+      $('itemDetailModal').classList.remove('open');
+      const anyOpen = ['modal', 'outfitDetailModal', 'outfitModal'].some((id) => $(id).classList.contains('open'));
+      if (!anyOpen) document.body.style.overflow = '';
+    }
+    function deleteItem(id) {
+      const it = items.find((i) => i.id === id);
+      if (!it || !confirm("'" + it.name + "'을(를) 옷장에서 뺄까요?")) return false;
+      markDeleted(id);
+      items = items.filter((i) => i.id !== id);
+      save();
+      render();
+      showToast('삭제했어요');
+      return true;
+    }
+    // 수정 창을 닫을 때, 자세히 보기에서 들어왔으면 다시 자세히 보기로
+    function closeEditAndReturn() {
+      closeModal();
+      if (returnToDetailId) {
+        const rid = returnToDetailId;
+        returnToDetailId = null;
+        if (items.some((i) => i.id === rid)) openItemDetail(rid);
+      }
     }
 
     // ---------- 화면 전환 ----------
@@ -1817,7 +1971,7 @@
       $('cover').classList.toggle('active', !isApp);
       if (!isApp) {
         closeModal(); closeBrandModal(); closeAcctModal(); closeCatModal();
-        closeOutfitModal(); closeOutfitDetail();
+        closeOutfitModal(); closeOutfitDetail(); closeItemDetail(); returnToDetailId = null;
         if (selectMode) exitSelectMode();
       }
       if (isApp) setTimeout(updateTabFade, 50);
@@ -1871,6 +2025,7 @@
     }
 
     function openModal(item) {
+      returnToDetailId = null;
       editingId = item ? item.id : null;
       $('modalTitle').textContent = item ? '옷 수정하기' : '옷 추가하기';
       $('fName').value = item ? item.name : '';
@@ -1890,9 +2045,6 @@
       $('fBuyYear').value = item && item.purchaseYear ? String(item.purchaseYear) : '';
       $('fBuyMonth').value = item && item.purchaseMonth ? String(item.purchaseMonth) : '';
       $('fPrice').value = item && item.price ? Number(item.price).toLocaleString('ko-KR') : '';
-      document.querySelectorAll('#fSeasons input').forEach((el) => {
-        el.checked = item ? (item.seasons || []).includes(el.value) : false;
-      });
       photoData = item ? (item.photo || '') : '';
       $('fPhoto').value = '';
       updatePhoto();
@@ -1997,9 +2149,6 @@
     $('fSize').addEventListener('input', renderSizeChips);
     $('fCats').addEventListener('change', renderSizeChips);
 
-    $('fSeasons').innerHTML = SEASONS.map((s, idx) =>
-      '<input type="checkbox" id="season-' + idx + '" value="' + s + '"><label for="season-' + idx + '">' + s + '</label>'
-    ).join('');
     // 색상: 색칠된 원만 나열 (이름은 고르면 라벨 옆에 표시, 마우스를 올리면 풍선 도움말)
     $('fColors').innerHTML = COLORS.map((c, idx) =>
       '<input type="radio" name="color" id="color-' + idx + '" value="' + c[0] + '">' +
@@ -2022,12 +2171,60 @@
     $('addBtn').addEventListener('click', () => openModal(null));
     // 동그란 + 버튼: 옷 목록에서는 옷 추가, 코디 리스트에서는 새 코디 만들기
     $('fab').addEventListener('click', () => { if (viewMode === 'outfits') enterSelectMode(); else openModal(null); });
-    $('cancelBtn').addEventListener('click', closeModal);
-    $('closeBtn').addEventListener('click', closeModal);
-    $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
+    $('cancelBtn').addEventListener('click', closeEditAndReturn);
+    $('closeBtn').addEventListener('click', closeEditAndReturn);
+    $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeEditAndReturn(); });
+
+    // 옷 자세히 보기 창
+    $('idCloseBtn').addEventListener('click', closeItemDetail);
+    $('idEditBtn').addEventListener('click', () => {
+      const id = detailItemId;
+      const item = items.find((i) => i.id === id);
+      if (!item) return;
+      closeItemDetail();
+      openModal(item);
+      returnToDetailId = id;
+    });
+    $('idDeleteBtn').addEventListener('click', () => {
+      if (deleteItem(detailItemId)) closeItemDetail();
+    });
+    $('itemDetailModal').addEventListener('click', (e) => {
+      if (e.target === $('itemDetailModal')) { closeItemDetail(); return; }
+      if (e.target.closest('#idFavBtn')) {
+        const it = items.find((i) => i.id === detailItemId);
+        if (it) {
+          it.fav = !it.fav;
+          touchItem(it);
+          save();
+          render();
+          showToast(it.fav ? '즐겨찾기에 추가했어요' : '즐겨찾기에서 뺐어요');
+        }
+        return;
+      }
+      const ob = e.target.closest('[data-oid]');
+      if (ob) { closeItemDetail(); setViewMode('outfits'); openOutfitDetail(ob.dataset.oid); }
+    });
+
+    // 즐겨찾기 먼저 스위치 · 리스트/아이콘 보기
+    $('favToggle').addEventListener('change', () => {
+      favFirst = $('favToggle').checked;
+      try { localStorage.setItem(FAV_KEY, favFirst ? '1' : '0'); } catch (err) {}
+      updateOrderHint();
+      renderGrid();
+      showToast(favFirst ? '즐겨찾기한 옷을 먼저 보여 드려요' : '정렬 기준대로 보여 드려요');
+    });
+    $('viewSeg').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-view]');
+      if (!b) return;
+      listView = b.dataset.view === 'list';
+      try { localStorage.setItem(VIEW_KEY, listView ? 'list' : 'icon'); } catch (err) {}
+      updateOrderHint();
+      renderGrid();
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
       if ($('outfitModal').classList.contains('open')) closeOutfitModal();
+      else if ($('itemDetailModal').classList.contains('open')) closeItemDetail();
       else if ($('outfitDetailModal').classList.contains('open')) closeOutfitDetail();
       else if ($('catModal').classList.contains('open')) closeCatModal();
       else if ($('brandModal').classList.contains('open')) closeBrandModal();
@@ -2145,7 +2342,7 @@
       const card = e.target.closest('.card');
       if (!card) return;
       const item = items.find((i) => i.id === card.dataset.id);
-      if (item) openModal(item);
+      if (item) openItemDetail(item.id);
     });
     // ---------- 코디 이벤트 ----------
     $('vsItems').addEventListener('click', () => setViewMode('items'));
@@ -2197,7 +2394,7 @@
       const li = e.target.closest('li[data-item]');
       if (li) {
         const item = items.find((i) => i.id === li.dataset.item);
-        if (item) { closeOutfitDetail(); openModal(item); }
+        if (item) { closeOutfitDetail(); openItemDetail(item.id); }
       }
     });
 
@@ -2220,7 +2417,7 @@
       if (e.key !== 'Enter' || !e.target.classList.contains('card')) return;
       if (selectMode) { toggleSelect(e.target.dataset.id, e.target); return; }
       const item = items.find((i) => i.id === e.target.dataset.id);
-      if (item) openModal(item);
+      if (item) openItemDetail(item.id);
     });
 
     $('fPhoto').addEventListener('change', async (e) => {
@@ -2243,13 +2440,7 @@
 
     $('deleteBtn').addEventListener('click', () => {
       if (!editingId) return;
-      if (!confirm('이 옷을 옷장에서 뺄까요?')) return;
-      markDeleted(editingId);
-      items = items.filter((i) => i.id !== editingId);
-      save();
-      closeModal();
-      render();
-      showToast('삭제했어요');
+      if (deleteItem(editingId)) { returnToDetailId = null; closeModal(); }
     });
 
     $('form').addEventListener('submit', (e) => {
@@ -2292,7 +2483,6 @@
         size: $('fSize').value.trim().slice(0, 15),
         memo: $('fMemo').value.trim(),
         fav: $('fFav').checked,
-        seasons: Array.from(document.querySelectorAll('#fSeasons input:checked')).map((el) => el.value),
         photo: photoData,
         updatedAt: Date.now(),
         sample: false
@@ -2307,8 +2497,8 @@
       if (!save()) { items = JSON.parse(backup); return; }
       markPending(savedId);
       const wasEditing = !!editingId;
-      closeModal();
       render();
+      closeEditAndReturn();
       showToast(wasEditing ? '수정했어요' : '옷장에 추가했어요');
     });
 
@@ -3044,6 +3234,11 @@
         // 예전 '카테고리 순서' 정렬을 쓰던 경우: 카테고리별 보기 켜기 + 최근 추가순
         groupByCat = true;
         localStorage.setItem(GROUP_KEY, '1');
+        localStorage.setItem(SORT_KEY, 'new');
+      } else if (savedSort === 'fav') {
+        // 예전 '즐겨찾기 먼저' 정렬을 쓰던 경우: 즐겨찾기 먼저 켜기 + 최근 추가순
+        favFirst = true;
+        localStorage.setItem(FAV_KEY, '1');
         localStorage.setItem(SORT_KEY, 'new');
       } else if (savedSort && $('sort').querySelector('option[value="' + savedSort + '"]')) {
         $('sort').value = savedSort;
