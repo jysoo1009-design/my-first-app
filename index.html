@@ -426,6 +426,90 @@
     .sort-selects { display: flex; gap: 6px; }
 
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 110px; }
+
+    /* 옷 목록 / 코디 리스트 전환 */
+    .view-switch { display: flex; background: #efe4d5; border-radius: 16px; padding: 4px; gap: 4px; margin: 14px 0 4px; }
+    .view-switch button {
+      flex: 1; padding: 11px 8px; border-radius: 12px; font-weight: 800; color: var(--sub);
+      display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.95rem;
+    }
+    .view-switch button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+    .view-switch .n { font-size: 0.75rem; background: #e3d3bd; color: var(--ink); border-radius: 999px; padding: 1px 8px; font-weight: 700; }
+    .view-switch button.on .n { background: var(--primary); color: #fff; }
+    .toolbar .make-outfit { border-radius: 14px; padding: 0 16px; }
+    @media (max-width: 480px) { .toolbar .make-outfit { padding: 0 12px; font-size: 0.88rem; gap: 5px; } }
+
+    /* 산 날짜 · 가격 */
+    .date-pick { display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px; }
+    .field select { width: 100%; padding: 12px 10px; border: 1px solid var(--line); border-radius: 12px; background: #fffaf3; font-size: 16px; }
+    .price-input { position: relative; }
+    .price-input input { padding-right: 38px !important; text-align: right; }
+    .price-input span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--sub); font-weight: 700; }
+    .buyline { color: var(--sub); font-size: 0.78rem; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* 코디 만들기(옷 고르기) */
+    .sel-check {
+      position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 250, 243, 0.95); border: 2px solid #d8c5ac; display: none;
+      align-items: center; justify-content: center; color: transparent; box-shadow: var(--shadow-sm);
+    }
+    body.selecting .card .sel-check { display: flex; }
+    body.selecting .card .fav-btn { display: none; }
+    body.selecting .card.selected { outline: 3px solid var(--primary); outline-offset: -3px; }
+    body.selecting .card.selected .sel-check { background: var(--primary); border-color: var(--primary); color: #fff; }
+    body.selecting .fab { display: none !important; }
+    body.selecting .grid { padding-bottom: 130px; }
+    .select-bar {
+      position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
+      width: min(560px, calc(100% - 24px)); background: var(--ink); color: #fbf3e6; border-radius: 18px;
+      padding: 12px 12px 12px 18px; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg);
+      animation: up 0.2s ease-out;
+    }
+    .select-bar .sb-info { flex: 1; min-width: 0; line-height: 1.3; }
+    .select-bar .sb-info strong { display: block; font-size: 1rem; }
+    .select-bar .sb-info span { font-size: 0.78rem; opacity: 0.75; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .select-bar .btn { padding: 10px 14px; font-size: 0.9rem; border-radius: 12px; }
+    .select-bar .btn-soft { background: rgba(255, 248, 238, 0.12); color: #fbf3e6; }
+    .select-bar .btn-primary { background: #f6e7d2; color: var(--ink); box-shadow: none; }
+    .select-bar .btn-primary:disabled { opacity: 0.45; }
+
+    /* 코디 리스트 */
+    .outfit-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 18px 0 14px; }
+    .outfit-head h2 { font-family: var(--serif); font-size: 1.45rem; font-weight: 700; }
+    .outfit-head .btn { padding: 11px 16px; border-radius: 14px; font-size: 0.92rem; }
+    .outfit-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 110px; }
+    @media (min-width: 640px) { .outfit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+    @media (min-width: 960px) { .outfit-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .outfit-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+      cursor: pointer; box-shadow: var(--shadow-sm); transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .outfit-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .outfit-card:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+    .collage { display: grid; aspect-ratio: 1 / 1; gap: 2px; background: var(--line); }
+    .collage.n1 { grid-template-columns: 1fr; }
+    .collage.n2 { grid-template-columns: 1fr 1fr; }
+    .collage.n3, .collage.n4 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .collage.n3 .tile:first-child { grid-row: span 2; }
+    .tile { position: relative; overflow: hidden; min-height: 0; display: flex; align-items: center; justify-content: center; background: var(--c); color: var(--ink2); }
+    .tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .tile .more { position: absolute; inset: 0; background: rgba(46, 36, 28, 0.55); color: #fff; font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; justify-content: center; }
+    .oc-info { padding: 12px 14px 14px; }
+    .oc-name { font-family: var(--serif); font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .oc-meta { color: var(--sub); font-size: 0.8rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .outfit-detail .collage { max-width: 300px; margin: 0 auto; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+    .od-memo { background: #f3e9db; border-radius: 12px; padding: 10px 12px; font-size: 0.9rem; margin-top: 10px; white-space: pre-wrap; }
+    .outfit-items { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 14px 0 16px; }
+    .outfit-items li { display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: #fffaf3; cursor: pointer; }
+    .outfit-items li.gone { cursor: default; color: var(--sub); font-size: 0.88rem; justify-content: center; border-style: dashed; }
+    .mini { position: relative; width: 48px; height: 48px; border-radius: 12px; flex: 0 0 auto; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--c); color: var(--ink2); }
+    .mini img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .oi-name { font-weight: 700; }
+    .oi-meta { color: var(--sub); font-size: 0.8rem; }
+    .pick-preview { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px; }
+    .pick-preview .mini { width: 60px; height: 60px; }
+    #outfitModal { z-index: 55; }
+    body.selecting .toast { bottom: calc(104px + env(safe-area-inset-bottom)); }
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
     @media (min-width: 960px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
@@ -783,6 +867,12 @@
         <div class="sample-banner" id="sampleBanner" hidden></div>
       </div>
 
+      <div class="view-switch" role="tablist" aria-label="보기 선택">
+        <button type="button" class="on" id="vsItems" role="tab" aria-selected="true"><span data-icon="hanger"></span>옷 목록 <span class="n" id="vsItemsN">0</span></button>
+        <button type="button" id="vsOutfits" role="tab" aria-selected="false"><span data-icon="layers"></span>코디 리스트 <span class="n" id="vsOutfitsN">0</span></button>
+      </div>
+
+      <div id="itemsPane">
       <div class="summary" id="summary"></div>
 
       <div class="toolbar">
@@ -790,6 +880,7 @@
           <span data-icon="search"></span>
           <input id="search" type="search" placeholder="이름, 색상, 브랜드로 검색" aria-label="옷 검색">
         </div>
+        <button class="btn btn-light make-outfit" id="makeOutfitBtn" title="여러 벌을 골라 코디로 저장해요"><span data-icon="layers"></span><span>코디 만들기</span></button>
         <button class="btn btn-primary add-desktop" id="addBtn"><span data-icon="plus"></span>옷 추가</button>
       </div>
 
@@ -812,15 +903,36 @@
             <option value="old">오래된순</option>
             <option value="name">이름순</option>
             <option value="fav">즐겨찾기 먼저</option>
+            <option value="bought">산 날짜 최신순</option>
+            <option value="price">가격 높은순</option>
           </select>
         </div>
       </div>
 
       <section class="grid" id="grid"></section>
+      </div>
+
+      <div id="outfitsPane" hidden>
+        <div class="outfit-head">
+          <div>
+            <h2>코디 리스트</h2>
+            <p class="hint" id="outfitCount" style="margin-top:2px"></p>
+          </div>
+          <button type="button" class="btn btn-primary" data-action="new-outfit"><span data-icon="plus"></span>새 코디</button>
+        </div>
+        <section class="outfit-grid" id="outfitGrid"></section>
+      </div>
     </main>
   </div>
 
   <button class="fab" id="fab" aria-label="옷 추가" data-icon="plus-lg"></button>
+
+  <!-- 코디 만들기: 옷 고르는 중에 아래에 뜨는 막대 -->
+  <div class="select-bar" id="selectBar" hidden>
+    <div class="sb-info"><strong id="selCount">0벌 선택</strong><span id="selHint">코디에 넣을 옷을 눌러 골라요</span></div>
+    <button type="button" class="btn btn-soft" id="selCancel">취소</button>
+    <button type="button" class="btn btn-primary" id="selSave" disabled>코디로 저장</button>
+  </div>
 
   <!-- ===================== 추가/수정 창 ===================== -->
   <div class="backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -863,6 +975,23 @@
       <div class="field">
         <span class="field-label">계절</span>
         <div class="seasons" id="fSeasons"></div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <span class="field-label">산 날짜</span>
+          <div class="date-pick">
+            <select id="fBuyYear" aria-label="산 연도"></select>
+            <select id="fBuyMonth" aria-label="산 월"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fPrice">가격</label>
+          <div class="price-input">
+            <input id="fPrice" type="text" inputmode="numeric" maxlength="13" placeholder="예: 59,000" autocomplete="off">
+            <span>원</span>
+          </div>
+        </div>
       </div>
 
       <div class="field">
@@ -1000,6 +1129,52 @@
     </div>
   </div>
 
+  <!-- ===================== 코디 저장 창 ===================== -->
+  <div class="backdrop" id="outfitModal" role="dialog" aria-modal="true" aria-labelledby="outfitTitle">
+    <form class="sheet" id="outfitForm" novalidate>
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="outfitTitle">코디 저장하기</h2>
+        <button type="button" class="icon-btn" id="outfitCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <div class="pick-preview" id="oPreview"></div>
+      <div class="field" style="margin-top:14px">
+        <label for="oName">코디 이름</label>
+        <input id="oName" type="text" maxlength="30" placeholder="예: 가을 출근룩, 주말 나들이" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="oMemo">메모 (선택)</label>
+        <textarea id="oMemo" maxlength="200" placeholder="예: 비 오는 날, 결혼식 하객룩"></textarea>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-soft" id="outfitCancelBtn">취소</button>
+        <button type="submit" class="btn btn-primary" id="outfitSaveBtn">저장하기</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===================== 코디 자세히 보기 창 ===================== -->
+  <div class="backdrop" id="outfitDetailModal" role="dialog" aria-modal="true" aria-labelledby="odTitle">
+    <div class="sheet outfit-detail">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="odTitle"></h2>
+        <button type="button" class="icon-btn" id="odCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <div id="odCollage"></div>
+      <p class="hint" id="odMeta" style="text-align:center;margin-top:10px"></p>
+      <p id="odMemo" class="od-memo" hidden></p>
+      <ul class="outfit-items" id="odItems"></ul>
+      <div class="stack">
+        <button type="button" class="btn btn-primary" data-od="reselect">옷 다시 고르기</button>
+        <div class="row-btns">
+          <button type="button" class="btn btn-soft" data-od="rename">이름·메모 수정</button>
+          <button type="button" class="btn btn-danger" data-od="delete">코디 삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== 전체 분류 창 ===================== -->
   <div class="backdrop" id="catModal" role="dialog" aria-modal="true" aria-labelledby="catTitle">
     <div class="sheet">
@@ -1075,6 +1250,7 @@
       x: '<path d="M6 6l12 12M18 6 6 18"/>',
       home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/>',
       tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
+      layers: '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
       sort: '<path d="M8 4v16M8 4 5 7M8 4l3 3M16 20V4M16 20l-3-3M16 20l3-3"/>',
       user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
       device: '<rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
@@ -1148,6 +1324,45 @@
     })();
     let currentCat = 'all';
     let currentQuick = 'all'; // 요약 카드 필터: all | season | fav
+
+    // ---------- 코디(옷 여러 벌 묶음) ----------
+    const OUTFIT_KEY = 'my-closet-outfits-v1';
+    function normalizeOutfit(o) {
+      const ids = Array.isArray(o.itemIds) ? o.itemIds.filter((x) => typeof x === 'string') : [];
+      return {
+        id: String(o.id),
+        name: String(o.name || '이름 없는 코디').slice(0, 30),
+        memo: String(o.memo || '').slice(0, 200),
+        itemIds: Array.from(new Set(ids)),
+        createdAt: o.createdAt || Date.now(),
+        updatedAt: o.updatedAt || o.createdAt || Date.now()
+      };
+    }
+    function loadOutfits() {
+      try {
+        const s = JSON.parse(localStorage.getItem(OUTFIT_KEY));
+        if (Array.isArray(s)) return s.filter((o) => o && typeof o.id === 'string').map(normalizeOutfit);
+      } catch (e) {}
+      return [];
+    }
+    function saveOutfits() {
+      try { localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits)); } catch (e) { showToast('저장 공간이 부족해요'); }
+    }
+    let outfits = loadOutfits();
+    let viewMode = 'items';          // items | outfits
+    let selectMode = false;          // 코디에 넣을 옷 고르는 중인지
+    let selectedIds = new Set();
+    let editingOutfitId = null;      // 옷을 다시 고르는 코디
+    let detailOutfitId = null;       // 자세히 보고 있는 코디
+    let outfitFormId = null;         // 이름·메모를 고치는 코디 (없으면 새 코디)
+
+    // ---------- 산 날짜 · 가격 ----------
+    const formatWon = (n) => Number(n).toLocaleString('ko-KR') + '원';
+    function buyLabel(i) {
+      if (!i.purchaseYear) return '';
+      return i.purchaseYear + '년' + (i.purchaseMonth ? ' ' + i.purchaseMonth + '월' : '');
+    }
+    const buyKey = (i) => (i.purchaseYear ? i.purchaseYear * 100 + (i.purchaseMonth || 0) : -1);
     let currentBrand = 'all';
     let editingId = null;
     let photoData = '';
@@ -1304,7 +1519,10 @@
         '<button type="button" class="sum-card' + (currentQuick === c[0] ? ' active' : '') + '" data-quick="' + c[0] + '" aria-pressed="' + (currentQuick === c[0]) + '" title="' + c[3] + '">' +
         '<div class="label">' + c[1] + '</div><div class="value">' + c[2] + '<small>벌</small></div></button>'
       ).join('');
-      $('greeting').textContent = items.length ? season + '에 입기 좋은 옷이 ' + seasonCount + '벌 있어요.' : '첫 번째 옷을 추가해 보세요.';
+      const total = items.reduce((sum, i) => sum + (Number(i.price) || 0), 0);
+      $('greeting').textContent = items.length
+        ? season + '에 입기 좋은 옷이 ' + seasonCount + '벌 있어요.' + (total ? ' 기록한 옷값은 모두 ' + formatWon(total) + '이에요.' : '')
+        : '첫 번째 옷을 추가해 보세요.';
     }
 
     function renderTabs() {
@@ -1355,6 +1573,8 @@
         if (sort === 'name') return a.name.localeCompare(b.name, 'ko');
         if (sort === 'fav') return (b.fav - a.fav) || (b.createdAt - a.createdAt);
         if (sort === 'category') return (catRank(a.category) - catRank(b.category)) || (b.createdAt - a.createdAt);
+        if (sort === 'bought') return (buyKey(b) - buyKey(a)) || (b.createdAt - a.createdAt);
+        if (sort === 'price') return ((Number(b.price) || -1) - (Number(a.price) || -1)) || (b.createdAt - a.createdAt);
         return b.createdAt - a.createdAt;
       });
       return list;
@@ -1396,12 +1616,16 @@
         const hex = colorHex(i.color);
         const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
         const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
-        return head + '<article class="card" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + ' 수정">' +
+        const buyText = [buyLabel(i), i.price ? formatWon(i.price) : ''].filter(Boolean).join(' · ');
+        const sel = selectMode && selectedIds.has(i.id);
+        return head + '<article class="card' + (sel ? ' selected' : '') + '" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + (selectMode ? (sel ? ' 선택됨' : ' 선택') : ' 수정') + '">' +
+          '<span class="sel-check" aria-hidden="true">' + svg('check', 18) + '</span>' +
           '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + thumb + '</div>' +
           '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
           '<button class="fav-btn' + (i.fav ? ' on' : '') + '" data-fav="' + i.id + '" aria-label="즐겨찾기 ' + (i.fav ? '해제' : '추가') + '">' + svg('star', 18) + '</button>' +
           '<div class="info"><div class="name">' + (i.sample ? '<span class="sample-tag">예시</span>' : '') + escapeHtml(i.name) + '</div>' +
           '<div class="meta">' + dot + '<span>' + metaText + '</span></div>' +
+          (buyText ? '<div class="buyline">' + buyText + '</div>' : '') +
           (chips ? '<div class="chips">' + chips + '</div>' : '') +
           '</div></article>';
       }).join('');
@@ -1428,6 +1652,174 @@
       }
     }
 
+    // ---------- 코디 화면 ----------
+    const outfitItems = (o) => o.itemIds.map((id) => items.find((i) => i.id === id)).filter(Boolean);
+    function thumbHtml(i, cls, size) {
+      const c = catOf(i.category);
+      return '<span class="' + cls + '" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' +
+        (i.photo ? '<img src="' + i.photo + '" alt="" loading="lazy">' : svg(c.id, size)) + '</span>';
+    }
+    function collageHtml(list) {
+      if (!list.length) return '<div class="collage n1"><span class="tile" style="--c:#ebe1d3;--ink2:#7b6a5b">' + svg('hanger', 40) + '</span></div>';
+      const n = Math.min(list.length, 4);
+      return '<div class="collage n' + n + '">' + list.slice(0, n).map((i, idx) => {
+        let t = thumbHtml(i, 'tile', n === 1 ? 64 : 34);
+        if (idx === 3 && list.length > 4) t = t.replace(/<\/span>$/, '<span class="more">+' + (list.length - 3) + '</span></span>');
+        return t;
+      }).join('') + '</div>';
+    }
+    function outfitMeta(o) {
+      const list = outfitItems(o);
+      const gone = o.itemIds.length - list.length;
+      const cats = Array.from(new Set(list.map((i) => catOf(i.category).name))).slice(0, 3).join('·');
+      return '옷 ' + list.length + '벌' + (cats ? ' · ' + cats : '') + (gone ? ' · 삭제된 옷 ' + gone + '벌' : '');
+    }
+    function renderOutfits() {
+      $('vsItemsN').textContent = items.length;
+      $('vsOutfitsN').textContent = outfits.length;
+      $('outfitCount').textContent = outfits.length ? '저장한 코디 ' + outfits.length + '개' : '함께 입을 옷을 묶어 두세요';
+      if (!outfits.length) {
+        $('outfitGrid').innerHTML = '<div class="empty"><div class="ic">' + svg('layers', 34) + '</div>' +
+          '<strong>아직 저장한 코디가 없어요</strong>옷 목록에서 함께 입을 옷을 여러 벌 골라 코디로 저장해 보세요.' +
+          '<br><button class="btn btn-primary" data-action="new-outfit">' + svg('layers', 18) + '코디 만들기</button></div>';
+        return;
+      }
+      const list = outfits.slice().sort((a, b) => b.updatedAt - a.updatedAt);
+      $('outfitGrid').innerHTML = list.map((o) =>
+        '<article class="outfit-card" tabindex="0" data-oid="' + o.id + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' +
+        collageHtml(outfitItems(o)) +
+        '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">' + outfitMeta(o) + '</div></div></article>'
+      ).join('');
+    }
+    function setViewMode(mode) {
+      viewMode = mode;
+      $('itemsPane').hidden = mode !== 'items';
+      $('outfitsPane').hidden = mode !== 'outfits';
+      $('vsItems').classList.toggle('on', mode === 'items');
+      $('vsOutfits').classList.toggle('on', mode === 'outfits');
+      $('vsItems').setAttribute('aria-selected', mode === 'items');
+      $('vsOutfits').setAttribute('aria-selected', mode === 'outfits');
+      $('fab').setAttribute('aria-label', mode === 'outfits' ? '새 코디 만들기' : '옷 추가');
+      if (mode === 'outfits') renderOutfits(); else setTimeout(updateTabFade, 30);
+    }
+
+    // 코디 만들기: 옷 고르기 모드
+    function enterSelectMode(preIds, outfitId) {
+      selectMode = true;
+      editingOutfitId = outfitId || null;
+      selectedIds = new Set(preIds || []);
+      document.body.classList.add('selecting');
+      setViewMode('items');
+      $('selectBar').hidden = false;
+      updateSelectBar();
+      renderGrid();
+      if (!outfitId) showToast('코디에 넣을 옷을 눌러 골라 주세요');
+    }
+    function exitSelectMode() {
+      selectMode = false;
+      editingOutfitId = null;
+      selectedIds = new Set();
+      document.body.classList.remove('selecting');
+      $('selectBar').hidden = true;
+      renderGrid();
+    }
+    function updateSelectBar() {
+      const n = selectedIds.size;
+      const o = editingOutfitId ? outfits.find((x) => x.id === editingOutfitId) : null;
+      $('selCount').textContent = n + '벌 선택';
+      $('selHint').textContent = o ? "'" + o.name + "' 코디의 옷을 다시 골라요" : '코디에 넣을 옷을 눌러 골라요';
+      $('selSave').disabled = n === 0;
+      $('selSave').textContent = o ? '수정 저장' : '코디로 저장';
+    }
+    function toggleSelect(id, card) {
+      if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id);
+      if (card) card.classList.toggle('selected', selectedIds.has(id));
+      updateSelectBar();
+    }
+
+    // 코디 저장 창 (새 코디 / 이름·메모 수정)
+    function openOutfitModal(outfitId) {
+      outfitFormId = outfitId || null;
+      const o = outfitId ? outfits.find((x) => x.id === outfitId) : null;
+      const ids = o ? o.itemIds : Array.from(selectedIds);
+      const list = ids.map((id) => items.find((i) => i.id === id)).filter(Boolean);
+      $('outfitTitle').textContent = o ? '코디 이름·메모 수정' : '코디 저장하기 (' + list.length + '벌)';
+      $('oPreview').innerHTML = list.map((i) => thumbHtml(i, 'mini', 24)).join('');
+      $('oName').value = o ? o.name : '';
+      $('oMemo').value = o ? o.memo : '';
+      $('outfitModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (window.matchMedia('(min-width: 700px)').matches) setTimeout(() => $('oName').focus(), 60);
+    }
+    function closeOutfitModal() {
+      $('outfitModal').classList.remove('open');
+      if (!$('outfitDetailModal').classList.contains('open')) document.body.style.overflow = '';
+    }
+    function saveOutfitForm() {
+      const name = $('oName').value.trim();
+      if (!name) { showToast('코디 이름을 적어 주세요'); $('oName').focus(); return; }
+      const memo = $('oMemo').value.trim();
+      if (outfitFormId) {
+        const o = outfits.find((x) => x.id === outfitFormId);
+        if (o) { o.name = name; o.memo = memo; o.updatedAt = Date.now(); saveOutfits(); markPending(o.id); }
+        closeOutfitModal();
+        renderOutfits();
+        if (detailOutfitId) renderOutfitDetail();
+        showToast('코디를 수정했어요');
+        return;
+      }
+      const now = Date.now();
+      const o = { id: 'outfit_' + now + Math.random().toString(36).slice(2, 6), name: name, memo: memo, itemIds: Array.from(selectedIds), createdAt: now, updatedAt: now };
+      outfits.push(o);
+      saveOutfits();
+      markPending(o.id);
+      closeOutfitModal();
+      exitSelectMode();
+      setViewMode('outfits');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast("'" + name + "' 코디를 저장했어요");
+    }
+
+    // 코디 자세히 보기
+    function renderOutfitDetail() {
+      const o = outfits.find((x) => x.id === detailOutfitId);
+      if (!o) { closeOutfitDetail(); return; }
+      const list = outfitItems(o);
+      const gone = o.itemIds.length - list.length;
+      $('odTitle').textContent = o.name;
+      $('odCollage').innerHTML = collageHtml(list);
+      $('odMeta').textContent = outfitMeta(o) + ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') + ' 저장';
+      $('odMemo').hidden = !o.memo;
+      $('odMemo').textContent = o.memo;
+      $('odItems').innerHTML = list.map((i) => {
+        const c = catOf(i.category);
+        const sub = [c.name, colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ');
+        return '<li data-item="' + i.id + '" title="옷 정보 보기">' + thumbHtml(i, 'mini', 22) +
+          '<div><div class="oi-name">' + escapeHtml(i.name) + '</div><div class="oi-meta">' + sub + '</div></div></li>';
+      }).join('') + (gone ? '<li class="gone">옷장에서 삭제된 옷 ' + gone + '벌은 빼고 보여 드려요</li>' : '');
+    }
+    function openOutfitDetail(id) {
+      detailOutfitId = id;
+      renderOutfitDetail();
+      $('outfitDetailModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeOutfitDetail() {
+      detailOutfitId = null;
+      $('outfitDetailModal').classList.remove('open');
+      if (!$('outfitModal').classList.contains('open')) document.body.style.overflow = '';
+    }
+    function deleteOutfit(id) {
+      const o = outfits.find((x) => x.id === id);
+      if (!o || !confirm("'" + o.name + "' 코디를 삭제할까요?\n코디만 지워지고 옷은 그대로 남아요.")) return;
+      markDeleted(id);
+      outfits = outfits.filter((x) => x.id !== id);
+      saveOutfits();
+      closeOutfitDetail();
+      renderOutfits();
+      showToast('코디를 삭제했어요');
+    }
+
     function render() {
       renderCover();
       renderSummary();
@@ -1435,7 +1827,9 @@
       renderTabs();
       renderBrandFilter();
       renderGrid();
+      renderOutfits();
       if ($('catModal').classList.contains('open')) renderCatGrid();
+      if (detailOutfitId) renderOutfitDetail();
     }
 
     // ---------- 화면 전환 ----------
@@ -1443,7 +1837,11 @@
       const isApp = location.hash === '#closet';
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
-      if (!isApp) { closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); closeCatModal(); }
+      if (!isApp) {
+        closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); closeCatModal();
+        closeOutfitModal(); closeOutfitDetail();
+        if (selectMode) exitSelectMode();
+      }
       if (isApp) setTimeout(updateTabFade, 50);
       if (location.hash !== '#how') window.scrollTo(0, 0);
     }
@@ -1509,6 +1907,9 @@
       showBrandAdd(false);
       $('fMemo').value = item ? (item.memo || '') : '';
       $('fFav').checked = item ? !!item.fav : false;
+      $('fBuyYear').value = item && item.purchaseYear ? String(item.purchaseYear) : '';
+      $('fBuyMonth').value = item && item.purchaseMonth ? String(item.purchaseMonth) : '';
+      $('fPrice').value = item && item.price ? Number(item.price).toLocaleString('ko-KR') : '';
       document.querySelectorAll('#fSeasons input').forEach((el) => {
         el.checked = item ? (item.seasons || []).includes(el.value) : false;
       });
@@ -1725,16 +2126,20 @@
 
     // ---------- 이벤트 ----------
     $('addBtn').addEventListener('click', () => openModal(null));
-    $('fab').addEventListener('click', () => openModal(null));
+    // 동그란 + 버튼: 옷 목록에서는 옷 추가, 코디 리스트에서는 새 코디 만들기
+    $('fab').addEventListener('click', () => { if (viewMode === 'outfits') enterSelectMode(); else openModal(null); });
     $('cancelBtn').addEventListener('click', closeModal);
     $('closeBtn').addEventListener('click', closeModal);
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-      if ($('catModal').classList.contains('open')) closeCatModal();
+      if ($('outfitModal').classList.contains('open')) closeOutfitModal();
+      else if ($('outfitDetailModal').classList.contains('open')) closeOutfitDetail();
+      else if ($('catModal').classList.contains('open')) closeCatModal();
       else if ($('orderModal').classList.contains('open')) closeOrderModal();
       else if ($('brandModal').classList.contains('open')) closeBrandModal();
-      else closeModal();
+      else if ($('modal').classList.contains('open')) closeModal();
+      else if (selectMode) exitSelectMode();
     });
     $('search').addEventListener('input', renderGrid);
     $('sort').addEventListener('change', () => {
@@ -1841,6 +2246,11 @@
     });
 
     $('grid').addEventListener('click', (e) => {
+      if (selectMode) {
+        const sc = e.target.closest('.card');
+        if (sc) toggleSelect(sc.dataset.id, sc);
+        return;
+      }
       if (e.target.closest('[data-action="add"]')) return openModal(null);
       if (e.target.closest('[data-action="quick-all"]')) { currentQuick = 'all'; renderSummary(); renderGrid(); return; }
       const favBtn = e.target.closest('[data-fav]');
@@ -1860,8 +2270,78 @@
       const item = items.find((i) => i.id === card.dataset.id);
       if (item) openModal(item);
     });
+    // ---------- 코디 이벤트 ----------
+    $('vsItems').addEventListener('click', () => setViewMode('items'));
+    $('vsOutfits').addEventListener('click', () => { if (selectMode) exitSelectMode(); setViewMode('outfits'); });
+    $('makeOutfitBtn').addEventListener('click', () => { if (!selectMode) enterSelectMode(); });
+    $('selCancel').addEventListener('click', () => {
+      const wasEditing = editingOutfitId;
+      exitSelectMode();
+      if (wasEditing) { setViewMode('outfits'); openOutfitDetail(wasEditing); }
+    });
+    $('selSave').addEventListener('click', () => {
+      if (!selectedIds.size) return;
+      if (editingOutfitId) {
+        const o = outfits.find((x) => x.id === editingOutfitId);
+        const id = editingOutfitId;
+        if (o) { o.itemIds = Array.from(selectedIds); o.updatedAt = Date.now(); saveOutfits(); markPending(o.id); }
+        exitSelectMode();
+        setViewMode('outfits');
+        openOutfitDetail(id);
+        showToast('코디의 옷을 다시 골랐어요');
+      } else {
+        openOutfitModal(null);
+      }
+    });
+    $('outfitsPane').addEventListener('click', (e) => {
+      if (e.target.closest('[data-action="new-outfit"]')) { enterSelectMode(); return; }
+      const card = e.target.closest('.outfit-card');
+      if (card) openOutfitDetail(card.dataset.oid);
+    });
+    $('outfitsPane').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.classList.contains('outfit-card')) openOutfitDetail(e.target.dataset.oid);
+    });
+    $('outfitForm').addEventListener('submit', (e) => { e.preventDefault(); saveOutfitForm(); });
+    $('outfitCloseBtn').addEventListener('click', closeOutfitModal);
+    $('outfitCancelBtn').addEventListener('click', closeOutfitModal);
+    $('outfitModal').addEventListener('click', (e) => { if (e.target === $('outfitModal')) closeOutfitModal(); });
+    $('odCloseBtn').addEventListener('click', closeOutfitDetail);
+    $('outfitDetailModal').addEventListener('click', (e) => {
+      if (e.target === $('outfitDetailModal')) { closeOutfitDetail(); return; }
+      const act = e.target.closest('[data-od]');
+      const id = detailOutfitId;
+      const o = outfits.find((x) => x.id === id);
+      if (act && o) {
+        if (act.dataset.od === 'reselect') { closeOutfitDetail(); enterSelectMode(o.itemIds, o.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        else if (act.dataset.od === 'rename') openOutfitModal(o.id);
+        else if (act.dataset.od === 'delete') deleteOutfit(o.id);
+        return;
+      }
+      const li = e.target.closest('li[data-item]');
+      if (li) {
+        const item = items.find((i) => i.id === li.dataset.item);
+        if (item) { closeOutfitDetail(); openModal(item); }
+      }
+    });
+
+    // 산 날짜 선택지 · 가격 입력 서식
+    (function initBuyFields() {
+      const y = new Date().getFullYear();
+      let yo = '<option value="">연도</option>';
+      for (let k = y; k >= y - 40; k--) yo += '<option value="' + k + '">' + k + '년</option>';
+      $('fBuyYear').innerHTML = yo;
+      let mo = '<option value="">월</option>';
+      for (let m = 1; m <= 12; m++) mo += '<option value="' + m + '">' + m + '월</option>';
+      $('fBuyMonth').innerHTML = mo;
+    })();
+    $('fPrice').addEventListener('input', () => {
+      const d = $('fPrice').value.replace(/[^0-9]/g, '').slice(0, 9);
+      $('fPrice').value = d ? Number(d).toLocaleString('ko-KR') : '';
+    });
+
     $('grid').addEventListener('keydown', (e) => {
       if (e.key !== 'Enter' || !e.target.classList.contains('card')) return;
+      if (selectMode) { toggleSelect(e.target.dataset.id, e.target); return; }
       const item = items.find((i) => i.id === e.target.dataset.id);
       if (item) openModal(item);
     });
@@ -1914,8 +2394,20 @@
           return;
         }
       }
+      const buyYear = Number($('fBuyYear').value) || null;
+      const buyMonth = Number($('fBuyMonth').value) || null;
+      if (buyMonth && !buyYear) {
+        showToast('산 날짜의 연도도 골라 주세요');
+        $('fBuyYear').focus();
+        return;
+      }
+      const priceDigits = $('fPrice').value.replace(/[^0-9]/g, '');
+      const price = priceDigits ? Math.min(Number(priceDigits), 999999999) : null;
       const data = {
         name: name,
+        purchaseYear: buyYear,
+        purchaseMonth: buyYear ? buyMonth : null,
+        price: price,
         category: selectedCat(),
         color: color,
         colorText: colorText,
@@ -2050,7 +2542,9 @@
         const payload = [];
         Object.keys(sync.pending).forEach((id) => {
           const it = items.find((i) => i.id === id);
+          const of = it ? null : outfits.find((o) => o.id === id);
           if (it) payload.push({ id: id, data: it, updatedAt: it.updatedAt || 1 });
+          else if (of) payload.push({ id: id, data: Object.assign({ type: 'outfit' }, of), updatedAt: of.updatedAt || 1 });
           else if (sync.deleted[id]) payload.push({ id: id, deleted: true, updatedAt: sync.deleted[id] });
           else delete sync.pending[id];
         });
@@ -2068,7 +2562,7 @@
           if (!session || session.token !== token) return false;
           if (res.error) throw new Error(res.error);
           chunks[c].forEach((p) => {
-            const cur = items.find((i) => i.id === p.id);
+            const cur = items.find((i) => i.id === p.id) || outfits.find((o) => o.id === p.id);
             const curTs = cur ? cur.updatedAt : sync.deleted[p.id];
             if (curTs === p.updatedAt) {
               delete sync.pending[p.id];
@@ -2101,7 +2595,28 @@
     function applyRemote(res, isFull) {
       let changed = false;
       const remoteIds = new Set();
+      const remoteOutfitIds = new Set();
+      let outfitsChanged = false;
       (res.items || []).forEach((r) => {
+        // 코디는 옷과 같은 통로로 오가지만 id가 outfit_ 으로 시작해요
+        if (String(r.id).indexOf('outfit_') === 0) {
+          remoteOutfitIds.add(r.id);
+          const oi = outfits.findIndex((o) => o.id === r.id);
+          const lts = oi >= 0 ? (outfits[oi].updatedAt || 0) : (sync.deleted[r.id] || 0);
+          if (r.updatedAt > lts) {
+            if (r.deleted) { if (oi >= 0) { outfits.splice(oi, 1); outfitsChanged = true; } }
+            else if (r.data) {
+              const o = normalizeOutfit(Object.assign({}, r.data, { id: r.id, updatedAt: r.updatedAt }));
+              if (oi >= 0) outfits[oi] = o; else outfits.push(o);
+              outfitsChanged = true;
+            }
+            delete sync.pending[r.id];
+            delete sync.deleted[r.id];
+          } else if (r.updatedAt < lts) {
+            sync.pending[r.id] = true;
+          }
+          return;
+        }
         remoteIds.add(r.id);
         const idx = items.findIndex((i) => i.id === r.id);
         const local = idx >= 0 ? items[idx] : null;
@@ -2167,6 +2682,8 @@
         saveMeta();
       }
 
+      if (isFull) outfits.forEach((o) => { if (!remoteOutfitIds.has(o.id)) sync.pending[o.id] = true; });
+      if (outfitsChanged) { saveOutfits(); changed = true; }
       if (changed) { save(); render(); }
       saveSync();
     }
@@ -2284,9 +2801,9 @@
     // ---------- 백업 내보내기 / 불러오기 ----------
     function exportBackup() {
       const mine = items.filter((i) => !i.sample);
-      const data = { app: 'my-closet', version: 1, exportedAt: new Date().toISOString(), items: mine, brands: brands, catOrder: catOrder };
+      const data = { app: 'my-closet', version: 2, exportedAt: new Date().toISOString(), items: mine, brands: brands, catOrder: catOrder, outfits: outfits };
       downloadFile('나의옷장-백업-' + today() + '.json', JSON.stringify(data, null, 2), 'application/json');
-      showToast('백업 파일을 저장했어요 (옷 ' + mine.length + '벌)');
+      showToast('백업 파일을 저장했어요 (옷 ' + mine.length + '벌, 코디 ' + outfits.length + '개)');
     }
     function importBackup(text) {
       let data;
@@ -2303,10 +2820,13 @@
         else if ((it.updatedAt || 0) > (cur.updatedAt || 0)) updated++;
       });
       const newBrands = (Array.isArray(data.brands) ? data.brands : []).filter((b) => typeof b === 'string' && b.trim() && !brands.some((x) => x.toLowerCase() === b.toLowerCase()));
-      if (!added && !updated && !newBrands.length) { showToast('백업 파일의 내용이 이미 모두 들어 있어요'); return; }
+      const inOutfits = (Array.isArray(data.outfits) ? data.outfits : []).filter((o) => o && typeof o.id === 'string' && o.id.indexOf('outfit_') === 0 && o.id.length <= 64);
+      const outfitNews = inOutfits.filter((o) => { const cur = outfits.find((x) => x.id === o.id); return !cur || (o.updatedAt || 0) > (cur.updatedAt || 0); });
+      if (!added && !updated && !newBrands.length && !outfitNews.length) { showToast('백업 파일의 내용이 이미 모두 들어 있어요'); return; }
       const msg = '백업 파일에서 옷 ' + incoming.length + '벌을 찾았어요.\n' +
         '· 새로 추가: ' + added + '벌\n· 더 최신 내용으로 바꿈: ' + updated + '벌' +
-        (newBrands.length ? '\n· 브랜드 추가: ' + newBrands.length + '개' : '') + '\n\n지금 옷장에 합칠까요? (지금 있는 옷은 지워지지 않아요)';
+        (newBrands.length ? '\n· 브랜드 추가: ' + newBrands.length + '개' : '') +
+        (outfitNews.length ? '\n· 코디 추가·갱신: ' + outfitNews.length + '개' : '') + '\n\n지금 옷장에 합칠까요? (지금 있는 옷은 지워지지 않아요)';
       if (!confirm(msg)) return;
       incoming.forEach((it) => {
         const idx = items.findIndex((i) => i.id === it.id);
@@ -2314,6 +2834,13 @@
         if (idx < 0) { items.push(copy); sync.pending[copy.id] = true; }
         else if ((it.updatedAt || 0) > (items[idx].updatedAt || 0)) { items[idx] = copy; sync.pending[copy.id] = true; }
       });
+      outfitNews.forEach((o) => {
+        const copy = normalizeOutfit(o);
+        const idx = outfits.findIndex((x) => x.id === copy.id);
+        if (idx < 0) outfits.push(copy); else outfits[idx] = copy;
+        sync.pending[copy.id] = true;
+      });
+      if (outfitNews.length) saveOutfits();
       if (newBrands.length) {
         brands = sortBrands(brands.concat(newBrands.map((b) => b.trim())));
         saveBrands();
@@ -2409,6 +2936,10 @@
       saveMeta();
       items = [];
       save();
+      outfits = [];
+      saveOutfits();
+      if (selectMode) exitSelectMode();
+      closeOutfitDetail();
       brands = [];
       saveBrands();
       catOrder = CATEGORIES.map((c) => c.id);
