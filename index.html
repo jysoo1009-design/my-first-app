@@ -568,6 +568,14 @@
     .swatch-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; border: 1px solid rgba(0, 0, 0, 0.12); }
     .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
     .chip { font-size: 0.72rem; background: #f1e6d6; color: #514b60; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+    .chip.size { background: var(--ink); color: #fbf3e6; font-weight: 800; letter-spacing: 0.2px; }
+    .size-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .size-chips button {
+      border: 1.5px solid var(--line); border-radius: 999px; padding: 5px 11px; background: #fff;
+      font-size: 0.82rem; font-weight: 700; color: var(--ink); transition: border-color 0.15s, background 0.15s;
+    }
+    .size-chips button:hover { border-color: #d8b994; }
+    .size-chips button.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
 
     .empty {
       grid-column: 1 / -1; text-align: center; color: var(--sub);
@@ -903,7 +911,7 @@
       <div class="toolbar">
         <div class="search-box">
           <span data-icon="search"></span>
-          <input id="search" type="search" placeholder="이름, 색상, 브랜드로 검색" aria-label="옷 검색">
+          <input id="search" type="search" placeholder="이름, 색상, 브랜드, 사이즈로 검색" aria-label="옷 검색">
         </div>
         <button class="btn btn-light make-outfit" id="makeOutfitBtn" title="여러 벌을 골라 코디로 저장해요"><span data-icon="layers"></span><span>코디 만들기</span></button>
         <button class="btn btn-primary add-desktop" id="addBtn"><span data-icon="plus"></span>옷 추가</button>
@@ -999,6 +1007,12 @@
           <button type="button" class="btn btn-primary" id="brandAddBtn">추가</button>
           <button type="button" class="btn btn-soft" id="brandAddCancel">취소</button>
         </div>
+      </div>
+
+      <div class="field">
+        <label for="fSize">사이즈</label>
+        <input id="fSize" type="text" maxlength="15" placeholder="직접 입력하거나 아래에서 골라요 (예: M, 28, 260)" autocomplete="off">
+        <div class="size-chips" id="sizeChips" aria-label="자주 쓰는 사이즈"></div>
       </div>
 
       <div class="field">
@@ -1453,6 +1467,7 @@
       }
       if (!raw) i.color = '';
       i.brand = String(i.brand || '').trim();
+      i.size = String(i.size || '').trim().slice(0, 15);
       if (!i.updatedAt) i.updatedAt = i.createdAt || 1;
       return i;
     }
@@ -1596,7 +1611,7 @@
       else if (currentQuick === 'season') list = list.filter((i) => (i.seasons || []).includes(currentSeason()));
       if (q) {
         list = list.filter((i) =>
-          [i.name, colorLabel(i), i.brand, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
+          [i.name, colorLabel(i), i.brand, i.size, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
         );
       }
       if (currentBrand === 'none') list = list.filter((i) => !i.brand);
@@ -1651,7 +1666,8 @@
         const thumb = i.photo
           ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '" loading="lazy">'
           : svg(c.id, 64);
-        const chips = (i.seasons || []).map((s) => '<span class="chip">' + s + '</span>').join('');
+        const chips = (i.size ? '<span class="chip size" title="사이즈">' + escapeHtml(i.size) + '</span>' : '') +
+          (i.seasons || []).map((s) => '<span class="chip">' + s + '</span>').join('');
         const hex = colorHex(i.color);
         const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
         const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
@@ -1832,7 +1848,7 @@
       $('odMemo').textContent = o.memo;
       $('odItems').innerHTML = list.map((i) => {
         const c = catOf(i.category);
-        const sub = [c.name, colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ');
+        const sub = [c.name, colorLabel(i), i.brand, i.size ? '사이즈 ' + i.size : ''].filter(Boolean).map(escapeHtml).join(' · ');
         return '<li data-item="' + i.id + '" title="옷 정보 보기">' + thumbHtml(i, 'mini', 22) +
           '<div><div class="oi-name">' + escapeHtml(i.name) + '</div><div class="oi-meta">' + sub + '</div></div></li>';
       }).join('') + (gone ? '<li class="gone">옷장에서 삭제된 옷 ' + gone + '벌은 빼고 보여 드려요</li>' : '');
@@ -1946,6 +1962,8 @@
       showBrandAdd(false);
       $('fMemo').value = item ? (item.memo || '') : '';
       $('fFav').checked = item ? !!item.fav : false;
+      $('fSize').value = item ? (item.size || '') : '';
+      renderSizeChips();
       $('fBuyYear').value = item && item.purchaseYear ? String(item.purchaseYear) : '';
       $('fBuyMonth').value = item && item.purchaseMonth ? String(item.purchaseMonth) : '';
       $('fPrice').value = item && item.price ? Number(item.price).toLocaleString('ko-KR') : '';
@@ -2142,6 +2160,35 @@
       ).join('');
     }
     renderCatPick();
+
+    // ---------- 사이즈: 종류별 자주 쓰는 사이즈 버튼 ----------
+    const LETTER_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'FREE'];
+    const SIZE_PRESETS = {
+      top: LETTER_SIZES.concat(['85', '90', '95', '100', '105', '110']),
+      outer: LETTER_SIZES.concat(['85', '90', '95', '100', '105', '110']),
+      dress: ['XS', 'S', 'M', 'L', 'XL', 'FREE', '44', '55', '66', '77'],
+      bottom: ['XS', 'S', 'M', 'L', 'XL', '26', '27', '28', '29', '30', '31', '32', '33', '34', '36'],
+      shoes: ['225', '230', '235', '240', '245', '250', '255', '260', '265', '270', '275', '280', '285', '290'],
+      bag: ['FREE', 'ONE SIZE'],
+      acc: ['FREE', 'ONE SIZE'],
+      etc: ['FREE', 'ONE SIZE']
+    };
+    function renderSizeChips() {
+      const v = $('fSize').value.trim().toUpperCase();
+      $('sizeChips').innerHTML = (SIZE_PRESETS[selectedCat()] || []).map((s) =>
+        '<button type="button" data-size="' + s + '" class="' + (v === s ? 'on' : '') + '" aria-pressed="' + (v === s) + '">' + s + '</button>'
+      ).join('');
+    }
+    $('sizeChips').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-size]');
+      if (!b) return;
+      // 같은 사이즈를 다시 누르면 지워요
+      $('fSize').value = $('fSize').value.trim().toUpperCase() === b.dataset.size ? '' : b.dataset.size;
+      renderSizeChips();
+    });
+    $('fSize').addEventListener('input', renderSizeChips);
+    $('fCats').addEventListener('change', renderSizeChips);
+
     $('fSeasons').innerHTML = SEASONS.map((s, idx) =>
       '<input type="checkbox" id="season-' + idx + '" value="' + s + '"><label for="season-' + idx + '">' + s + '</label>'
     ).join('');
@@ -2457,6 +2504,7 @@
         color: color,
         colorText: colorText,
         brand: brands.includes(selectedBrand) ? selectedBrand : '',
+        size: $('fSize').value.trim().slice(0, 15),
         memo: $('fMemo').value.trim(),
         fav: $('fFav').checked,
         seasons: Array.from(document.querySelectorAll('#fSeasons input:checked')).map((el) => el.value),
