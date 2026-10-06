@@ -353,15 +353,6 @@
     .tab.active .count { color: rgba(255, 255, 255, 0.65); }
     .tab.all { padding-left: 14px; }
     .tabs { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-    .tab[data-cat]:not([data-cat="all"]) { touch-action: pan-x; }
-    .tab.dragging {
-      position: relative; z-index: 5; scale: 1.06; cursor: grabbing;
-      background: var(--primary); color: #fff; border-color: var(--primary);
-      box-shadow: 0 8px 20px rgba(139, 94, 52, 0.35);
-    }
-    .tab.dragging .count { color: rgba(255, 255, 255, 0.75); }
-    .tabs.sorting .tab:not(.dragging) { opacity: 0.85; }
-    .tab-edit { border-style: dashed; color: var(--primary); padding-left: 12px; }
     .tabs-wrap { position: relative; margin-bottom: 6px; }
     .tabs-wrap .tabs { margin: 0; padding-right: 4px; width: calc(100% - 50px); }
     .tabs-wrap::before, .tabs-wrap::after {
@@ -385,12 +376,6 @@
     .cat-grid button .ic { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .cat-grid button small { color: var(--sub); font-weight: 600; font-size: 0.78rem; }
     .cat-grid button.active { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
-    .tab-edit:hover { background: var(--primary-soft); border-color: var(--primary); }
-    .order-hint {
-      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-      font-size: 0.82rem; color: var(--sub); margin: -2px 0 12px;
-    }
-    .order-hint button { color: var(--primary); font-weight: 700; font-size: 0.82rem; text-decoration: underline; text-underline-offset: 2px; }
 
     .group-head {
       grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
@@ -399,27 +384,6 @@
     .group-head:first-child { margin-top: 0; }
     .group-head .ic { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .group-head .n { color: var(--sub); font-weight: 600; font-size: 0.85rem; }
-
-    /* 카테고리 순서 편집 */
-    .order-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-    .order-list li {
-      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-      background: #fff; border: 1px solid var(--line); border-radius: 14px;
-      user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
-      cursor: grab; touch-action: pan-y;
-    }
-    .order-list li:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .order-list li .ic { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-    .order-list li .oname { font-weight: 700; flex: 1; }
-    .order-list li .ocount { color: var(--sub); font-size: 0.85rem; }
-    .order-list li .grip { color: #b7b0c2; }
-    .order-list li .onum { width: 22px; text-align: center; font-weight: 800; color: var(--sub); font-size: 0.85rem; }
-    .order-list li.dragging {
-      position: relative; z-index: 5; scale: 1.03; cursor: grabbing;
-      border-color: var(--primary); background: var(--primary-soft);
-      box-shadow: 0 12px 28px rgba(46, 36, 28, 0.18);
-    }
-    .order-list.sorting li:not(.dragging) { opacity: 0.8; }
 
     .sortbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; color: var(--sub); font-size: 0.9rem; }
     .sortbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
@@ -918,13 +882,9 @@
       </div>
 
       <div class="tabs-wrap" id="tabsWrap">
-        <nav class="tabs" id="tabs" aria-label="종류 선택" title="옆으로 넘겨 더 볼 수 있어요. 꼭 눌러 옮기면 순서가 바뀌어요"></nav>
+        <nav class="tabs" id="tabs" aria-label="종류 선택" title="옆으로 넘겨 더 볼 수 있어요"></nav>
         <button type="button" class="all-cats-btn" id="allCatsBtn" aria-label="전체 분류 보기" title="전체 분류 보기" data-icon="grid"></button>
       </div>
-      <p class="order-hint" id="orderHint" hidden>
-        <span>카테고리를 꼭 눌러 옆으로 옮기면 순서가 바뀌어요.</span>
-        <button type="button" id="orderHintBtn">순서 편집 창 열기</button>
-      </p>
 
       <div class="sortbar">
         <span id="resultText"></span>
@@ -1227,26 +1187,6 @@
         <button type="button" class="icon-btn" id="catCloseBtn" aria-label="닫기" data-icon="x"></button>
       </div>
       <div class="cat-grid" id="catGrid"></div>
-      <div class="actions">
-        <button type="button" class="btn btn-soft" id="catOrderBtn">순서 편집</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== 카테고리 순서 창 ===================== -->
-  <div class="backdrop" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
-    <div class="sheet">
-      <div class="grabber"></div>
-      <div class="sheet-head">
-        <h2 id="orderTitle">카테고리 순서</h2>
-        <button type="button" class="icon-btn" id="orderCloseBtn" aria-label="닫기" data-icon="x"></button>
-      </div>
-      <p class="hint" style="margin-top:0">항목을 <strong>꼭 누른 채</strong> 위아래로 옮겨 순서를 바꿔요. 바꾼 순서는 옷장 탭과 '카테고리 순서' 정렬에 그대로 적용돼요.</p>
-      <ul class="order-list" id="orderList" aria-label="카테고리 순서 (항목을 고른 뒤 위·아래 방향키로도 옮길 수 있어요)"></ul>
-      <div class="actions">
-        <button type="button" class="btn btn-soft" id="orderResetBtn">기본 순서로</button>
-        <button type="button" class="btn btn-primary" id="orderDoneBtn">완료</button>
-      </div>
     </div>
   </div>
 
@@ -1318,9 +1258,10 @@
     const STORAGE_KEY = 'my-closet-items-v1';
     const CATEGORIES = [
       // 따뜻한 어스 톤: 샌드 · 올리브 · 코코아 · 테라코타 · 머스터드 · 러스트 · 세이지 · 토프
+      // 이 배열의 순서가 곧 카테고리 순서예요 (아우터-상의-하의-원피스-신발-가방-액세서리-기타)
+      { id: 'outer', name: '아우터', bg: '#e8dbd1', ink: '#6b4636' },
       { id: 'top', name: '상의', bg: '#efe2cf', ink: '#8a5a2e' },
       { id: 'bottom', name: '하의', bg: '#e4e5d2', ink: '#5d673a' },
-      { id: 'outer', name: '아우터', bg: '#e8dbd1', ink: '#6b4636' },
       { id: 'dress', name: '원피스', bg: '#f0dbd2', ink: '#a1564a' },
       { id: 'shoes', name: '신발', bg: '#f1e4c6', ink: '#94701f' },
       { id: 'bag', name: '가방', bg: '#ecd6c3', ink: '#8e4f2c' },
@@ -1415,27 +1356,11 @@
     let lastColor = '';
     let selectedBrand = '';
 
-    // ---------- 카테고리 순서·정렬 설정 ----------
-    const ORDER_KEY = 'my-closet-cat-order-v1';
+    // ---------- 카테고리 순서(고정)·정렬 설정 ----------
     const SORT_KEY = 'my-closet-sort-v1';
-    function loadOrder() {
-      let order = [];
-      try {
-        const saved = JSON.parse(localStorage.getItem(ORDER_KEY));
-        if (Array.isArray(saved)) order = saved.filter((id) => CATEGORIES.some((c) => c.id === id));
-      } catch (e) {}
-      order = Array.from(new Set(order));
-      CATEGORIES.forEach((c) => { if (!order.includes(c.id)) order.push(c.id); });
-      return order;
-    }
-    let catOrder = loadOrder();
-    function setOrder(newOrder) {
-      const changed = newOrder.join(',') !== catOrder.join(',');
-      catOrder = newOrder.slice();
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
-      if (changed) markOrderChanged();
-      return changed;
-    }
+    // 카테고리 순서는 아우터-상의-하의-원피스-신발-가방-액세서리-기타로 고정
+    const catOrder = CATEGORIES.map((c) => c.id);
+    try { localStorage.removeItem('my-closet-cat-order-v1'); } catch (e) {} // 예전에 바꾼 순서는 지워요
     const orderedCats = () => catOrder.map((id) => CATEGORIES.find((c) => c.id === id));
     const catRank = (id) => catOrder.indexOf(catOf(id).id);
 
@@ -1578,8 +1503,7 @@
         const n = items.filter((i) => i.category === c.id).length;
         return '<button class="tab' + (currentCat === c.id ? ' active' : '') + '" data-cat="' + c.id + '">' +
           catIcon(c, 15) + c.name + ' <span class="count">' + n + '</span></button>';
-      }).join('') +
-        '<button class="tab tab-edit" type="button" data-action="edit-order">' + svg('sort', 15) + '순서 편집</button>';
+      }).join('');
       const active = $('tabs').querySelector('.tab.active');
       if (active && currentCat !== 'all') {
         // 고른 분류가 가려져 있으면 옆으로만 넘겨서 보여주기 (화면 위아래는 움직이지 않음)
@@ -1599,7 +1523,6 @@
     }
 
     function updateOrderHint() {
-      $('orderHint').hidden = !groupByCat;
       $('groupToggle').checked = groupByCat;
       $('groupToggleWrap').classList.toggle('on', groupByCat);
     }
@@ -1893,7 +1816,7 @@
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
       if (!isApp) {
-        closeModal(); closeBrandModal(); closeOrderModal(); closeAcctModal(); closeCatModal();
+        closeModal(); closeBrandModal(); closeAcctModal(); closeCatModal();
         closeOutfitModal(); closeOutfitDetail();
         if (selectMode) exitSelectMode();
       }
@@ -1952,7 +1875,7 @@
       $('modalTitle').textContent = item ? '옷 수정하기' : '옷 추가하기';
       $('fName').value = item ? item.name : '';
       renderCatPick();
-      const cat = item ? item.category : (currentCat !== 'all' ? currentCat : catOrder[0]);
+      const cat = item ? item.category : (currentCat !== 'all' ? currentCat : 'top');
       const radio = document.querySelector('input[name="cat"][value="' + cat + '"]');
       if (radio) radio.checked = true;
       $('fColorEtc').value = item && item.color === ETC ? (item.colorText || '') : '';
@@ -2005,121 +1928,6 @@
       if (!$('modal').classList.contains('open')) document.body.style.overflow = '';
     }
 
-    // ---------- 카테고리 순서 창 ----------
-    function renderOrderList() {
-      $('orderList').innerHTML = orderedCats().map((c, idx) => {
-        const n = items.filter((i) => i.category === c.id).length;
-        return '<li tabindex="0" data-cat="' + c.id + '" aria-label="' + (idx + 1) + '번째 ' + c.name + '">' +
-          '<span class="onum">' + (idx + 1) + '</span>' + catIcon(c, 18) +
-          '<span class="oname">' + c.name + '</span><span class="ocount">' + n + '벌</span>' +
-          '<span class="grip">' + svg('grip', 20) + '</span></li>';
-      }).join('');
-    }
-    function openOrderModal() {
-      renderOrderList();
-      $('orderModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeOrderModal() {
-      $('orderModal').classList.remove('open');
-      if (!$('modal').classList.contains('open') && !$('brandModal').classList.contains('open')) document.body.style.overflow = '';
-    }
-    function applyOrder(newOrder, msg) {
-      if (!setOrder(newOrder)) return;
-      render();
-      if ($('orderModal').classList.contains('open')) renderOrderList();
-      showToast(msg || '카테고리 순서를 바꿨어요');
-    }
-
-    // ---------- 꼭 눌러 옮기기 (마우스·터치 공통) ----------
-    function makeSortable(container, itemSel, axis, onDrop) {
-      const HOLD_MS = 350;
-      let timer = null, el = null, drag = null, pid = null;
-      let sx = 0, sy = 0, start = 0, scroll0 = 0, suppressClick = false;
-      const isX = axis === 'x';
-      const pos = (e) => (isX ? e.clientX : e.clientY);
-      const off = (n) => (isX ? n.offsetLeft : n.offsetTop);
-      const size = (n) => (isX ? n.offsetWidth : n.offsetHeight);
-      const scrollPos = () => (isX ? container.scrollLeft : 0);
-      const sib = (n, dir) => {
-        let s = dir > 0 ? n.nextElementSibling : n.previousElementSibling;
-        while (s && !s.matches(itemSel)) s = dir > 0 ? s.nextElementSibling : s.previousElementSibling;
-        return s;
-      };
-      const cancelPress = () => { clearTimeout(timer); timer = null; if (!drag) el = null; };
-
-      container.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        const item = e.target.closest(itemSel);
-        if (!item || !container.contains(item)) return;
-        el = item; pid = e.pointerId; sx = e.clientX; sy = e.clientY;
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          timer = null;
-          if (!el) return;
-          drag = el;
-          start = isX ? sx : sy;
-          scroll0 = scrollPos();
-          drag.classList.add('dragging');
-          container.classList.add('sorting');
-          try { drag.setPointerCapture(pid); } catch (err) {}
-          if (navigator.vibrate) navigator.vibrate(15);
-        }, HOLD_MS);
-      });
-
-      container.addEventListener('pointermove', (e) => {
-        if (!drag) {
-          if (el && Math.hypot(e.clientX - sx, e.clientY - sy) > 8) cancelPress();
-          return;
-        }
-        e.preventDefault();
-        if (isX) {
-          const r = container.getBoundingClientRect();
-          if (e.clientX > r.right - 40) container.scrollLeft += 10;
-          else if (e.clientX < r.left + 40) container.scrollLeft -= 10;
-        }
-        let d = pos(e) - start + (scrollPos() - scroll0);
-        const center = off(drag) + d + size(drag) / 2;
-        const next = sib(drag, 1), prev = sib(drag, -1);
-        if (next && center > off(next) + size(next) / 2) {
-          const before = off(drag);
-          container.insertBefore(next, drag);
-          start += off(drag) - before;
-        } else if (prev && center < off(prev) + size(prev) / 2) {
-          // 끌고 있는 항목 대신 옆 항목을 옮겨야 끌기가 끊기지 않아요
-          const before = off(drag);
-          container.insertBefore(prev, drag.nextSibling);
-          start += off(drag) - before;
-        }
-        d = pos(e) - start + (scrollPos() - scroll0);
-        drag.style.transform = isX ? 'translateX(' + d + 'px)' : 'translateY(' + d + 'px)';
-      });
-
-      const finish = () => {
-        clearTimeout(timer); timer = null;
-        if (drag) {
-          drag.style.transform = '';
-          drag.classList.remove('dragging');
-          container.classList.remove('sorting');
-          suppressClick = true;
-          setTimeout(() => { suppressClick = false; }, 300);
-          const order = Array.from(container.querySelectorAll(itemSel)).map((n) => n.dataset.cat);
-          drag = null;
-          onDrop(order);
-        }
-        el = null;
-      };
-      container.addEventListener('pointerup', finish);
-      container.addEventListener('pointercancel', finish);
-      document.addEventListener('pointerup', finish);
-      document.addEventListener('pointercancel', finish);
-      // 끌고 있는 동안 화면이 스크롤되거나 길게 누르기 메뉴가 뜨지 않게
-      container.addEventListener('touchmove', (e) => { if (drag) e.preventDefault(); }, { passive: false });
-      container.addEventListener('contextmenu', (e) => { if (e.target.closest(itemSel)) e.preventDefault(); });
-      container.addEventListener('click', (e) => {
-        if (suppressClick) { e.stopPropagation(); e.preventDefault(); suppressClick = false; }
-      }, true);
-    }
 
     function resizeImage(file) {
       return new Promise((resolve, reject) => {
@@ -2222,7 +2030,6 @@
       if ($('outfitModal').classList.contains('open')) closeOutfitModal();
       else if ($('outfitDetailModal').classList.contains('open')) closeOutfitDetail();
       else if ($('catModal').classList.contains('open')) closeCatModal();
-      else if ($('orderModal').classList.contains('open')) closeOrderModal();
       else if ($('brandModal').classList.contains('open')) closeBrandModal();
       else if ($('modal').classList.contains('open')) closeModal();
       else if (selectMode) exitSelectMode();
@@ -2240,27 +2047,6 @@
       showToast(groupByCat ? '카테고리별로 묶어서 보여 드려요' : '고른 순서대로 보여 드려요');
     });
 
-    // 카테고리 순서: 탭을 꼭 눌러 좌우로, 편집 창에서는 위아래로
-    makeSortable($('tabs'), '.tab[data-cat]:not([data-cat="all"])', 'x', (order) => applyOrder(order));
-    makeSortable($('orderList'), 'li[data-cat]', 'y', (order) => applyOrder(order));
-    $('orderHintBtn').addEventListener('click', openOrderModal);
-    $('orderCloseBtn').addEventListener('click', closeOrderModal);
-    $('orderDoneBtn').addEventListener('click', closeOrderModal);
-    $('orderModal').addEventListener('click', (e) => { if (e.target === $('orderModal')) closeOrderModal(); });
-    $('orderResetBtn').addEventListener('click', () => applyOrder(CATEGORIES.map((c) => c.id), '기본 순서로 되돌렸어요'));
-    $('orderList').addEventListener('keydown', (e) => {
-      const li = e.target.closest('li[data-cat]');
-      if (!li || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
-      e.preventDefault();
-      const order = catOrder.slice();
-      const idx = order.indexOf(li.dataset.cat);
-      const to = e.key === 'ArrowUp' ? idx - 1 : idx + 1;
-      if (to < 0 || to >= order.length) return;
-      order.splice(to, 0, order.splice(idx, 1)[0]);
-      applyOrder(order);
-      const moved = $('orderList').querySelector('li[data-cat="' + li.dataset.cat + '"]');
-      if (moved) moved.focus();
-    });
     $('brandFilter').addEventListener('change', (e) => { currentBrand = e.target.value; renderGrid(); });
 
     // 색상: 고르기 / 같은 색을 다시 누르면 선택 해제
@@ -2331,7 +2117,6 @@
     $('tabs').addEventListener('click', (e) => {
       const btn = e.target.closest('.tab');
       if (!btn) return;
-      if (btn.dataset.action === 'edit-order') return openOrderModal();
       currentCat = btn.dataset.cat;
       renderTabs();
       renderGrid();
@@ -2558,7 +2343,6 @@
     function touchItem(item) { item.updatedAt = Date.now(); item.sample = false; markPending(item.id); }
     function markDeleted(id) { sync.deleted[id] = Date.now(); markPending(id); }
     function markBrandsChanged() { meta.brandsUpdated = Date.now(); saveMeta(); sync.settingsDirty = true; saveSync(); schedulePush(); }
-    function markOrderChanged() { meta.orderUpdated = Date.now(); saveMeta(); sync.settingsDirty = true; saveSync(); schedulePush(); }
 
     const ERR_TEXT = {
       BAD_NICKNAME: '닉네임은 2~20자로 정해 주세요.',
@@ -2644,7 +2428,7 @@
         const sendSettings = sync.settingsDirty;
         const sentB = meta.brandsUpdated, sentO = meta.orderUpdated;
         const settings = sendSettings
-          ? { brands: brands, brandsUpdated: sentB, catOrder: catOrder, orderUpdated: sentO }
+          ? { brands: brands, brandsUpdated: sentB }
           : null;
         const chunks = [];
         for (let i = 0; i < payload.length; i += 20) chunks.push(payload.slice(i, i + 20));
@@ -2760,18 +2544,10 @@
         } else if ((s.brandsUpdated || 0) < meta.brandsUpdated) {
           sync.settingsDirty = true;
         }
-        if (Array.isArray(s.catOrder) && (s.orderUpdated || 0) > meta.orderUpdated) {
-          catOrder = normalizeOrder(s.catOrder);
-          try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
-          meta.orderUpdated = s.orderUpdated;
-          changed = true;
-        } else if ((s.orderUpdated || 0) < meta.orderUpdated) {
-          sync.settingsDirty = true;
-        }
+        // 카테고리 순서는 고정이라 계정에 저장된 예전 순서는 쓰지 않아요
         saveMeta();
       } else if (isFull) {
         if (brands.length) { if (!meta.brandsUpdated) meta.brandsUpdated = Date.now(); sync.settingsDirty = true; }
-        if (meta.orderUpdated) sync.settingsDirty = true;
         saveMeta();
       }
 
@@ -2939,9 +2715,6 @@
         saveBrands();
         markBrandsChanged();
       }
-      if (Array.isArray(data.catOrder) && !meta.orderUpdated) {
-        setOrder(normalizeOrder(data.catOrder));
-      }
       if (!save()) return;
       saveSync();
       schedulePush();
@@ -3035,8 +2808,6 @@
       closeOutfitDetail();
       brands = [];
       saveBrands();
-      catOrder = CATEGORIES.map((c) => c.id);
-      try { localStorage.setItem(ORDER_KEY, JSON.stringify(catOrder)); } catch (e) {}
       setSyncState('off');
       render();
     }
@@ -3095,7 +2866,7 @@
       if (recoveryShowing) hideRecovery();
       $('acctModal').classList.remove('open');
       showLogoutPanel(false);
-      const anyOpen = ['modal', 'brandModal', 'orderModal', 'catModal'].some((id) => $(id).classList.contains('open'));
+      const anyOpen = ['modal', 'brandModal', 'catModal'].some((id) => $(id).classList.contains('open'));
       if (!anyOpen) document.body.style.overflow = '';
     }
 
@@ -3115,7 +2886,7 @@
     }
     function closeCatModal() {
       $('catModal').classList.remove('open');
-      const anyOpen = ['modal', 'brandModal', 'orderModal', 'acctModal'].some((id) => $(id).classList.contains('open'));
+      const anyOpen = ['modal', 'brandModal', 'acctModal'].some((id) => $(id).classList.contains('open'));
       if (!anyOpen) document.body.style.overflow = '';
     }
 
@@ -3250,7 +3021,6 @@
       renderTabs();
       renderGrid();
     });
-    $('catOrderBtn').addEventListener('click', () => { closeCatModal(); openOrderModal(); });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && $('acctModal').classList.contains('open')) { e.stopImmediatePropagation(); closeAcctModal(); }
     }, true);
