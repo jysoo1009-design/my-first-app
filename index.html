@@ -421,7 +421,32 @@
     }
     .order-list.sorting li:not(.dragging) { opacity: 0.8; }
 
-    .sortbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; color: var(--sub); font-size: 0.9rem; }
+    .sortbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; color: var(--sub); font-size: 0.9rem; }
+    .sortbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    @media (max-width: 600px) {
+      /* 휴대폰: 첫 줄에 '전체 N벌'과 스위치, 둘째 줄에 브랜드·정렬 */
+      .sortbar-right { display: contents; }
+      .sort-selects { margin-left: auto; }
+    }
+    /* 카테고리별 보기 스위치 */
+    .group-toggle {
+      display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; white-space: nowrap;
+      font-size: 0.86rem; font-weight: 700; color: var(--ink);
+      padding: 5px 12px 5px 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .group-toggle input {
+      appearance: none; -webkit-appearance: none; margin: 0; flex: 0 0 auto;
+      width: 36px; height: 22px; border-radius: 999px; background: #dccdb9; position: relative; cursor: pointer; transition: background 0.2s;
+    }
+    .group-toggle input::after {
+      content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: transform 0.2s;
+    }
+    .group-toggle input:checked { background: var(--primary); }
+    .group-toggle input:checked::after { transform: translateX(14px); }
+    .group-toggle input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .group-toggle.on { border-color: #d8b994; background: var(--primary-soft); }
     .sortbar select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; max-width: 140px; }
     .sort-selects { display: flex; gap: 6px; }
 
@@ -895,17 +920,21 @@
 
       <div class="sortbar">
         <span id="resultText"></span>
+        <div class="sortbar-right">
+        <label class="group-toggle" id="groupToggleWrap" title="켜면 카테고리별로 묶어서, 끄면 고른 순서대로 한 줄로 보여줘요">
+          <input type="checkbox" id="groupToggle" role="switch"> 카테고리별 보기
+        </label>
         <div class="sort-selects">
           <select id="brandFilter" aria-label="브랜드로 보기"></select>
           <select id="sort" aria-label="정렬">
             <option value="new">최근 추가순</option>
-            <option value="category">카테고리 순서</option>
             <option value="old">오래된순</option>
             <option value="name">이름순</option>
             <option value="fav">즐겨찾기 먼저</option>
             <option value="bought">산 날짜 최신순</option>
             <option value="price">가격 높은순</option>
           </select>
+        </div>
         </div>
       </div>
 
@@ -1324,6 +1353,9 @@
     })();
     let currentCat = 'all';
     let currentQuick = 'all'; // 요약 카드 필터: all | season | fav
+    const GROUP_KEY = 'my-closet-group-v1';
+    let groupByCat = false;    // 카테고리별 보기 스위치
+    try { groupByCat = localStorage.getItem(GROUP_KEY) === '1'; } catch (e) {}
 
     // ---------- 코디(옷 여러 벌 묶음) ----------
     const OUTFIT_KEY = 'my-closet-outfits-v1';
@@ -1552,7 +1584,9 @@
     }
 
     function updateOrderHint() {
-      $('orderHint').hidden = $('sort').value !== 'category';
+      $('orderHint').hidden = !groupByCat;
+      $('groupToggle').checked = groupByCat;
+      $('groupToggleWrap').classList.toggle('on', groupByCat);
     }
 
     function getFiltered() {
@@ -1568,11 +1602,16 @@
       if (currentBrand === 'none') list = list.filter((i) => !i.brand);
       else if (currentBrand !== 'all') list = list.filter((i) => i.brand === currentBrand);
       const sort = $('sort').value;
+      const grouping = groupByCat && currentCat === 'all';
       list.sort((a, b) => {
+        // 카테고리별 보기: 카테고리 순서대로 묶고, 그 안에서는 고른 정렬을 따름
+        if (grouping) {
+          const g = catRank(a.category) - catRank(b.category);
+          if (g) return g;
+        }
         if (sort === 'old') return a.createdAt - b.createdAt;
         if (sort === 'name') return a.name.localeCompare(b.name, 'ko');
         if (sort === 'fav') return (b.fav - a.fav) || (b.createdAt - a.createdAt);
-        if (sort === 'category') return (catRank(a.category) - catRank(b.category)) || (b.createdAt - a.createdAt);
         if (sort === 'bought') return (buyKey(b) - buyKey(a)) || (b.createdAt - a.createdAt);
         if (sort === 'price') return ((Number(b.price) || -1) - (Number(a.price) || -1)) || (b.createdAt - a.createdAt);
         return b.createdAt - a.createdAt;
@@ -1599,7 +1638,7 @@
           '</div>';
         return;
       }
-      const grouped = $('sort').value === 'category' && currentCat === 'all';
+      const grouped = groupByCat && currentCat === 'all';
       let lastGroup = null;
       $('grid').innerHTML = list.map((i) => {
         const c = catOf(i.category);
@@ -2144,8 +2183,14 @@
     $('search').addEventListener('input', renderGrid);
     $('sort').addEventListener('change', () => {
       try { localStorage.setItem(SORT_KEY, $('sort').value); } catch (err) {}
+      renderGrid();
+    });
+    $('groupToggle').addEventListener('change', () => {
+      groupByCat = $('groupToggle').checked;
+      try { localStorage.setItem(GROUP_KEY, groupByCat ? '1' : '0'); } catch (err) {}
       updateOrderHint();
       renderGrid();
+      showToast(groupByCat ? '카테고리별로 묶어서 보여 드려요' : '고른 순서대로 보여 드려요');
     });
 
     // 카테고리 순서: 탭을 꼭 눌러 좌우로, 편집 창에서는 위아래로
@@ -3177,7 +3222,14 @@
 
     try {
       const savedSort = localStorage.getItem(SORT_KEY);
-      if (savedSort && $('sort').querySelector('option[value="' + savedSort + '"]')) $('sort').value = savedSort;
+      if (savedSort === 'category') {
+        // 예전 '카테고리 순서' 정렬을 쓰던 경우: 카테고리별 보기 켜기 + 최근 추가순
+        groupByCat = true;
+        localStorage.setItem(GROUP_KEY, '1');
+        localStorage.setItem(SORT_KEY, 'new');
+      } else if (savedSort && $('sort').querySelector('option[value="' + savedSort + '"]')) {
+        $('sort').value = savedSort;
+      }
     } catch (e) {}
     updateOrderHint();
 
