@@ -1349,6 +1349,15 @@
       '<input type="radio" name="color" id="color-etc" value="' + ETC + '">' +
       '<label for="color-etc"><i class="color-dot etc"></i>기타</label>';
 
+    // 한글처럼 글자를 조합하는 중에 누른 Enter는 무시해요.
+    // 조합 중 Enter와 조합이 끝난 뒤 Enter가 두 번 들어와서,
+    // 마지막 글자만 따로 한 번 더 추가되던 문제를 막아요.
+    function isSubmitEnter(e) {
+      if (e.key !== 'Enter') return false;
+      if (e.isComposing || e.keyCode === 229) return false;
+      return true;
+    }
+
     // ---------- 이벤트 ----------
     $('addBtn').addEventListener('click', () => openModal(null));
     $('fab').addEventListener('click', () => openModal(null));
@@ -1418,7 +1427,7 @@
     $('brandAddBtn').addEventListener('click', addBrandFromForm);
     $('brandAddCancel').addEventListener('click', () => showBrandAdd(false));
     $('newBrand').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); addBrandFromForm(); }
+      if (isSubmitEnter(e)) { e.preventDefault(); addBrandFromForm(); }
     });
 
     // 브랜드 관리 창
@@ -1434,7 +1443,7 @@
     }
     $('mgrBrandAdd').addEventListener('click', addBrandFromManager);
     $('mgrBrandInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); addBrandFromManager(); }
+      if (isSubmitEnter(e)) { e.preventDefault(); addBrandFromManager(); }
     });
     $('brandList').addEventListener('click', (e) => {
       const btn = e.target.closest('.del');
