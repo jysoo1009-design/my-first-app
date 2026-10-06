@@ -26,6 +26,7 @@
       --shadow-lg: 0 18px 50px rgba(31, 27, 46, 0.16);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
@@ -261,7 +262,8 @@
     .tab.all { padding-left: 14px; }
 
     .sortbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; color: var(--sub); font-size: 0.9rem; }
-    .sortbar select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; }
+    .sortbar select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; font-size: 0.9rem; max-width: 140px; }
+    .sort-selects { display: flex; gap: 6px; }
 
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-bottom: 110px; }
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
@@ -358,15 +360,40 @@
     .cat-pick input:checked + label { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
     .cat-pick input:focus-visible + label { outline: 2px solid var(--primary); }
 
-    .swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .swatch {
-      width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.12);
-      position: relative; transition: transform 0.12s;
+    .pick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pick-chips input { position: absolute; opacity: 0; pointer-events: none; }
+    .pick-chips label, .chip-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 11px 6px 7px;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.2px; cursor: pointer; background: #fff;
+      transition: border-color 0.15s, background 0.15s;
     }
-    .swatch:hover { transform: scale(1.1); }
-    .swatch.on::after {
-      content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--primary);
+    .pick-chips label:hover { border-color: #cfc8f5; }
+    .pick-chips input:checked + label { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+    .pick-chips input:focus-visible + label { outline: 2px solid var(--primary); }
+    .color-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.15); flex: 0 0 auto; }
+    .color-dot.etc, .swatch-dot.etc { background: conic-gradient(#e04848, #f6d04d, #4caf7a, #3f7fd9, #8e6be0, #e04848); }
+    .brand-chips label { padding: 7px 14px; font-size: 0.85rem; }
+    .chip-btn { border-style: dashed; color: var(--primary); padding: 7px 14px; font-size: 0.85rem; }
+    .chip-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
+    .inline-add { display: flex; gap: 8px; margin-top: 10px; }
+    .inline-add input {
+      flex: 1; min-width: 0; width: auto; padding: 11px 14px; border: 1px solid var(--line);
+      border-radius: 12px; background: #fcfbf9; font-size: 16px;
     }
+    .inline-add .btn { padding: 10px 16px; border-radius: 12px; font-size: 0.92rem; }
+    .etc-input { margin-top: 10px; }
+    .hint { color: var(--sub); font-size: 0.8rem; margin-top: 6px; }
+
+    /* 브랜드 관리 */
+    .brand-list { list-style: none; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin-top: 16px; }
+    .brand-list li { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-top: 1px solid var(--line); }
+    .brand-list li:first-child { border-top: none; }
+    .brand-list .bname { font-weight: 700; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .brand-list .bcount { color: var(--sub); font-size: 0.85rem; }
+    .brand-list .del { color: var(--danger); font-size: 0.85rem; font-weight: 700; padding: 6px 10px; border-radius: 8px; }
+    .brand-list .del:hover { background: #fdecec; }
+    .brand-list .brand-empty { justify-content: center; color: var(--sub); padding: 24px 12px; }
 
     .seasons { display: flex; flex-wrap: wrap; gap: 8px; }
     .seasons input { position: absolute; opacity: 0; pointer-events: none; }
@@ -490,7 +517,7 @@
           <div class="feature">
             <div class="ic" style="background:#ffe9e2;color:#e0603f" data-icon="palette"></div>
             <h3>색상·계절까지 기록</h3>
-            <p>색상, 브랜드, 계절, 메모를 남겨 두면 원하는 옷을 검색으로 금방 찾아요.</p>
+            <p>색상은 목록에서 고르고, 브랜드는 한 번 추가해 두면 골라 쓸 수 있어요.</p>
           </div>
           <div class="feature">
             <div class="ic" style="background:#e0f6ee;color:#2f9d73" data-icon="camera"></div>
@@ -543,6 +570,7 @@
       <div class="wrap">
         <a href="#" class="logo" aria-label="표지로 돌아가기"><span class="logo-mark" data-icon="hanger"></span>나의 옷장</a>
         <div class="appbar-actions">
+          <button type="button" class="icon-btn" id="brandMgrBtn" aria-label="브랜드 관리" title="브랜드 관리" data-icon="tag"></button>
           <a href="#" class="icon-btn" aria-label="표지로" title="표지로" data-icon="home"></a>
         </div>
       </div>
@@ -568,12 +596,15 @@
 
       <div class="sortbar">
         <span id="resultText"></span>
-        <select id="sort" aria-label="정렬">
-          <option value="new">최근 추가순</option>
-          <option value="old">오래된순</option>
-          <option value="name">이름순</option>
-          <option value="fav">즐겨찾기 먼저</option>
-        </select>
+        <div class="sort-selects">
+          <select id="brandFilter" aria-label="브랜드로 보기"></select>
+          <select id="sort" aria-label="정렬">
+            <option value="new">최근 추가순</option>
+            <option value="old">오래된순</option>
+            <option value="name">이름순</option>
+            <option value="fav">즐겨찾기 먼저</option>
+          </select>
+        </div>
       </div>
 
       <section class="grid" id="grid"></section>
@@ -602,14 +633,22 @@
       </div>
 
       <div class="field">
-        <label for="fColor">색상</label>
-        <input id="fColor" type="text" maxlength="20" placeholder="직접 입력하거나 아래에서 골라요" autocomplete="off">
-        <div class="swatches" id="swatches"></div>
+        <span class="field-label">색상</span>
+        <div class="pick-chips" id="fColors" role="radiogroup" aria-label="색상"></div>
+        <div class="etc-input" id="colorEtcWrap" hidden>
+          <input id="fColorEtc" type="text" maxlength="20" placeholder="예: 체크, 스트라이프, 머스터드" autocomplete="off" aria-label="기타 색상 직접 입력">
+        </div>
+        <p class="hint">목록에 없는 색이나 무늬는 '기타'를 골라 직접 적어 주세요. 한 번 더 누르면 선택이 풀려요.</p>
       </div>
 
       <div class="field">
-        <label for="fBrand">브랜드</label>
-        <input id="fBrand" type="text" maxlength="30" placeholder="예: 유니클로" autocomplete="off">
+        <span class="field-label">브랜드</span>
+        <div class="pick-chips brand-chips" id="fBrands" role="radiogroup" aria-label="브랜드"></div>
+        <div class="inline-add" id="brandAddRow" hidden>
+          <input id="newBrand" type="text" maxlength="30" placeholder="새 브랜드 이름" autocomplete="off" aria-label="새 브랜드 이름">
+          <button type="button" class="btn btn-primary" id="brandAddBtn">추가</button>
+          <button type="button" class="btn btn-soft" id="brandAddCancel">취소</button>
+        </div>
       </div>
 
       <div class="field">
@@ -642,6 +681,23 @@
     </form>
   </div>
 
+  <!-- ===================== 브랜드 관리 창 ===================== -->
+  <div class="backdrop" id="brandModal" role="dialog" aria-modal="true" aria-labelledby="brandTitle">
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <h2 id="brandTitle">브랜드 관리</h2>
+        <button type="button" class="icon-btn" id="brandCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <p class="hint" style="margin-top:0">여기서 추가한 브랜드를 옷을 등록할 때 골라요.</p>
+      <div class="inline-add">
+        <input id="mgrBrandInput" type="text" maxlength="30" placeholder="새 브랜드 이름 (예: 유니클로)" autocomplete="off" aria-label="새 브랜드 이름">
+        <button type="button" class="btn btn-primary" id="mgrBrandAdd">추가</button>
+      </div>
+      <ul class="brand-list" id="brandList"></ul>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
@@ -667,6 +723,7 @@
       'plus-lg': '<path d="M12 4v16M4 12h16"/>',
       x: '<path d="M6 6l12 12M18 6 6 18"/>',
       home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/>',
+      tag: '<path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>'
     };
     function svg(name, size) {
@@ -692,21 +749,39 @@
       { id: 'etc', name: '기타', bg: '#ebe8e3', ink: '#6f6a7d' }
     ];
     const SEASONS = ['봄', '여름', '가을', '겨울'];
+    // 고를 수 있는 색상 목록 (목록에 없는 색·무늬는 '기타'로 직접 입력)
     const COLORS = [
-      ['검정', '#1f1f1f'], ['흰색', '#ffffff'], ['회색', '#9e9e9e'], ['네이비', '#1f2f5c'],
-      ['베이지', '#e6d5b8'], ['갈색', '#8a5a3b'], ['빨강', '#e04848'], ['분홍', '#f5a3bd'],
-      ['노랑', '#f6d04d'], ['초록', '#4caf7a'], ['파랑', '#3f7fd9'], ['보라', '#8e6be0']
+      ['BLACK', '#1f1f1f'], ['WHITE', '#ffffff'], ['IVORY', '#f6f1e1'], ['GRAY', '#9e9e9e'], ['CHARCOAL', '#45474d'],
+      ['NAVY', '#1f2f5c'], ['BLUE', '#3f7fd9'], ['SKY BLUE', '#9fd0f5'], ['DENIM', '#4a6a96'],
+      ['BEIGE', '#e6d5b8'], ['CAMEL', '#c19a6b'], ['BROWN', '#7b4f35'], ['KHAKI', '#bdb07d'], ['OLIVE', '#6b6b2e'],
+      ['GREEN', '#4caf7a'], ['MINT', '#a8e6cf'], ['RED', '#e04848'], ['BURGUNDY', '#7a1f35'], ['PINK', '#f5a3bd'],
+      ['PURPLE', '#8e6be0'], ['YELLOW', '#f6d04d'], ['ORANGE', '#f28c38']
     ];
-    const colorHex = (name) => {
-      const found = COLORS.find((c) => c[0] === (name || '').trim());
+    const ETC = 'ETC';
+    // 예전에 한글로 적은 색상을 새 목록으로 옮기기 위한 표
+    const KO_COLORS = {
+      '검정': 'BLACK', '검은색': 'BLACK', '블랙': 'BLACK', '흰색': 'WHITE', '하양': 'WHITE', '하얀색': 'WHITE', '화이트': 'WHITE',
+      '아이보리': 'IVORY', '회색': 'GRAY', '그레이': 'GRAY', '차콜': 'CHARCOAL', '네이비': 'NAVY', '남색': 'NAVY',
+      '파랑': 'BLUE', '파란색': 'BLUE', '블루': 'BLUE', '하늘색': 'SKY BLUE', '데님': 'DENIM', '청': 'DENIM',
+      '베이지': 'BEIGE', '카멜': 'CAMEL', '갈색': 'BROWN', '브라운': 'BROWN', '카키': 'KHAKI', '올리브': 'OLIVE',
+      '초록': 'GREEN', '초록색': 'GREEN', '그린': 'GREEN', '민트': 'MINT', '빨강': 'RED', '빨간색': 'RED', '레드': 'RED',
+      '버건디': 'BURGUNDY', '와인': 'BURGUNDY', '분홍': 'PINK', '핑크': 'PINK', '보라': 'PURPLE', '퍼플': 'PURPLE',
+      '노랑': 'YELLOW', '노란색': 'YELLOW', '옐로우': 'YELLOW', '주황': 'ORANGE', '오렌지': 'ORANGE'
+    };
+    const colorHex = (code) => {
+      const found = COLORS.find((c) => c[0] === code);
       return found ? found[1] : null;
     };
+    const colorLabel = (i) => (i.color === ETC ? (i.colorText || '기타') : (i.color || ''));
 
     const $ = (id) => document.getElementById(id);
-    let items = load();
+    let items = load().map(normalizeItem);
     let currentCat = 'all';
+    let currentBrand = 'all';
     let editingId = null;
     let photoData = '';
+    let lastColor = '';
+    let selectedBrand = '';
 
     function load() {
       try {
@@ -715,10 +790,64 @@
       } catch (e) {}
       const now = Date.now();
       return [
-        { id: 's1', name: '흰색 옥스포드 셔츠', category: 'top', color: '흰색', brand: '', seasons: ['봄', '가을'], memo: '', fav: true, photo: '', createdAt: now - 3000 },
-        { id: 's2', name: '데님 청바지', category: 'bottom', color: '파랑', brand: '', seasons: ['봄', '가을', '겨울'], memo: '', fav: false, photo: '', createdAt: now - 2000 },
-        { id: 's3', name: '검정 패딩', category: 'outer', color: '검정', brand: '', seasons: ['겨울'], memo: '드라이클리닝', fav: false, photo: '', createdAt: now - 1000 }
+        { id: 's1', name: '흰색 옥스포드 셔츠', category: 'top', color: 'WHITE', brand: '', seasons: ['봄', '가을'], memo: '', fav: true, photo: '', createdAt: now - 3000 },
+        { id: 's2', name: '데님 청바지', category: 'bottom', color: 'DENIM', brand: '', seasons: ['봄', '가을', '겨울'], memo: '', fav: false, photo: '', createdAt: now - 2000 },
+        { id: 's3', name: '검정 패딩', category: 'outer', color: 'BLACK', brand: '', seasons: ['겨울'], memo: '드라이클리닝', fav: false, photo: '', createdAt: now - 1000 }
       ];
+    }
+
+    // 예전 형식으로 저장된 옷 정보를 새 형식으로 맞추기
+    function normalizeItem(i) {
+      const raw = String(i.color || '').trim();
+      if (raw && raw !== ETC && !colorHex(raw)) {
+        const mapped = KO_COLORS[raw] || (colorHex(raw.toUpperCase()) ? raw.toUpperCase() : null);
+        if (mapped) {
+          i.color = mapped;
+        } else {
+          i.color = ETC;
+          i.colorText = raw;
+        }
+      }
+      if (!raw) i.color = '';
+      i.brand = String(i.brand || '').trim();
+      return i;
+    }
+
+    // ---------- 브랜드 목록 ----------
+    const BRAND_KEY = 'my-closet-brands-v1';
+    const sortBrands = (list) => list.sort((a, b) => a.localeCompare(b, 'ko'));
+    function loadBrands() {
+      let list = [];
+      try {
+        const saved = JSON.parse(localStorage.getItem(BRAND_KEY));
+        if (Array.isArray(saved)) list = saved.filter((b) => typeof b === 'string' && b.trim());
+      } catch (e) {}
+      // 이미 옷에 적혀 있던 브랜드는 목록에 자동으로 넣기
+      items.forEach((i) => {
+        if (i.brand && !list.some((b) => b.toLowerCase() === i.brand.toLowerCase())) list.push(i.brand);
+      });
+      return sortBrands(list);
+    }
+    let brands = loadBrands();
+    function saveBrands() {
+      try { localStorage.setItem(BRAND_KEY, JSON.stringify(brands)); } catch (e) {}
+    }
+    function addBrand(rawName) {
+      const name = String(rawName || '').trim().replace(/\s+/g, ' ');
+      if (!name) {
+        showToast('브랜드 이름을 입력해 주세요');
+        return null;
+      }
+      const existing = brands.find((b) => b.toLowerCase() === name.toLowerCase());
+      if (existing) {
+        showToast('이미 있는 브랜드예요');
+        return existing;
+      }
+      brands.push(name);
+      sortBrands(brands);
+      saveBrands();
+      showToast("'" + name + "' 브랜드를 추가했어요");
+      return name;
     }
 
     let storageWarned = false;
@@ -785,9 +914,11 @@
       let list = items.filter((i) => currentCat === 'all' || i.category === currentCat);
       if (q) {
         list = list.filter((i) =>
-          [i.name, i.color, i.brand, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
+          [i.name, colorLabel(i), i.brand, i.memo, catOf(i.category).name, (i.seasons || []).join(' ')].join(' ').toLowerCase().includes(q)
         );
       }
+      if (currentBrand === 'none') list = list.filter((i) => !i.brand);
+      else if (currentBrand !== 'all') list = list.filter((i) => i.brand === currentBrand);
       const sort = $('sort').value;
       list.sort((a, b) => {
         if (sort === 'old') return a.createdAt - b.createdAt;
@@ -817,22 +948,35 @@
           : svg(c.id, 64);
         const chips = (i.seasons || []).map((s) => '<span class="chip">' + s + '</span>').join('');
         const hex = colorHex(i.color);
-        const metaText = [i.color, i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
+        const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
+        const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
         return '<article class="card" tabindex="0" data-id="' + i.id + '" aria-label="' + escapeHtml(i.name) + ' 수정">' +
           '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + thumb + '</div>' +
           '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
           '<button class="fav-btn' + (i.fav ? ' on' : '') + '" data-fav="' + i.id + '" aria-label="즐겨찾기 ' + (i.fav ? '해제' : '추가') + '">' + svg('star', 18) + '</button>' +
           '<div class="info"><div class="name">' + escapeHtml(i.name) + '</div>' +
-          '<div class="meta">' + (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '') + '<span>' + metaText + '</span></div>' +
+          '<div class="meta">' + dot + '<span>' + metaText + '</span></div>' +
           (chips ? '<div class="chips">' + chips + '</div>' : '') +
           '</div></article>';
       }).join('');
+    }
+
+    function renderBrandFilter() {
+      const sel = $('brandFilter');
+      if (currentBrand !== 'all' && currentBrand !== 'none' && !brands.includes(currentBrand)) currentBrand = 'all';
+      if (!brands.length) currentBrand = 'all';
+      sel.innerHTML = '<option value="all">모든 브랜드</option>' +
+        brands.map((b) => '<option value="' + escapeHtml(b) + '">' + escapeHtml(b) + '</option>').join('') +
+        '<option value="none">브랜드 없음</option>';
+      sel.value = currentBrand;
+      sel.style.display = brands.length ? '' : 'none';
     }
 
     function render() {
       renderCover();
       renderSummary();
       renderTabs();
+      renderBrandFilter();
       renderGrid();
     }
 
@@ -841,7 +985,7 @@
       const isApp = location.hash === '#closet';
       $('closet').classList.toggle('active', isApp);
       $('cover').classList.toggle('active', !isApp);
-      if (!isApp) closeModal();
+      if (!isApp) { closeModal(); closeBrandModal(); }
       if (location.hash !== '#how') window.scrollTo(0, 0);
     }
     window.addEventListener('hashchange', route);
@@ -852,9 +996,28 @@
       const el = document.querySelector('input[name="cat"]:checked');
       return el ? el.value : 'top';
     }
-    function updateSwatches() {
-      const v = $('fColor').value.trim();
-      document.querySelectorAll('.swatch').forEach((s) => s.classList.toggle('on', s.dataset.name === v));
+    function updateColorEtc() {
+      const isEtc = lastColor === ETC;
+      $('colorEtcWrap').hidden = !isEtc;
+    }
+    function setColor(code) {
+      lastColor = code || '';
+      document.querySelectorAll('input[name="color"]').forEach((el) => { el.checked = el.value === lastColor; });
+      updateColorEtc();
+    }
+    function renderBrandPick() {
+      $('fBrands').innerHTML =
+        '<input type="radio" name="brand" id="brand-none" value=""><label for="brand-none">선택 안 함</label>' +
+        brands.map((b, idx) =>
+          '<input type="radio" name="brand" id="brand-' + idx + '" value="' + escapeHtml(b) + '"><label for="brand-' + idx + '">' + escapeHtml(b) + '</label>'
+        ).join('') +
+        '<button type="button" class="chip-btn" id="brandAddToggle">+ 브랜드 추가</button>';
+      const target = Array.from(document.querySelectorAll('input[name="brand"]')).find((el) => el.value === selectedBrand) || $('brand-none');
+      target.checked = true;
+    }
+    function showBrandAdd(show) {
+      $('brandAddRow').hidden = !show;
+      if (show) { $('newBrand').value = ''; setTimeout(() => $('newBrand').focus(), 30); }
     }
     function updatePhoto() {
       $('photoThumb').innerHTML = photoData ? '<img src="' + photoData + '" alt="사진 미리보기">' : svg('camera', 26);
@@ -869,8 +1032,11 @@
       const cat = item ? item.category : (currentCat !== 'all' ? currentCat : 'top');
       const radio = document.querySelector('input[name="cat"][value="' + cat + '"]');
       if (radio) radio.checked = true;
-      $('fColor').value = item ? (item.color || '') : '';
-      $('fBrand').value = item ? (item.brand || '') : '';
+      $('fColorEtc').value = item && item.color === ETC ? (item.colorText || '') : '';
+      setColor(item ? item.color : '');
+      selectedBrand = item ? (item.brand || '') : '';
+      renderBrandPick();
+      showBrandAdd(false);
       $('fMemo').value = item ? (item.memo || '') : '';
       $('fFav').checked = item ? !!item.fav : false;
       document.querySelectorAll('#fSeasons input').forEach((el) => {
@@ -879,7 +1045,6 @@
       photoData = item ? (item.photo || '') : '';
       $('fPhoto').value = '';
       updatePhoto();
-      updateSwatches();
       $('deleteBtn').style.display = item ? '' : 'none';
       $('modal').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -889,6 +1054,27 @@
     function closeModal() {
       $('modal').classList.remove('open');
       document.body.style.overflow = '';
+    }
+
+    // ---------- 브랜드 관리 창 ----------
+    function renderBrandList() {
+      $('brandList').innerHTML = brands.length
+        ? brands.map((b, idx) => {
+            const n = items.filter((i) => i.brand === b).length;
+            return '<li><span class="bname">' + escapeHtml(b) + '</span><span class="bcount">' + n + '벌</span>' +
+              '<button type="button" class="del" data-idx="' + idx + '">삭제</button></li>';
+          }).join('')
+        : '<li class="brand-empty">아직 추가한 브랜드가 없어요.</li>';
+    }
+    function openBrandModal() {
+      renderBrandList();
+      $('mgrBrandInput').value = '';
+      $('brandModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeBrandModal() {
+      $('brandModal').classList.remove('open');
+      if (!$('modal').classList.contains('open')) document.body.style.overflow = '';
     }
 
     function resizeImage(file) {
@@ -930,9 +1116,12 @@
     $('fSeasons').innerHTML = SEASONS.map((s, idx) =>
       '<input type="checkbox" id="season-' + idx + '" value="' + s + '"><label for="season-' + idx + '">' + s + '</label>'
     ).join('');
-    $('swatches').innerHTML = COLORS.map((c) =>
-      '<button type="button" class="swatch" data-name="' + c[0] + '" title="' + c[0] + '" aria-label="' + c[0] + '" style="background:' + c[1] + '"></button>'
-    ).join('');
+    $('fColors').innerHTML = COLORS.map((c, idx) =>
+      '<input type="radio" name="color" id="color-' + idx + '" value="' + c[0] + '">' +
+      '<label for="color-' + idx + '"><i class="color-dot" style="background:' + c[1] + '"></i>' + c[0] + '</label>'
+    ).join('') +
+      '<input type="radio" name="color" id="color-etc" value="' + ETC + '">' +
+      '<label for="color-etc"><i class="color-dot etc"></i>기타</label>';
 
     // ---------- 이벤트 ----------
     $('addBtn').addEventListener('click', () => openModal(null));
@@ -940,15 +1129,77 @@
     $('cancelBtn').addEventListener('click', closeModal);
     $('closeBtn').addEventListener('click', closeModal);
     $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if ($('brandModal').classList.contains('open')) closeBrandModal();
+      else closeModal();
+    });
     $('search').addEventListener('input', renderGrid);
     $('sort').addEventListener('change', renderGrid);
-    $('fColor').addEventListener('input', updateSwatches);
-    $('swatches').addEventListener('click', (e) => {
-      const s = e.target.closest('.swatch');
-      if (!s) return;
-      $('fColor').value = s.dataset.name;
-      updateSwatches();
+    $('brandFilter').addEventListener('change', (e) => { currentBrand = e.target.value; renderGrid(); });
+
+    // 색상: 고르기 / 같은 색을 다시 누르면 선택 해제
+    $('fColors').addEventListener('click', (e) => {
+      const el = e.target;
+      if (el.name !== 'color') return;
+      if (lastColor === el.value) setColor('');
+      else setColor(el.value);
+      if (lastColor === ETC) setTimeout(() => $('fColorEtc').focus(), 30);
+    });
+
+    // 브랜드: 목록에서 고르기 / 새 브랜드 추가
+    $('fBrands').addEventListener('change', (e) => {
+      if (e.target.name === 'brand') selectedBrand = e.target.value;
+    });
+    $('fBrands').addEventListener('click', (e) => {
+      if (e.target.closest('#brandAddToggle')) showBrandAdd($('brandAddRow').hidden);
+    });
+    function addBrandFromForm() {
+      const name = addBrand($('newBrand').value);
+      if (!name) return;
+      selectedBrand = name;
+      renderBrandPick();
+      renderBrandFilter();
+      showBrandAdd(false);
+    }
+    $('brandAddBtn').addEventListener('click', addBrandFromForm);
+    $('brandAddCancel').addEventListener('click', () => showBrandAdd(false));
+    $('newBrand').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addBrandFromForm(); }
+    });
+
+    // 브랜드 관리 창
+    $('brandMgrBtn').addEventListener('click', openBrandModal);
+    $('brandCloseBtn').addEventListener('click', closeBrandModal);
+    $('brandModal').addEventListener('click', (e) => { if (e.target === $('brandModal')) closeBrandModal(); });
+    function addBrandFromManager() {
+      const name = addBrand($('mgrBrandInput').value);
+      if (!name) return;
+      $('mgrBrandInput').value = '';
+      renderBrandList();
+      renderBrandFilter();
+    }
+    $('mgrBrandAdd').addEventListener('click', addBrandFromManager);
+    $('mgrBrandInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); addBrandFromManager(); }
+    });
+    $('brandList').addEventListener('click', (e) => {
+      const btn = e.target.closest('.del');
+      if (!btn) return;
+      const b = brands[Number(btn.dataset.idx)];
+      if (!b) return;
+      const n = items.filter((i) => i.brand === b).length;
+      const msg = n
+        ? "'" + b + "' 브랜드를 지울까요?\n이 브랜드로 등록된 옷 " + n + "벌은 '브랜드 없음'으로 바뀌어요."
+        : "'" + b + "' 브랜드를 지울까요?";
+      if (!confirm(msg)) return;
+      brands = brands.filter((x) => x !== b);
+      items.forEach((i) => { if (i.brand === b) i.brand = ''; });
+      saveBrands();
+      save();
+      render();
+      renderBrandList();
+      showToast('브랜드를 지웠어요');
     });
 
     $('tabs').addEventListener('click', (e) => {
@@ -1019,11 +1270,23 @@
         $('fName').focus();
         return;
       }
+      const colorEl = document.querySelector('input[name="color"]:checked');
+      const color = colorEl ? colorEl.value : '';
+      let colorText = '';
+      if (color === ETC) {
+        colorText = $('fColorEtc').value.trim();
+        if (!colorText) {
+          showToast('기타 색상을 적어 주세요 (예: 체크)');
+          $('fColorEtc').focus();
+          return;
+        }
+      }
       const data = {
         name: name,
         category: selectedCat(),
-        color: $('fColor').value.trim(),
-        brand: $('fBrand').value.trim(),
+        color: color,
+        colorText: colorText,
+        brand: brands.includes(selectedBrand) ? selectedBrand : '',
         memo: $('fMemo').value.trim(),
         fav: $('fFav').checked,
         seasons: Array.from(document.querySelectorAll('#fSeasons input:checked')).map((el) => el.value),
@@ -1041,6 +1304,12 @@
       render();
       showToast(wasEditing ? '수정했어요' : '옷장에 추가했어요');
     });
+
+    // 새 형식으로 옮긴 내용을 한 번 저장
+    try {
+      if (localStorage.getItem(STORAGE_KEY) !== null) save();
+    } catch (e) {}
+    saveBrands();
 
     render();
     route();
