@@ -270,6 +270,67 @@
     .nav-btn:hover { background: #fbf3e8; }
     .nav-btn .nav-label { max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.1; }
     .appbar-actions { gap: 6px; }
+    @media (max-width: 420px) {
+      .appbar .wrap { gap: 8px; }
+      .appbar .logo { font-size: 1.05rem; gap: 8px; }
+      .appbar-actions { gap: 4px; }
+      .nav-btn { min-width: 46px; padding: 4px 5px; }
+      .nav-btn .nav-label { max-width: 58px; }
+    }
+
+    /* 프로필 · 팔로우 */
+    .nav-av { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; display: block; }
+    .av {
+      border-radius: 50%; background: var(--primary); color: #fff; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex: 0 0 auto; overflow: hidden;
+    }
+    .av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .av.lg { width: 96px; height: 96px; font-size: 2.3rem; box-shadow: 0 0 0 4px var(--surface), 0 0 0 5px var(--line); }
+    .av.md { width: 44px; height: 44px; font-size: 1.1rem; }
+    .av.ghost { background: var(--primary-soft); color: var(--primary); }
+    #socialModal .sheet { min-height: min(600px, 86vh); }
+    .sheet-head .head-l { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .sheet-head .head-l h2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prof-head { text-align: center; padding: 4px 0 2px; }
+    .prof-head .av.lg { margin: 6px auto 14px; }
+    .prof-name { font-family: var(--serif); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.3px; word-break: break-all; }
+    .prof-bio { color: var(--ink); font-size: 0.95rem; margin: 8px auto 0; max-width: 380px; white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+    .prof-bio.no-bio { color: var(--sub); }
+    .fm-badge { display: inline-block; margin-top: 10px; font-size: 0.76rem; font-weight: 800; background: var(--primary-soft); color: var(--primary); padding: 4px 11px; border-radius: 999px; }
+    .prof-stats { display: flex; gap: 10px; margin: 18px 0 12px; }
+    .prof-stats button { flex: 1; padding: 12px 8px; border-radius: 14px; background: #f6ecdf; text-align: center; transition: background 0.15s; }
+    .prof-stats button:hover { background: #efe1cf; }
+    .prof-stats strong { display: block; font-size: 1.3rem; line-height: 1.2; }
+    .prof-stats span { color: var(--sub); font-size: 0.8rem; font-weight: 700; }
+    .wide-btn { width: 100%; border-radius: 14px; }
+    .wide-btn svg { vertical-align: -3px; margin-right: 4px; }
+    .social-search { position: relative; margin-bottom: 10px; }
+    .social-search input {
+      width: 100%; padding: 12px 14px 12px 42px; border: 1px solid var(--line); border-radius: 12px;
+      background: #fffdf9; font-size: 16px; color: var(--ink);
+    }
+    .social-search .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sub); display: flex; }
+    .ppl { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ppl li { display: flex; align-items: center; gap: 10px; padding: 9px 10px 9px 12px; border-radius: 14px; border: 1px solid var(--line); background: #fffdf9; }
+    .ppl li.social-empty { display: block; border: 0; background: none; }
+    .ppl .who { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; text-align: left; }
+    .ppl .who-t { min-width: 0; }
+    .ppl .who b { display: block; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ppl .who small { display: block; color: var(--sub); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .me-tag { font-style: normal; font-size: 0.7rem; font-weight: 800; background: var(--ink); color: #fff; border-radius: 999px; padding: 1px 7px; margin-left: 4px; vertical-align: 1px; }
+    .fbtn { flex: 0 0 auto; padding: 8px 15px; border-radius: 999px; font-size: 0.83rem; font-weight: 800; background: var(--primary); color: #fff; }
+    .fbtn.on { background: #f1e6d7; color: var(--ink); }
+    .fbtn:disabled { opacity: 0.6; }
+    .social-empty { text-align: center; color: var(--sub); font-size: 0.88rem; padding: 18px 8px; line-height: 1.6; }
+    .social-empty strong { display: block; color: var(--ink); font-size: 1.05rem; margin: 14px 0 4px; }
+    .social-empty .btn { margin-top: 16px; }
+    .social-empty .av.lg { margin: 6px auto 0; }
+    .av-edit { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 4px 0 18px; }
+    .av-edit .row-btns { width: 100%; max-width: 340px; }
+    .row-btns .btn svg { vertical-align: -3px; margin-right: 4px; }
+    .bio-count { text-align: right; font-size: 0.75rem; color: var(--sub); margin-top: 4px; }
+    .acct-avatar { overflow: hidden; }
+    .acct-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     /* 저장 상태 · 샘플 안내 */
     .save-status {
@@ -899,6 +960,7 @@
       <div class="wrap">
         <a href="#" class="logo" aria-label="표지로 돌아가기"><span class="logo-mark" data-icon="hanger"></span>나의 옷장</a>
         <div class="appbar-actions">
+          <button type="button" class="nav-btn" id="profBtn" aria-label="프로필·친구" title="프로필·친구"><span id="profBtnIc" data-icon="users"></span><span class="nav-label">프로필</span></button>
           <button type="button" class="nav-btn" id="acctBtn" aria-label="계정·기기 연동" title="로그인하고 기기 연동"><span data-icon="user"></span><span class="nav-label" id="acctBtnName">로그인</span><i class="sdot" id="acctBtnDot"></i></button>
           <button type="button" class="nav-btn" id="brandMgrBtn" aria-label="브랜드 관리" title="브랜드 관리"><span data-icon="tag"></span><span class="nav-label">브랜드</span></button>
           <a href="#" class="nav-btn" aria-label="처음 화면으로" title="처음 화면으로"><span data-icon="home"></span><span class="nav-label">처음</span></a>
@@ -1145,6 +1207,7 @@
         </div>
         <div class="stack" id="acctMain">
           <button type="button" class="btn btn-primary" id="syncNowBtn">지금 동기화</button>
+          <button type="button" class="btn btn-soft" id="openProfileBtn">프로필 · 친구 찾기</button>
           <button type="button" class="btn btn-soft" id="pwToggleBtn">비밀번호 바꾸기</button>
           <form id="pwForm" hidden novalidate style="padding:14px;border:1px solid var(--line);border-radius:14px">
             <div class="field">
@@ -1186,6 +1249,22 @@
         <input type="file" id="importFile" accept="application/json,.json" hidden>
         <p class="hint" style="margin-top:8px">옷·사진·브랜드·카테고리 순서를 파일 하나로 저장하거나, 저장해 둔 파일에서 다시 불러와요.</p>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================== 프로필 · 친구 창 ===================== -->
+  <div class="backdrop" id="socialModal" role="dialog" aria-modal="true" aria-labelledby="socialTitle">
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div class="head-l">
+          <button type="button" class="icon-btn" id="socialBackBtn" aria-label="뒤로" data-icon="back" hidden></button>
+          <h2 id="socialTitle">내 프로필</h2>
+        </div>
+        <button type="button" class="icon-btn" id="socialCloseBtn" aria-label="닫기" data-icon="x"></button>
+      </div>
+      <div id="socialBody"></div>
+      <input type="file" id="avatarFile" accept="image/*" hidden>
     </div>
   </div>
 
@@ -1321,7 +1400,9 @@
       alert: '<path d="M12 4 2.8 19.5h18.4L12 4Z"/><path d="M12 10v4.5M12 17.2v.1"/>',
       sync: '<path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 3.5V8h4.5"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20.5V16h-4.5"/>',
       grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/>',
-      heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>'
+      heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+      users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.2.7 3.5 2.8 3.5 5.6"/>',
+      back: '<path d="m15 6-6 6 6 6"/>'
     };
     function svg(name, size) {
       size = size || 20;
@@ -1972,6 +2053,7 @@
       if (!isApp) {
         closeModal(); closeBrandModal(); closeAcctModal(); closeCatModal();
         closeOutfitModal(); closeOutfitDetail(); closeItemDetail(); returnToDetailId = null;
+        if (isSocialOpen()) closeSocialModal();
         if (selectMode) exitSelectMode();
       }
       if (isApp) setTimeout(updateTabFade, 50);
@@ -2540,7 +2622,11 @@
       NICKNAME_TAKEN: '이미 쓰고 있는 닉네임이에요. 다른 닉네임을 골라 주세요.',
       INVALID_LOGIN: '닉네임 또는 비밀번호가 맞지 않아요.',
       SESSION_EXPIRED: '로그인이 만료됐어요. 다시 로그인해 주세요.',
-      NETWORK: '서버에 연결되지 않아요. 인터넷 연결을 확인해 주세요.'
+      NETWORK: '서버에 연결되지 않아요. 인터넷 연결을 확인해 주세요.',
+      BIO_TOO_LONG: '소개글은 150자까지 쓸 수 있어요.',
+      BAD_AVATAR: '이 사진은 쓸 수 없어요. 다른 사진을 골라 주세요.',
+      NOT_FOUND: '찾는 사람이 없어요. 닉네임이 바뀌었을 수 있어요.',
+      SELF_FOLLOW: '나 자신은 팔로우할 수 없어요.'
     };
     function errText(code, res) {
       if (code === 'LOCKED') {
@@ -3032,8 +3118,11 @@
       $('backupSection').hidden = recoveryShowing || !$('logoutPanel').hidden;
       $('acctTitle').textContent = recoveryShowing ? '복구 코드를 저장해 주세요' : '계정 · 기기 연동';
       renderSaveStatus();
+      if (!logged) { myProfile = null; myProfileFor = null; }
+      else if (myProfileFor !== session.nickname && !myProfileLoading) loadMyProfile(false);
+      updateProfileUI();
+      if (!logged && isSocialOpen() && !$('socialBody').querySelector('[data-s="login"]')) renderSocial();
       if (logged) {
-        $('acctAvatar').textContent = session.nickname.charAt(0);
         $('acctNick').textContent = session.nickname;
         $('acctStatus').textContent = statusText();
         $('acctDot').style.background = syncState === 'ok' ? '#5f9a6a' : syncState === 'error' ? '#c0503a' : '#d29a3c';
@@ -3059,6 +3148,403 @@
       const anyOpen = ['modal', 'brandModal', 'catModal'].some((id) => $(id).classList.contains('open'));
       if (!anyOpen) document.body.style.overflow = '';
     }
+
+    // ---------- 프로필 · 팔로우 ----------
+    var myProfile = null;        // { nickname, bio, avatar, followers, following }
+    var myProfileFor = null;     // 누구의 프로필인지 (닉네임)
+    var myProfileLoading = false;
+    var socialStack = [];        // 창 안 화면 순서: me / edit / list / user
+    var socialSeq = 0;           // 화면이 바뀌면 늦게 온 응답은 버림
+    var socialPeople = [];       // 지금 그려진 사람 목록
+    var socialQuery = '';
+    var socialResults = null;    // null = 아직 검색 전
+    var socialSearchErr = '';
+    var socialSearchTimer = null;
+    var socialSearchSeq = 0;
+    var editAvatar;              // 수정 중인 사진 (undefined = 수정 시작 전, null = 사진 없음)
+
+    var SAFE_IMG = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+    function avatarHtml(p, cls) {
+      const ch = escapeHtml(((p && p.nickname) || '?').charAt(0));
+      const img = p && p.avatar && SAFE_IMG.test(p.avatar) ? '<img src="' + p.avatar + '" alt="">' : '';
+      return '<span class="av ' + cls + '">' + (img || ch) + '</span>';
+    }
+    function isSocialOpen() { return $('socialModal').classList.contains('open'); }
+    function curSocial() { return socialStack[socialStack.length - 1] || { type: 'me' }; }
+    function myProfileNow() { return session && myProfile && myProfileFor === session.nickname ? myProfile : null; }
+
+    async function socialRpc(fn, body) {
+      if (!session) throw new Error('SESSION_EXPIRED');
+      const res = await rpc(fn, Object.assign({ p_token: session.token }, body));
+      if (res && res.error) {
+        if (res.error === 'SESSION_EXPIRED') handleSyncError(new Error('SESSION_EXPIRED'));
+        throw new Error(res.error);
+      }
+      return res;
+    }
+
+    function updateProfileUI() {
+      const p = myProfileNow();
+      const photo = p && p.avatar && SAFE_IMG.test(p.avatar);
+      $('profBtnIc').innerHTML = photo ? '<img class="nav-av" src="' + p.avatar + '" alt="">' : svg('users');
+      if (session) {
+        $('acctAvatar').innerHTML = photo ? '<img src="' + p.avatar + '" alt="">' : escapeHtml(session.nickname.charAt(0));
+      }
+    }
+
+    async function loadMyProfile(force) {
+      if (!session || myProfileLoading) return;
+      if (!force && myProfileNow()) return;
+      const nick = session.nickname;
+      myProfileLoading = true;
+      try {
+        const p = await socialRpc('closet_my_profile', {});
+        if (session && session.nickname === nick) { myProfile = p; myProfileFor = nick; }
+      } catch (e) {
+        // 실패해도 다음에 다시 시도
+      } finally {
+        myProfileLoading = false;
+      }
+      updateProfileUI();
+      if (isSocialOpen() && curSocial().type === 'me' && $('socialMeHead') && myProfileNow()) {
+        $('socialMeHead').innerHTML = profileHeadHtml(myProfileNow(), true);
+      }
+    }
+
+    function openSocialModal(view) {
+      socialStack = [view || { type: 'me' }];
+      $('socialModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      renderSocial();
+      if (session) loadMyProfile(true);
+    }
+    function closeSocialModal() {
+      $('socialModal').classList.remove('open');
+      socialStack = [];
+      socialSeq++;
+      editAvatar = undefined;
+      const anyOpen = ['modal', 'brandModal', 'catModal', 'acctModal', 'outfitModal', 'outfitDetailModal', 'itemDetailModal']
+        .some((id) => $(id).classList.contains('open'));
+      if (!anyOpen) document.body.style.overflow = '';
+    }
+    function pushSocial(v) {
+      socialStack.push(v);
+      renderSocial();
+      $('socialModal').querySelector('.sheet').scrollTop = 0;
+    }
+    function popSocial() {
+      if (curSocial().type === 'edit') editAvatar = undefined;
+      if (socialStack.length > 1) { socialStack.pop(); renderSocial(); }
+      else closeSocialModal();
+    }
+
+    var LOADING_HTML = '<div class="social-empty">불러오는 중…</div>';
+    function renderSocial() {
+      const v = curSocial();
+      const seq = ++socialSeq;
+      $('socialBackBtn').hidden = socialStack.length <= 1 || !session;
+      if (!session) {
+        $('socialTitle').textContent = '프로필';
+        $('socialBody').innerHTML =
+          '<div class="social-empty">' +
+            '<span class="av lg ghost">' + svg('users', 42) + '</span>' +
+            '<strong>로그인하면 프로필을 만들 수 있어요</strong>' +
+            '프로필 사진과 소개글을 올리고 친구를 팔로우해 보세요.<br>옷장 내용은 나만 볼 수 있어요.<br>' +
+            '<button type="button" class="btn btn-primary" data-s="login">로그인 · 가입</button>' +
+          '</div>';
+        return;
+      }
+      if (v.type === 'me') renderSocialMe();
+      else if (v.type === 'edit') renderSocialEdit();
+      else if (v.type === 'list') loadSocialList(v, seq);
+      else if (v.type === 'user') loadSocialUser(v, seq);
+    }
+
+    function profileHeadHtml(p, isMe) {
+      const num = (n) => (typeof n === 'number' ? n.toLocaleString('ko-KR') : '-');
+      return '<div class="prof-head">' + avatarHtml(p, 'lg') +
+          '<div class="prof-name">' + escapeHtml(p.nickname) + '</div>' +
+          (p.bio
+            ? '<p class="prof-bio">' + escapeHtml(p.bio) + '</p>'
+            : '<p class="prof-bio no-bio">' + (isMe ? '아직 소개글이 없어요.' : '소개글이 없어요.') + '</p>') +
+          (!isMe && p.followsMe ? '<span class="fm-badge">나를 팔로우해요</span>' : '') +
+        '</div>' +
+        '<div class="prof-stats">' +
+          '<button type="button" data-s="followers"><strong>' + num(p.followers) + '</strong><span>팔로워</span></button>' +
+          '<button type="button" data-s="following"><strong>' + num(p.following) + '</strong><span>팔로잉</span></button>' +
+        '</div>';
+    }
+
+    function renderSocialMe() {
+      $('socialTitle').textContent = '내 프로필';
+      const p = myProfileNow() || { nickname: session.nickname, bio: '', avatar: null };
+      $('socialBody').innerHTML =
+        '<div id="socialMeHead">' + profileHeadHtml(p, true) + '</div>' +
+        '<button type="button" class="btn btn-soft wide-btn" data-s="edit">' + svg('edit', 16) + '프로필 수정</button>' +
+        '<p class="section-title-sm">친구 찾기</p>' +
+        '<div class="social-search"><span class="ic">' + svg('search', 18) + '</span>' +
+          '<input id="socialSearch" type="search" maxlength="20" placeholder="닉네임으로 찾기" autocomplete="off" enterkeyhint="search" aria-label="닉네임으로 친구 찾기"></div>' +
+        '<ul class="ppl" id="socialResults"></ul>';
+      $('socialSearch').value = socialQuery;
+      renderSearchResults();
+    }
+
+    function peopleHtml(arr, emptyText) {
+      socialPeople = arr || [];
+      if (!socialPeople.length) return '<li class="social-empty">' + emptyText + '</li>';
+      return socialPeople.map((p, i) => '<li>' +
+        '<button type="button" class="who" data-pi="' + i + '">' + avatarHtml(p, 'md') +
+          '<span class="who-t"><b>' + escapeHtml(p.nickname) + (p.isMe ? '<em class="me-tag">나</em>' : '') + '</b>' +
+          (p.bio ? '<small>' + escapeHtml(p.bio) + '</small>' : '') + '</span></button>' +
+        (p.isMe ? '' : '<button type="button" class="fbtn' + (p.isFollowing ? ' on' : '') + '" data-pf="' + i + '">' + (p.isFollowing ? '팔로잉' : '팔로우') + '</button>') +
+      '</li>').join('');
+    }
+
+    function renderSearchResults() {
+      const ul = $('socialResults');
+      if (!ul) return;
+      if (!socialQuery.trim()) { socialPeople = []; ul.innerHTML = '<li class="social-empty">닉네임의 일부만 적어도 찾을 수 있어요.</li>'; return; }
+      if (socialSearchErr) { socialPeople = []; ul.innerHTML = '<li class="social-empty">' + escapeHtml(socialSearchErr) + '</li>'; return; }
+      if (socialResults === null) { socialPeople = []; ul.innerHTML = '<li class="social-empty">찾는 중…</li>'; return; }
+      ul.innerHTML = peopleHtml(socialResults, '‘' + escapeHtml(socialQuery.trim()) + '’ 닉네임을 찾지 못했어요.');
+    }
+    function onSocialSearchInput() {
+      socialQuery = $('socialSearch').value;
+      socialResults = null;
+      socialSearchErr = '';
+      socialSearchSeq++;
+      clearTimeout(socialSearchTimer);
+      renderSearchResults();
+      if (socialQuery.trim()) socialSearchTimer = setTimeout(runSocialSearch, 280);
+    }
+    async function runSocialSearch() {
+      const q = socialQuery.trim();
+      const mySeq = ++socialSearchSeq;
+      if (!q) return;
+      try {
+        const res = await socialRpc('closet_search_users', { p_query: q });
+        if (mySeq !== socialSearchSeq) return;
+        socialResults = res.people || [];
+        socialSearchErr = '';
+      } catch (e) {
+        if (mySeq !== socialSearchSeq) return;
+        if (!session) return;
+        socialResults = [];
+        socialSearchErr = errText(e && e.message);
+      }
+      if (isSocialOpen() && curSocial().type === 'me') renderSearchResults();
+    }
+
+    async function loadSocialList(v, seq) {
+      const isFollowers = v.kind === 'followers';
+      const mine = v.nickname === session.nickname;
+      $('socialTitle').textContent = isFollowers ? '팔로워' : '팔로잉';
+      const who = mine ? '나' : escapeHtml(v.nickname) + '님';
+      const intro = isFollowers ? who + (mine ? '를' : '을') + ' 팔로우하는 사람' : who + (mine ? '가' : '이') + ' 팔로우하는 사람';
+      const empty = isFollowers ? '아직 팔로워가 없어요.' : '아직 팔로우한 사람이 없어요.';
+      $('socialBody').innerHTML = '<p class="hint" style="margin:-6px 0 12px">' + intro + '</p><ul class="ppl" id="socialList">' +
+        (v.people ? peopleHtml(v.people, empty) : LOADING_HTML) + '</ul>';
+      try {
+        const res = await socialRpc('closet_follow_list', { p_nickname: v.nickname, p_kind: v.kind });
+        if (seq !== socialSeq) return;
+        v.people = res.people || [];
+        $('socialList').innerHTML = peopleHtml(v.people, empty);
+      } catch (e) {
+        if (seq !== socialSeq || !session) return;
+        $('socialList').innerHTML = '<li class="social-empty">' + escapeHtml(errText(e && e.message)) + '</li>';
+      }
+    }
+
+    async function loadSocialUser(v, seq) {
+      $('socialTitle').textContent = v.nickname;
+      if (v.profile) drawSocialUser(v); else $('socialBody').innerHTML = LOADING_HTML;
+      try {
+        const p = await socialRpc('closet_get_profile', { p_nickname: v.nickname });
+        if (seq !== socialSeq) return;
+        v.profile = p;
+        drawSocialUser(v);
+      } catch (e) {
+        if (seq !== socialSeq || !session) return;
+        $('socialBody').innerHTML = '<div class="social-empty">' + escapeHtml(errText(e && e.message)) + '</div>';
+      }
+    }
+    function drawSocialUser(v) {
+      const p = v.profile;
+      $('socialBody').innerHTML = profileHeadHtml(p, p.isMe) +
+        (p.isMe
+          ? '<button type="button" class="btn btn-soft wide-btn" data-s="edit">' + svg('edit', 16) + '프로필 수정</button>'
+          : '<button type="button" class="btn ' + (p.isFollowing ? 'btn-soft' : 'btn-primary') + ' wide-btn" data-s="follow">' +
+              (p.isFollowing ? svg('check', 16) + '팔로잉' : svg('plus', 16) + '팔로우') + '</button>' +
+            (p.isFollowing ? '<p class="hint" style="text-align:center">한 번 더 누르면 팔로우를 끊어요.</p>' : '')) +
+        '<p class="hint" style="text-align:center;margin-top:14px">옷장 내용은 서로 공개되지 않아요.</p>';
+    }
+
+    async function toggleFollow(p, btn) {
+      if (!p || p._busy) return;
+      const want = !p.isFollowing;
+      p._busy = true;
+      if (btn) btn.disabled = true;
+      try {
+        const res = await socialRpc('closet_follow', { p_nickname: p.nickname, p_follow: want });
+        p.isFollowing = !!res.isFollowing;
+        // 같은 사람이 다른 화면 목록에도 있으면 함께 맞춤
+        socialStack.forEach((v) => {
+          if (v.profile && v.profile.nickname === res.nickname) Object.assign(v.profile, res);
+          if (v.people) v.people.forEach((q) => { if (q.nickname === res.nickname) q.isFollowing = !!res.isFollowing; });
+        });
+        (socialResults || []).forEach((q) => { if (q.nickname === res.nickname) q.isFollowing = !!res.isFollowing; });
+        showToast(want ? res.nickname + '님을 팔로우했어요' : res.nickname + '님 팔로우를 끊었어요');
+      } catch (e) {
+        if (session) showToast(errText(e && e.message));
+      } finally {
+        p._busy = false;
+      }
+      if (!isSocialOpen()) return;
+      const v = curSocial();
+      if (!session) return;
+      if (v.type === 'me') renderSearchResults();
+      else if (v.type === 'list' && v.people) $('socialList').innerHTML = peopleHtml(v.people, '');
+      else if (v.type === 'user' && v.profile) drawSocialUser(v);
+      loadMyProfile(true);
+    }
+
+    function openPerson(p) {
+      if (!p) return;
+      if (p.isMe) {
+        if (socialStack[0] && socialStack[0].type === 'me') { socialStack = [socialStack[0]]; renderSocial(); }
+        else pushSocial({ type: 'me' });
+        return;
+      }
+      pushSocial({ type: 'user', nickname: p.nickname });
+    }
+
+    // 프로필 수정
+    function renderSocialEdit() {
+      $('socialTitle').textContent = '프로필 수정';
+      const p = myProfileNow() || { nickname: session.nickname, bio: '', avatar: null };
+      if (editAvatar === undefined) editAvatar = p.avatar || null;
+      $('socialBody').innerHTML =
+        '<div class="av-edit"><span id="avPrev"></span>' +
+          '<div class="row-btns">' +
+            '<button type="button" class="btn btn-light" data-s="avatar-pick">' + svg('camera', 16) + '사진 고르기</button>' +
+            '<button type="button" class="btn btn-soft" data-s="avatar-remove" id="avRemove">사진 지우기</button>' +
+          '</div></div>' +
+        '<div class="field"><label for="bioInput">소개글</label>' +
+          '<textarea id="bioInput" maxlength="150" rows="4" placeholder="예: 미니멀한 가을 옷을 좋아해요"></textarea>' +
+          '<div class="bio-count" id="bioCount"></div></div>' +
+        '<p class="form-error" id="profError" role="alert"></p>' +
+        '<div class="actions" style="margin-top:4px">' +
+          '<button type="button" class="btn btn-soft" data-s="cancel-edit">취소</button>' +
+          '<button type="button" class="btn btn-primary" data-s="save-profile" id="profSave">저장하기</button>' +
+        '</div>' +
+        '<p class="hint" style="margin-top:14px">닉네임·프로필 사진·소개글은 다른 사람도 볼 수 있어요. 옷장 내용은 나만 봐요.</p>';
+      $('bioInput').value = p.bio || '';
+      drawAvatarPreview();
+      updateBioCount();
+    }
+    function drawAvatarPreview() {
+      if (!$('avPrev')) return;
+      $('avPrev').innerHTML = avatarHtml({ nickname: session ? session.nickname : '?', avatar: editAvatar }, 'lg');
+      $('avRemove').hidden = !editAvatar;
+    }
+    function updateBioCount() {
+      if ($('bioCount')) $('bioCount').textContent = $('bioInput').value.length + ' / 150';
+    }
+    function makeAvatar(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const s = Math.min(img.width, img.height);
+            const draw = (size, q) => {
+              const c = document.createElement('canvas');
+              c.width = c.height = size;
+              const ctx = c.getContext('2d');
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(0, 0, size, size);
+              ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+              return c.toDataURL('image/jpeg', q);
+            };
+            let out = draw(Math.min(320, s), 0.82);
+            if (out.length > 140000) out = draw(Math.min(240, s), 0.65);
+            resolve(out);
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    async function saveProfile() {
+      const bio = $('bioInput').value.trim();
+      if (bio.length > 150) { $('profError').textContent = ERR_TEXT.BIO_TOO_LONG; return; }
+      $('profSave').disabled = true;
+      $('profError').textContent = '';
+      try {
+        const res = await socialRpc('closet_update_profile', { p_bio: bio, p_avatar: editAvatar || null });
+        myProfile = res;
+        myProfileFor = session.nickname;
+        updateProfileUI();
+        showToast('프로필을 저장했어요');
+        popSocial();
+      } catch (e) {
+        if (!session || !$('profError')) return;
+        $('profError').textContent = errText(e && e.message);
+        $('profSave').disabled = false;
+      }
+    }
+
+    $('profBtn').addEventListener('click', () => openSocialModal());
+    $('openProfileBtn').addEventListener('click', () => { closeAcctModal(); openSocialModal(); });
+    $('socialCloseBtn').addEventListener('click', closeSocialModal);
+    $('socialBackBtn').addEventListener('click', popSocial);
+    $('socialModal').addEventListener('click', (e) => { if (e.target === $('socialModal')) closeSocialModal(); });
+    $('socialBody').addEventListener('input', (e) => {
+      if (e.target.id === 'socialSearch') onSocialSearchInput();
+      else if (e.target.id === 'bioInput') updateBioCount();
+    });
+    $('socialBody').addEventListener('keydown', (e) => {
+      if (e.target.id === 'socialSearch' && e.key === 'Enter' && !e.isComposing) {
+        e.preventDefault();
+        clearTimeout(socialSearchTimer);
+        socialQuery = e.target.value;
+        if (socialQuery.trim()) runSocialSearch();
+      }
+    });
+    $('socialBody').addEventListener('click', (e) => {
+      const pf = e.target.closest('[data-pf]');
+      if (pf) { toggleFollow(socialPeople[+pf.dataset.pf], pf); return; }
+      const pi = e.target.closest('[data-pi]');
+      if (pi) { openPerson(socialPeople[+pi.dataset.pi]); return; }
+      const b = e.target.closest('[data-s]');
+      if (!b) return;
+      const v = curSocial();
+      const act = b.dataset.s;
+      if (act === 'login') { closeSocialModal(); openAcctModal(); }
+      else if (act === 'edit') { editAvatar = undefined; pushSocial({ type: 'edit' }); }
+      else if (act === 'followers' || act === 'following') {
+        const nick = v.type === 'user' && v.profile ? v.profile.nickname : session.nickname;
+        pushSocial({ type: 'list', nickname: nick, kind: act });
+      }
+      else if (act === 'follow' && v.profile) toggleFollow(v.profile, b);
+      else if (act === 'avatar-pick') $('avatarFile').click();
+      else if (act === 'avatar-remove') { editAvatar = null; drawAvatarPreview(); }
+      else if (act === 'cancel-edit') popSocial();
+      else if (act === 'save-profile') saveProfile();
+    });
+    $('avatarFile').addEventListener('change', async () => {
+      const f = $('avatarFile').files && $('avatarFile').files[0];
+      $('avatarFile').value = '';
+      if (!f) return;
+      try {
+        editAvatar = await makeAvatar(f);
+        drawAvatarPreview();
+      } catch (e) {
+        showToast('사진을 불러오지 못했어요. 다른 사진을 골라 주세요.');
+      }
+    });
 
     // ---------- 전체 분류 창 ----------
     function renderCatGrid() {
@@ -3213,6 +3699,7 @@
     });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && $('acctModal').classList.contains('open')) { e.stopImmediatePropagation(); closeAcctModal(); }
+      else if (e.key === 'Escape' && isSocialOpen()) { e.stopImmediatePropagation(); popSocial(); }
     }, true);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && session) syncNow(false);
