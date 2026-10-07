@@ -349,6 +349,20 @@
     .av-edit .row-btns { width: 100%; max-width: 340px; }
     .row-btns .btn svg { vertical-align: -3px; margin-right: 4px; }
     .bio-count { text-align: right; font-size: 0.75rem; color: var(--sub); margin-top: 4px; }
+    .ig-link {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 13px 6px 10px;
+      border-radius: 999px; background: #fff; border: 1px solid var(--line); color: var(--ink);
+      font-weight: 700; font-size: 0.9rem; max-width: 100%; transition: background 0.15s, border-color 0.15s;
+    }
+    .ig-link:hover { background: #fbf3e8; border-color: #dcc7ad; }
+    .ig-link svg { color: #c1356b; flex: 0 0 auto; }
+    .ig-link span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prof-links { display: flex; justify-content: center; }
+    .ig-input { position: relative; }
+    .ig-input .at { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sub); font-weight: 700; pointer-events: none; }
+    .field .ig-input input[type=text] { padding-left: 32px; }
+    .ig-hint { font-size: 0.78rem; color: var(--sub); margin-top: 6px; }
+    .ig-hint.bad { color: var(--danger); font-weight: 600; }
     .acct-avatar { overflow: hidden; }
     .acct-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -1422,7 +1436,8 @@
       grip: '<circle cx="9" cy="6" r="1.4" fill="currentColor"/><circle cx="15" cy="6" r="1.4" fill="currentColor"/><circle cx="9" cy="12" r="1.4" fill="currentColor"/><circle cx="15" cy="12" r="1.4" fill="currentColor"/><circle cx="9" cy="18" r="1.4" fill="currentColor"/><circle cx="15" cy="18" r="1.4" fill="currentColor"/>',
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
       users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.2.7 3.5 2.8 3.5 5.6"/>',
-      back: '<path d="m15 6-6 6 6 6"/>'
+      back: '<path d="m15 6-6 6 6 6"/>',
+      instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none"/>'
     };
     function svg(name, size) {
       size = size || 20;
@@ -2646,7 +2661,8 @@
       BIO_TOO_LONG: '소개글은 150자까지 쓸 수 있어요.',
       BAD_AVATAR: '이 사진은 쓸 수 없어요. 다른 사진을 골라 주세요.',
       NOT_FOUND: '찾는 사람이 없어요. 닉네임이 바뀌었을 수 있어요.',
-      SELF_FOLLOW: '나 자신은 팔로우할 수 없어요.'
+      SELF_FOLLOW: '나 자신은 팔로우할 수 없어요.',
+      BAD_INSTAGRAM: '인스타그램 아이디를 확인해 주세요. (영문·숫자·마침표·밑줄, 30자까지)'
     };
     function errText(code, res) {
       if (code === 'LOCKED') {
@@ -3287,6 +3303,7 @@
           (p.bio
             ? '<p class="prof-bio">' + escapeHtml(p.bio) + '</p>'
             : '<p class="prof-bio no-bio">' + (isMe ? '아직 소개글이 없어요.' : '소개글이 없어요.') + '</p>') +
+          igLinkHtml(p.instagram) +
           (!isMe && p.followsMe ? '<span class="fm-badge">나를 팔로우해요</span>' : '') +
         '</div>' +
         '<div class="prof-stats">' +
@@ -3452,21 +3469,60 @@
         '<div class="field"><label for="bioInput">소개글</label>' +
           '<textarea id="bioInput" maxlength="150" rows="4" placeholder="예: 미니멀한 가을 옷을 좋아해요"></textarea>' +
           '<div class="bio-count" id="bioCount"></div></div>' +
+        '<div class="field"><label for="igInput">인스타그램 (선택)</label>' +
+          '<div class="ig-input"><span class="at">@</span>' +
+          '<input id="igInput" type="text" maxlength="120" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="url" placeholder="아이디 또는 프로필 링크"></div>' +
+          '<p class="ig-hint" id="igHint"></p></div>' +
         '<p class="form-error" id="profError" role="alert"></p>' +
         '<div class="actions" style="margin-top:4px">' +
           '<button type="button" class="btn btn-soft" data-s="cancel-edit">취소</button>' +
           '<button type="button" class="btn btn-primary" data-s="save-profile" id="profSave">저장하기</button>' +
         '</div>' +
-        '<p class="hint" style="margin-top:14px">닉네임·프로필 사진·소개글은 다른 사람도 볼 수 있어요. 옷장 내용은 나만 봐요.</p>';
+        '<p class="hint" style="margin-top:14px">닉네임·프로필 사진·소개글·인스타그램은 다른 사람도 볼 수 있어요. 옷장 내용은 나만 봐요.</p>';
       $('bioInput').value = p.bio || '';
+      $('igInput').value = p.instagram || '';
       drawAvatarPreview();
       updateBioCount();
+      updateIgHint();
     }
     function drawAvatarPreview() {
       if (!$('avPrev')) return;
       $('avPrev').innerHTML = avatarHtml({ nickname: session ? session.nickname : '?', avatar: editAvatar }, 'lg');
       $('avRemove').hidden = !editAvatar;
     }
+    // 인스타그램: '@아이디', '아이디', 'instagram.com/아이디' 모두 받아서 아이디만 남김
+    // 빈칸 = '' (없음), 형식이 틀리면 null
+    const IG_RESERVED = ['p', 'reel', 'reels', 'stories', 'explore', 'accounts', 'tv', 'direct'];
+    function parseInstagram(raw) {
+      let s = String(raw || '').trim();
+      if (!s) return '';
+      const m = s.match(/^(?:https?:\/\/)?(?:www\.|m\.)?(?:instagram\.com|instagr\.am)\/+([^\/?#\s]+)/i);
+      if (m) {
+        s = m[1];
+        if (IG_RESERVED.includes(s.toLowerCase())) return null;
+      } else if (/[\/\s]/.test(s)) {
+        return null;
+      }
+      s = s.replace(/^@+/, '').toLowerCase();
+      if (!/^[a-z0-9._]{1,30}$/.test(s) || s.startsWith('.') || s.endsWith('.') || s.includes('..')) return null;
+      return s;
+    }
+    function igLinkHtml(id) {
+      if (!id || parseInstagram(id) !== id) return '';
+      return '<div class="prof-links"><a class="ig-link" href="https://www.instagram.com/' + id + '/" target="_blank" rel="noopener noreferrer" title="인스타그램에서 보기">' +
+        svg('instagram', 17) + '<span>@' + escapeHtml(id) + '</span></a></div>';
+    }
+    function updateIgHint() {
+      const h = $('igHint');
+      if (!h) return;
+      const raw = $('igInput').value;
+      const id = parseInstagram(raw);
+      h.classList.toggle('bad', id === null);
+      if (id === null) h.textContent = '아이디는 영문·숫자·마침표(.)·밑줄(_)만, 30자까지 쓸 수 있어요.';
+      else if (!id) h.textContent = '인스타그램 앱에서 복사한 프로필 링크를 붙여 넣어도 돼요.';
+      else h.textContent = '프로필에 @' + id + ' 로 보여요.';
+    }
+
     function updateBioCount() {
       if ($('bioCount')) $('bioCount').textContent = $('bioInput').value.length + ' / 150';
     }
@@ -3499,11 +3555,13 @@
     }
     async function saveProfile() {
       const bio = $('bioInput').value.trim();
+      const ig = parseInstagram($('igInput').value);
+      if (ig === null) { $('profError').textContent = ERR_TEXT.BAD_INSTAGRAM; $('igInput').focus(); return; }
       if (bio.length > 150) { $('profError').textContent = ERR_TEXT.BIO_TOO_LONG; return; }
       $('profSave').disabled = true;
       $('profError').textContent = '';
       try {
-        const res = await socialRpc('closet_update_profile', { p_bio: bio, p_avatar: editAvatar || null });
+        const res = await socialRpc('closet_update_profile', { p_bio: bio, p_avatar: editAvatar || null, p_instagram: ig });
         myProfile = res;
         myProfileFor = session.nickname;
         updateProfileUI();
@@ -3524,6 +3582,14 @@
     $('socialBody').addEventListener('input', (e) => {
       if (e.target.id === 'socialSearch') onSocialSearchInput();
       else if (e.target.id === 'bioInput') updateBioCount();
+      else if (e.target.id === 'igInput') { updateIgHint(); if ($('profError')) $('profError').textContent = ''; }
+    });
+    $('socialBody').addEventListener('focusout', (e) => {
+      // 링크를 붙여 넣었으면 칸을 나갈 때 아이디만 남김
+      if (e.target.id !== 'igInput') return;
+      const id = parseInstagram(e.target.value);
+      if (id) e.target.value = id;
+      updateIgHint();
     });
     $('socialBody').addEventListener('keydown', (e) => {
       if (e.target.id === 'socialSearch' && e.key === 'Enter' && !e.isComposing) {
