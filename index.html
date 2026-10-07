@@ -635,6 +635,21 @@
     .oc-name { font-family: var(--serif); font-weight: 700; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .oc-meta { color: var(--sub); font-size: 0.8rem; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .outfit-detail .collage { max-width: 300px; margin: 0 auto; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+    .outfit-card .collage { aspect-ratio: 4 / 5; position: relative; }
+    .collage.has-photo .tile img { object-position: center 30%; }
+    .photo-badge {
+      position: absolute; left: 8px; bottom: 8px; display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(46, 36, 28, 0.72); color: #fbf3e6; font-size: 0.72rem; font-weight: 800;
+      padding: 4px 9px 4px 7px; border-radius: 999px; backdrop-filter: blur(4px);
+    }
+    .outfit-detail .collage.has-photo { width: min(340px, 100%, calc(54vh * 0.8)); max-width: none; aspect-ratio: 4 / 5; position: relative; }
+    .outfit-detail .collage.has-photo .tile img { object-position: center; }
+    .od-seg { max-width: 260px; margin: 0 auto 12px; }
+    .od-seg button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+    .od-photo-acts { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .od-photo-acts .btn { border-radius: 999px; padding: 9px 16px; font-size: 0.88rem; }
+    .od-photo-acts .btn svg { vertical-align: -3px; margin-right: 3px; }
+    .od-photo-acts .btn-danger { background: transparent; }
     .od-memo { background: #f3e9db; border-radius: 12px; padding: 10px 12px; font-size: 0.9rem; margin-top: 10px; white-space: pre-wrap; }
     .outfit-items { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 14px 0 16px; }
     .outfit-items li { display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: #fffaf3; cursor: pointer; }
@@ -1319,6 +1334,15 @@
         <label for="oMemo">메모 (선택)</label>
         <textarea id="oMemo" maxlength="200" placeholder="예: 비 오는 날, 결혼식 하객룩"></textarea>
       </div>
+      <div class="field">
+        <span class="field-label">착용 사진 (선택)</span>
+        <label class="photo-drop" for="oPhoto">
+          <span class="photo-thumb" id="oPhotoThumb"></span>
+          <span><strong id="oPhotoText">착용 사진 올리기</strong><small>이 코디를 입은 사진이에요. 없으면 옷 사진 모음이 보여요.</small></span>
+          <button type="button" class="photo-remove" id="oPhotoRemove">지우기</button>
+        </label>
+        <input id="oPhoto" type="file" accept="image/*" hidden>
+      </div>
       <div class="actions">
         <button type="button" class="btn btn-soft" id="outfitCancelBtn">취소</button>
         <button type="submit" class="btn btn-primary" id="outfitSaveBtn">저장하기</button>
@@ -1334,14 +1358,20 @@
         <h2 id="odTitle"></h2>
         <button type="button" class="icon-btn" id="odCloseBtn" aria-label="닫기" data-icon="x"></button>
       </div>
+      <div class="seg od-seg" id="odSeg" hidden>
+        <button type="button" data-odv="photo">착용 사진</button>
+        <button type="button" data-odv="collage">옷 모음</button>
+      </div>
       <div id="odCollage"></div>
+      <div class="od-photo-acts" id="odPhotoActs"></div>
+      <input type="file" id="odPhotoFile" accept="image/*" hidden>
       <p class="hint" id="odMeta" style="text-align:center;margin-top:10px"></p>
       <p id="odMemo" class="od-memo" hidden></p>
       <ul class="outfit-items" id="odItems"></ul>
       <div class="stack">
         <button type="button" class="btn btn-primary" data-od="reselect">옷 다시 고르기</button>
         <div class="row-btns">
-          <button type="button" class="btn btn-soft" data-od="rename">이름·메모 수정</button>
+          <button type="button" class="btn btn-soft" data-od="rename">이름·메모·사진 수정</button>
           <button type="button" class="btn btn-danger" data-od="delete">코디 삭제</button>
         </div>
       </div>
@@ -1523,6 +1553,7 @@
         name: String(o.name || '이름 없는 코디').slice(0, 30),
         memo: String(o.memo || '').slice(0, 200),
         itemIds: Array.from(new Set(ids)),
+        photo: typeof o.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(o.photo) ? o.photo : '',
         createdAt: o.createdAt || Date.now(),
         updatedAt: o.updatedAt || o.createdAt || Date.now()
       };
@@ -1535,8 +1566,23 @@
       return [];
     }
     function saveOutfits() {
-      try { localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits)); } catch (e) { showToast('저장 공간이 부족해요'); }
+      try { localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits)); return true; } catch (e) { showToast('저장 공간이 부족해요'); return false; }
     }
+    // 착용 사진을 바꾼 뒤 저장. 공간이 모자라면 예전 사진으로 되돌림
+    function setOutfitPhoto(o, photo) {
+      const before = o.photo || '';
+      o.photo = photo || '';
+      try {
+        localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits));
+      } catch (e) {
+        o.photo = before;
+        showToast('이 기기에 사진을 저장할 공간이 부족해요');
+        return false;
+      }
+      return true;
+    }
+    let outfitFormPhoto = '';        // 코디 저장 창에서 고른 착용 사진
+    let odView = 'photo';            // 코디 자세히 보기: photo | collage
     let outfits = loadOutfits();
     let viewMode = 'items';          // items | outfits
     let selectMode = false;          // 코디에 넣을 옷 고르는 중인지
@@ -1852,6 +1898,11 @@
         return t;
       }).join('') + '</div>';
     }
+    function outfitCoverHtml(o) {
+      if (!o.photo) return collageHtml(outfitItems(o));
+      return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진" loading="lazy"></span>' +
+        '<span class="photo-badge">' + svg('camera', 13) + '착용 사진</span></div>';
+    }
     function outfitMeta(o) {
       const list = outfitItems(o);
       const gone = o.itemIds.length - list.length;
@@ -1871,7 +1922,7 @@
       const list = outfits.slice().sort((a, b) => b.updatedAt - a.updatedAt);
       $('outfitGrid').innerHTML = list.map((o) =>
         '<article class="outfit-card" tabindex="0" data-oid="' + o.id + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' +
-        collageHtml(outfitItems(o)) +
+        outfitCoverHtml(o) +
         '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">' + outfitMeta(o) + '</div></div></article>'
       ).join('');
     }
@@ -1927,7 +1978,10 @@
       const o = outfitId ? outfits.find((x) => x.id === outfitId) : null;
       const ids = o ? o.itemIds : Array.from(selectedIds);
       const list = ids.map((id) => items.find((i) => i.id === id)).filter(Boolean);
-      $('outfitTitle').textContent = o ? '코디 이름·메모 수정' : '코디 저장하기 (' + list.length + '벌)';
+      $('outfitTitle').textContent = o ? '코디 수정' : '코디 저장하기 (' + list.length + '벌)';
+      outfitFormPhoto = o ? (o.photo || '') : '';
+      $('oPhoto').value = '';
+      updateOutfitFormPhoto();
       $('oPreview').innerHTML = list.map((i) => thumbHtml(i, 'mini', 24)).join('');
       $('oName').value = o ? o.name : '';
       $('oMemo').value = o ? o.memo : '';
@@ -1945,7 +1999,11 @@
       const memo = $('oMemo').value.trim();
       if (outfitFormId) {
         const o = outfits.find((x) => x.id === outfitFormId);
-        if (o) { o.name = name; o.memo = memo; o.updatedAt = Date.now(); saveOutfits(); markPending(o.id); }
+        if (o) {
+          o.name = name; o.memo = memo; o.updatedAt = Date.now();
+          if ((o.photo || '') !== outfitFormPhoto) setOutfitPhoto(o, outfitFormPhoto); else saveOutfits();
+          markPending(o.id);
+        }
         closeOutfitModal();
         renderOutfits();
         if (detailOutfitId) renderOutfitDetail();
@@ -1953,9 +2011,9 @@
         return;
       }
       const now = Date.now();
-      const o = { id: 'outfit_' + now + Math.random().toString(36).slice(2, 6), name: name, memo: memo, itemIds: Array.from(selectedIds), createdAt: now, updatedAt: now };
+      const o = { id: 'outfit_' + now + Math.random().toString(36).slice(2, 6), name: name, memo: memo, itemIds: Array.from(selectedIds), photo: '', createdAt: now, updatedAt: now };
       outfits.push(o);
-      saveOutfits();
+      if (outfitFormPhoto) setOutfitPhoto(o, outfitFormPhoto); else saveOutfits();
       markPending(o.id);
       closeOutfitModal();
       exitSelectMode();
@@ -1971,7 +2029,18 @@
       const list = outfitItems(o);
       const gone = o.itemIds.length - list.length;
       $('odTitle').textContent = o.name;
-      $('odCollage').innerHTML = collageHtml(list);
+      const showPhoto = !!o.photo && odView === 'photo';
+      $('odSeg').hidden = !o.photo;
+      $('odSeg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.odv === (showPhoto ? 'photo' : 'collage')));
+      $('odCollage').innerHTML = showPhoto
+        ? '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진"></span></div>'
+        : collageHtml(list);
+      $('odPhotoActs').innerHTML = !o.photo
+        ? '<button type="button" class="btn btn-light" data-od="photo-add">' + svg('camera', 16) + '착용 사진 추가</button>'
+        : showPhoto
+          ? '<button type="button" class="btn btn-light" data-od="photo-add">' + svg('camera', 16) + '사진 바꾸기</button>' +
+            '<button type="button" class="btn btn-danger" data-od="photo-remove">사진 지우기</button>'
+          : '';
       $('odMeta').textContent = outfitMeta(o) + ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') + ' 저장';
       $('odMemo').hidden = !o.memo;
       $('odMemo').textContent = o.memo;
@@ -1984,6 +2053,7 @@
     }
     function openOutfitDetail(id) {
       detailOutfitId = id;
+      odView = 'photo';
       renderOutfitDetail();
       $('outfitDetailModal').classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -2198,19 +2268,19 @@
     }
 
 
-    function resizeImage(file) {
+    function resizeImage(file, maxSize, quality) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
           const img = new Image();
           img.onload = () => {
-            const max = 480;
+            const max = maxSize || 480;
             const scale = Math.min(1, max / Math.max(img.width, img.height));
             const canvas = document.createElement('canvas');
             canvas.width = Math.round(img.width * scale);
             canvas.height = Math.round(img.height * scale);
             canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.75));
+            resolve(canvas.toDataURL('image/jpeg', quality || 0.75));
           };
           img.onerror = reject;
           img.src = reader.result;
@@ -2493,6 +2563,47 @@
       if (e.key === 'Enter' && e.target.classList.contains('outfit-card')) openOutfitDetail(e.target.dataset.oid);
     });
     $('outfitForm').addEventListener('submit', (e) => { e.preventDefault(); saveOutfitForm(); });
+    function updateOutfitFormPhoto() {
+      $('oPhotoThumb').innerHTML = outfitFormPhoto ? '<img src="' + outfitFormPhoto + '" alt="">' : svg('camera', 24);
+      $('oPhotoText').textContent = outfitFormPhoto ? '사진 바꾸기' : '착용 사진 올리기';
+      $('oPhotoRemove').style.display = outfitFormPhoto ? 'block' : 'none';
+    }
+    $('oPhoto').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        outfitFormPhoto = await resizeImage(file, 720, 0.78);
+        updateOutfitFormPhoto();
+      } catch (err) {
+        showToast('사진을 불러오지 못했어요');
+      }
+    });
+    $('oPhotoRemove').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      outfitFormPhoto = '';
+      $('oPhoto').value = '';
+      updateOutfitFormPhoto();
+    });
+    $('odPhotoFile').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      e.target.value = '';
+      const o = outfits.find((x) => x.id === detailOutfitId);
+      if (!file || !o) return;
+      try {
+        const data = await resizeImage(file, 720, 0.78);
+        if (!setOutfitPhoto(o, data)) return;
+        o.updatedAt = Date.now();
+        saveOutfits();
+        markPending(o.id);
+        odView = 'photo';
+        renderOutfitDetail();
+        renderOutfits();
+        showToast('착용 사진을 추가했어요');
+      } catch (err) {
+        showToast('사진을 불러오지 못했어요');
+      }
+    });
     $('outfitCloseBtn').addEventListener('click', closeOutfitModal);
     $('outfitCancelBtn').addEventListener('click', closeOutfitModal);
     $('outfitModal').addEventListener('click', (e) => { if (e.target === $('outfitModal')) closeOutfitModal(); });
@@ -2506,7 +2617,15 @@
         if (act.dataset.od === 'reselect') { closeOutfitDetail(); enterSelectMode(o.itemIds, o.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         else if (act.dataset.od === 'rename') openOutfitModal(o.id);
         else if (act.dataset.od === 'delete') deleteOutfit(o.id);
+        else if (act.dataset.od === 'photo-add') $('odPhotoFile').click();
+        else if (act.dataset.od === 'photo-remove') {
+          if (!confirm('착용 사진을 지울까요?\n지우면 옷 사진 모음이 다시 보여요.')) return;
+          if (setOutfitPhoto(o, '')) { o.updatedAt = Date.now(); saveOutfits(); markPending(o.id); renderOutfitDetail(); renderOutfits(); showToast('착용 사진을 지웠어요'); }
+        }
         return;
+      }
+      const sb = e.target.closest('[data-odv]');
+      if (sb) { odView = sb.dataset.odv; renderOutfitDetail(); return;
       }
       const li = e.target.closest('li[data-item]');
       if (li) {
