@@ -363,6 +363,18 @@
     .field .ig-input input[type=text] { padding-left: 32px; }
     .ig-hint { font-size: 0.78rem; color: var(--sub); margin-top: 6px; }
     .ig-hint.bad { color: var(--danger); font-weight: 600; }
+    .vis-row { margin-bottom: 10px; }
+    .vis-label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--sub); margin-bottom: 6px; }
+    .vis-seg { margin-bottom: 0; }
+    .vis-seg button { font-size: 0.85rem; padding: 9px 4px; }
+    .vis-seg button:disabled { opacity: 0.5; }
+    .peek-btn { margin-top: 10px; }
+    .peek-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .ro-note { text-align: center; color: var(--sub); font-size: 0.8rem; margin: 0 0 12px; }
+    .grid.remote, .outfit-grid.remote { padding-bottom: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    @media (min-width: 640px) { .grid.remote, .outfit-grid.remote { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    #socialModal .outfit-detail .collage { margin-top: 0; }
+    #socialModal .id-info { margin-bottom: 4px; }
     .acct-avatar { overflow: hidden; }
     .acct-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -1468,6 +1480,7 @@
       heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
       users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.2.7 3.5 2.8 3.5 5.6"/>',
       back: '<path d="m15 6-6 6 6 6"/>',
+      lock: '<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
       instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none"/>'
     };
     function svg(name, size) {
@@ -2782,7 +2795,9 @@
       BAD_AVATAR: '이 사진은 쓸 수 없어요. 다른 사진을 골라 주세요.',
       NOT_FOUND: '찾는 사람이 없어요. 닉네임이 바뀌었을 수 있어요.',
       SELF_FOLLOW: '나 자신은 팔로우할 수 없어요.',
-      BAD_INSTAGRAM: '인스타그램 아이디를 확인해 주세요. (영문·숫자·마침표·밑줄, 30자까지)'
+      BAD_INSTAGRAM: '인스타그램 아이디를 확인해 주세요. (영문·숫자·마침표·밑줄, 30자까지)',
+      BAD_VISIBILITY: '공개 범위를 바꾸지 못했어요. 다시 해 주세요.',
+      PRIVATE: '공개되지 않은 옷장이에요.'
     };
     function errText(code, res) {
       if (code === 'LOCKED') {
@@ -3364,6 +3379,7 @@
       updateProfileUI();
       if (isSocialOpen() && curSocial().type === 'me' && $('socialMeHead') && myProfileNow()) {
         $('socialMeHead').innerHTML = profileHeadHtml(myProfileNow(), true);
+        if ($('socialVis')) $('socialVis').innerHTML = visHtml(myProfileNow());
       }
     }
 
@@ -3384,13 +3400,15 @@
       if (!anyOpen) document.body.style.overflow = '';
     }
     function pushSocial(v) {
+      const sh = $('socialModal').querySelector('.sheet');
+      curSocial().scroll = sh.scrollTop;
       socialStack.push(v);
       renderSocial();
-      $('socialModal').querySelector('.sheet').scrollTop = 0;
+      sh.scrollTop = 0;
     }
     function popSocial() {
       if (curSocial().type === 'edit') editAvatar = undefined;
-      if (socialStack.length > 1) { socialStack.pop(); renderSocial(); }
+      if (socialStack.length > 1) { socialStack.pop(); renderSocial(); $('socialModal').querySelector('.sheet').scrollTop = curSocial().scroll || 0; }
       else closeSocialModal();
     }
 
@@ -3405,7 +3423,7 @@
           '<div class="social-empty">' +
             '<span class="av lg ghost">' + svg('users', 42) + '</span>' +
             '<strong>로그인하면 프로필을 만들 수 있어요</strong>' +
-            '프로필 사진과 소개글을 올리고 친구를 팔로우해 보세요.<br>옷장 내용은 나만 볼 수 있어요.<br>' +
+            '프로필 사진과 소개글을 올리고 친구를 팔로우해 보세요.<br>옷장과 코디를 보여줄 범위는 내가 정해요.<br>' +
             '<button type="button" class="btn btn-primary" data-s="login">로그인 · 가입</button>' +
           '</div>';
         return;
@@ -3414,6 +3432,9 @@
       else if (v.type === 'edit') renderSocialEdit();
       else if (v.type === 'list') loadSocialList(v, seq);
       else if (v.type === 'user') loadSocialUser(v, seq);
+      else if (v.type === 'closet') loadSocialCloset(v);
+      else if (v.type === 'ritem') drawSocialRItem(v);
+      else if (v.type === 'routfit') drawSocialROutfit(v);
     }
 
     function profileHeadHtml(p, isMe) {
@@ -3438,6 +3459,8 @@
       $('socialBody').innerHTML =
         '<div id="socialMeHead">' + profileHeadHtml(p, true) + '</div>' +
         '<button type="button" class="btn btn-soft wide-btn" data-s="edit">' + svg('edit', 16) + '프로필 수정</button>' +
+        '<p class="section-title-sm">공개 설정</p>' +
+        '<div id="socialVis">' + visHtml(myProfileNow()) + '</div>' +
         '<p class="section-title-sm">친구 찾기</p>' +
         '<div class="social-search"><span class="ic">' + svg('search', 18) + '</span>' +
           '<input id="socialSearch" type="search" maxlength="20" placeholder="닉네임으로 찾기" autocomplete="off" enterkeyhint="search" aria-label="닉네임으로 친구 찾기"></div>' +
@@ -3533,7 +3556,7 @@
           : '<button type="button" class="btn ' + (p.isFollowing ? 'btn-soft' : 'btn-primary') + ' wide-btn" data-s="follow">' +
               (p.isFollowing ? svg('check', 16) + '팔로잉' : svg('plus', 16) + '팔로우') + '</button>' +
             (p.isFollowing ? '<p class="hint" style="text-align:center">한 번 더 누르면 팔로우를 끊어요.</p>' : '')) +
-        '<p class="hint" style="text-align:center;margin-top:14px">옷장 내용은 서로 공개되지 않아요.</p>';
+        (p.isMe ? '' : peekHtml(p));
     }
 
     async function toggleFollow(p, btn) {
@@ -3598,7 +3621,7 @@
           '<button type="button" class="btn btn-soft" data-s="cancel-edit">취소</button>' +
           '<button type="button" class="btn btn-primary" data-s="save-profile" id="profSave">저장하기</button>' +
         '</div>' +
-        '<p class="hint" style="margin-top:14px">닉네임·프로필 사진·소개글·인스타그램은 다른 사람도 볼 수 있어요. 옷장 내용은 나만 봐요.</p>';
+        '<p class="hint" style="margin-top:14px">닉네임·프로필 사진·소개글·인스타그램은 다른 사람도 볼 수 있어요. 옷장과 코디는 공개 설정에서 정한 범위만 보여요.</p>';
       $('bioInput').value = p.bio || '';
       $('igInput').value = p.instagram || '';
       drawAvatarPreview();
@@ -3694,6 +3717,240 @@
       }
     }
 
+    // ---------- 공개 설정 ----------
+    const VIS_OPTS = [['public', '전체 공개'], ['followers', '팔로워 공개'], ['private', '비공개']];
+    function visHtml(p) {
+      const row = (k, label, cur) => '<div class="vis-row"><span class="vis-label">' + label + '</span><div class="seg vis-seg" data-vk="' + k + '">' +
+        VIS_OPTS.map((o) => '<button type="button" data-vv="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '"' + (p ? '' : ' disabled') + '>' + o[1] + '</button>').join('') + '</div></div>';
+      return row('closet', '옷장', p && p.closetVis) + row('outfits', '코디 리스트', p && p.outfitsVis) +
+        '<p class="hint">팔로워 공개는 나를 팔로우한 사람만 볼 수 있어요. 코디를 공개하면 코디에 들어간 옷도 함께 보여요. 보는 사람은 구경만 할 수 있고 고칠 수 없어요.</p>';
+    }
+    function refreshVis() {
+      if ($('socialVis') && isSocialOpen() && curSocial().type === 'me') $('socialVis').innerHTML = visHtml(myProfileNow());
+    }
+    async function setPrivacy(kind, val) {
+      const p = myProfileNow();
+      if (!p) return;
+      const key = kind === 'closet' ? 'closetVis' : 'outfitsVis';
+      if (p[key] === val) return;
+      const before = p[key];
+      p[key] = val;
+      refreshVis();
+      try {
+        const res = await socialRpc('closet_set_privacy', { p_closet: kind === 'closet' ? val : null, p_outfits: kind === 'outfits' ? val : null });
+        if (session) { myProfile = res; myProfileFor = session.nickname; }
+        showToast('공개 범위를 바꿨어요');
+      } catch (e) {
+        p[key] = before;
+        if (session) showToast(errText(e && e.message));
+      }
+      refreshVis();
+    }
+
+    // ---------- 다른 사람 옷장 구경하기 (읽기 전용) ----------
+    function peekHtml(p) {
+      const can = p.canCloset || p.canOutfits;
+      let hint = '';
+      if (!can) {
+        const needFollow = (p.closetVis === 'followers' || p.outfitsVis === 'followers') && !p.isFollowing;
+        hint = needFollow ? '팔로우하면 ' + escapeHtml(p.nickname) + '님의 옷장을 구경할 수 있어요.' : escapeHtml(p.nickname) + '님은 옷장과 코디를 공개하지 않았어요.';
+      } else if (!(p.canCloset && p.canOutfits)) {
+        hint = (p.canCloset ? '옷장만' : '코디 리스트만') + ' 공개되어 있어요.';
+      }
+      return '<button type="button" class="btn btn-light wide-btn peek-btn" data-s="peek"' + (can ? '' : ' disabled') + '>' + svg('hanger', 16) + '옷장 구경하기</button>' +
+        (hint ? '<p class="hint" style="text-align:center;margin-top:8px">' + hint + '</p>' : '');
+    }
+    // 다른 사람이 보낸 내용은 믿지 않고, 아는 칸만 골라서 안전한 값으로 바꿔요
+    function cleanRemoteItem(id, d) {
+      if (!d || typeof d !== 'object') return null;
+      const str = (v, n) => String(v == null ? '' : v).slice(0, n);
+      const num = (v, lo, hi) => { v = Number(v); return Number.isFinite(v) && v >= lo && v <= hi ? Math.floor(v) : 0; };
+      const cat = CATEGORIES.some((c) => c.id === d.category) ? d.category : CATEGORIES[CATEGORIES.length - 1].id;
+      const color = d.color === ETC ? ETC : (colorHex(str(d.color, 20)) ? str(d.color, 20) : '');
+      return {
+        id: str(id, 64), name: str(d.name, 60) || '이름 없는 옷', category: cat, color: color, colorText: str(d.colorText, 20),
+        brand: str(d.brand, 40), size: str(d.size, 15), memo: str(d.memo, 200), price: num(d.price, 0, 1e9),
+        purchaseYear: num(d.purchaseYear, 1950, 2100), purchaseMonth: num(d.purchaseMonth, 1, 12), fav: !!d.fav,
+        photo: typeof d.photo === 'string' && SAFE_IMG.test(d.photo) ? d.photo : '', updatedAt: num(d.updatedAt, 0, 1e15)
+      };
+    }
+    function cleanRemoteOutfit(id, d) {
+      if (!d || typeof d !== 'object') return null;
+      const ids = Array.isArray(d.itemIds) ? d.itemIds.filter((x) => typeof x === 'string').slice(0, 60).map((x) => x.slice(0, 64)) : [];
+      return {
+        id: String(id).slice(0, 64), name: String(d.name || '이름 없는 코디').slice(0, 30), memo: String(d.memo || '').slice(0, 200),
+        itemIds: Array.from(new Set(ids)), photo: typeof d.photo === 'string' && SAFE_IMG.test(d.photo) ? d.photo : '',
+        createdAt: Number(d.createdAt) > 0 ? Number(d.createdAt) : 0
+      };
+    }
+    function lockHtml(p, vis, what) {
+      const need = vis === 'followers' && !p.isFollowing;
+      return '<div class="social-empty"><span class="av lg ghost">' + svg('lock', 38) + '</span><strong>' + what + ' 공개되지 않았어요</strong>' +
+        (need ? '팔로우하면 볼 수 있어요.' : escapeHtml(p.nickname) + '님만 볼 수 있어요.') + '</div>';
+    }
+    function remoteCardHtml(i) {
+      const c = catOf(i.category);
+      const hex = colorHex(i.color);
+      const dot = i.color === ETC ? '<i class="swatch-dot etc"></i>' : (hex ? '<i class="swatch-dot" style="background:' + hex + '"></i>' : '');
+      const metaText = [colorLabel(i), i.brand].filter(Boolean).map(escapeHtml).join(' · ') || c.name;
+      const buyText = [buyLabel(i), i.price ? formatWon(i.price) : ''].filter(Boolean).join(' · ');
+      return '<article class="card" tabindex="0" data-rid="' + escapeHtml(i.id) + '" aria-label="' + escapeHtml(i.name) + ' 자세히 보기">' +
+        '<div class="thumb" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + (i.photo ? '<img src="' + i.photo + '" alt="" loading="lazy">' : svg(c.id, 64)) + '</div>' +
+        '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
+        (i.fav ? '<span class="fav-btn on" style="pointer-events:none">' + svg('star', 18) + '</span>' : '') +
+        '<div class="info"><div class="name">' + escapeHtml(i.name) + '</div>' +
+        '<div class="meta">' + dot + '<span>' + metaText + '</span></div>' +
+        (buyText ? '<div class="buyline">' + buyText + '</div>' : '') +
+        (i.size ? '<div class="chips"><span class="chip size">' + escapeHtml(i.size) + '</span></div>' : '') + '</div></article>';
+    }
+    function remoteCoverHtml(o, map) {
+      if (o.photo) return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="" loading="lazy"></span><span class="photo-badge">' + svg('camera', 13) + '착용 사진</span></div>';
+      return collageHtml(o.itemIds.map((id) => map[id]).filter(Boolean));
+    }
+    function closetHeadHtml(v) {
+      const tab = (k, label, n) => '<button type="button" data-ct="' + k + '" class="' + (v.tab === k ? 'on' : '') + '">' + label + (n != null ? ' ' + n : '') + '</button>';
+      return '<div class="seg" style="margin-bottom:10px">' + tab('items', '옷', v.itemsTotal) + tab('outfits', '코디 리스트', v.outfitsTotal) + '</div>' +
+        '<p class="ro-note">구경만 할 수 있어요. 수정은 ' + escapeHtml(v.profile.nickname) + '님만 할 수 있어요.</p>';
+    }
+    function closetPaneHtml(v) {
+      const p = v.profile;
+      const moreBtn = (act, label) => '<button type="button" class="btn btn-soft wide-btn" style="margin-top:12px" data-s="' + act + '">' + label + '</button>';
+      if (v.tab === 'items') {
+        if (!p.canCloset || v.itemsErr === 'PRIVATE') return lockHtml(p, p.closetVis, '옷장은');
+        if (v.itemsErr) return '<div class="social-empty">' + escapeHtml(v.itemsErr) + '</div>';
+        if (!v.items || (v.itemsBusy && !v.items.length)) return LOADING_HTML;
+        if (!v.items.length) return '<div class="social-empty">아직 올린 옷이 없어요.</div>';
+        const idx = (c) => CATEGORIES.findIndex((x) => x.id === c);
+        const sorted = v.items.slice().sort((a, b) => idx(a.category) - idx(b.category) || b.updatedAt - a.updatedAt);
+        let html = '<div class="grid remote">', last = null;
+        sorted.forEach((i) => {
+          if (i.category !== last) {
+            const c = catOf(i.category);
+            html += '<div class="group-head">' + catIcon(c, 15) + c.name + ' <span class="n">' + sorted.filter((x) => x.category === i.category).length + '벌</span></div>';
+            last = i.category;
+          }
+          html += remoteCardHtml(i);
+        });
+        return html + '</div>' + (v.itemsBusy ? LOADING_HTML : (!v.itemsDone ? moreBtn('more-items', '옷 더 보기') : ''));
+      }
+      if (!p.canOutfits || v.outfitsErr === 'PRIVATE') return lockHtml(p, p.outfitsVis, '코디 리스트는');
+      if (v.outfitsErr) return '<div class="social-empty">' + escapeHtml(v.outfitsErr) + '</div>';
+      if (!v.outfits || (v.outfitsBusy && !v.outfits.length)) return LOADING_HTML;
+      if (!v.outfits.length) return '<div class="social-empty">아직 저장한 코디가 없어요.</div>';
+      return '<div class="outfit-grid remote">' + v.outfits.map((o) => {
+        const n = o.itemIds.filter((id) => v.oItems[id]).length;
+        return '<article class="outfit-card" tabindex="0" data-roid="' + escapeHtml(o.id) + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' + remoteCoverHtml(o, v.oItems) +
+          '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">옷 ' + n + '벌</div></div></article>';
+      }).join('') + '</div>' + (v.outfitsBusy ? LOADING_HTML : (!v.outfitsDone ? moreBtn('more-outfits', '코디 더 보기') : ''));
+    }
+    function drawSocialCloset(v) {
+      $('socialBody').innerHTML = '<div id="closetHead">' + closetHeadHtml(v) + '</div><div id="closetPane">' + closetPaneHtml(v) + '</div>';
+    }
+    function redrawCloset(v) {
+      if (!isSocialOpen() || curSocial() !== v || !$('closetPane')) return;
+      $('closetHead').innerHTML = closetHeadHtml(v);
+      $('closetPane').innerHTML = closetPaneHtml(v);
+    }
+    function startClosetTab(v) {
+      const p = v.profile;
+      if (v.tab === 'items' && p.canCloset && !v.itemsErr) loadClosetItems(v);
+      if (v.tab === 'outfits' && p.canOutfits && !v.outfitsErr) loadClosetOutfits(v);
+    }
+    function loadSocialCloset(v) {
+      $('socialTitle').textContent = v.nickname + '님의 옷장';
+      drawSocialCloset(v);
+      startClosetTab(v);
+    }
+    async function loadClosetItems(v) {
+      if (v.itemsBusy || v.itemsDone) return;
+      v.itemsBusy = true;
+      v.items = v.items || [];
+      redrawCloset(v);
+      try {
+        for (let n = 0; n < 10 && !v.itemsDone; n++) {
+          const res = await socialRpc('closet_view_items', { p_nickname: v.nickname, p_offset: v.itemsOff || 0 });
+          const rows = res.items || [];
+          rows.forEach((r) => { const c = cleanRemoteItem(r.id, r.data); if (c) v.items.push(c); });
+          v.itemsOff = (v.itemsOff || 0) + rows.length;
+          v.itemsTotal = res.total;
+          v.itemsDone = !res.hasMore || !rows.length;
+          redrawCloset(v);
+        }
+      } catch (e) {
+        v.itemsErr = e && e.message === 'PRIVATE' ? 'PRIVATE' : errText(e && e.message);
+      }
+      v.itemsBusy = false;
+      redrawCloset(v);
+    }
+    async function loadClosetOutfits(v) {
+      if (v.outfitsBusy || v.outfitsDone) return;
+      v.outfitsBusy = true;
+      v.outfits = v.outfits || [];
+      v.oItems = v.oItems || {};
+      redrawCloset(v);
+      try {
+        const res = await socialRpc('closet_view_outfits', { p_nickname: v.nickname, p_offset: v.outfitsOff || 0 });
+        (res.items || []).forEach((r) => { const c = cleanRemoteItem(r.id, r.data); if (c) v.oItems[c.id] = c; });
+        const rows = res.outfits || [];
+        rows.forEach((r) => { const o = cleanRemoteOutfit(r.id, r.data); if (o) v.outfits.push(o); });
+        v.outfitsOff = (v.outfitsOff || 0) + rows.length;
+        v.outfitsTotal = res.total;
+        v.outfitsDone = !res.hasMore || !rows.length;
+      } catch (e) {
+        v.outfitsErr = e && e.message === 'PRIVATE' ? 'PRIVATE' : errText(e && e.message);
+      }
+      v.outfitsBusy = false;
+      redrawCloset(v);
+    }
+    function drawSocialRItem(v) {
+      const i = v.item, c = catOf(i.category);
+      const none = '<span class="none">-</span>';
+      $('socialTitle').textContent = i.name;
+      const hex = colorHex(i.color);
+      const colorHtml = i.color
+        ? (i.color === ETC ? '<i class="swatch-dot etc"></i>' : '<i class="swatch-dot" style="background:' + hex + '"></i>') + escapeHtml(colorLabel(i))
+        : none;
+      const rows = [
+        ['종류', catIcon(c, 14) + c.name], ['색상', colorHtml],
+        ['브랜드', i.brand ? escapeHtml(i.brand) : none],
+        ['사이즈', i.size ? '<span class="chip size">' + escapeHtml(i.size) + '</span>' : none],
+        ['산 날짜', buyLabel(i) || none], ['가격', i.price ? formatWon(i.price) : none],
+        ['메모', i.memo ? escapeHtml(i.memo) : none]
+      ];
+      $('socialBody').innerHTML =
+        '<div class="id-photo" style="--c:' + c.bg + ';--ink2:' + c.ink + '">' + (i.photo ? '<img src="' + i.photo + '" alt="' + escapeHtml(i.name) + '">' : svg(c.id, 88)) +
+          '<span class="cat-badge" style="color:' + c.ink + '">' + c.name + '</span>' +
+          (i.fav ? '<span class="fav-btn on" style="pointer-events:none">' + svg('star', 18) + '</span>' : '') + '</div>' +
+        '<dl class="id-info">' + rows.map((r) => '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>').join('') + '</dl>' +
+        '<p class="ro-note" style="margin-top:12px">구경만 할 수 있어요.</p>';
+    }
+    function drawSocialROutfit(v) {
+      const o = v.outfit;
+      $('socialTitle').textContent = o.name;
+      const list = o.itemIds.map((id) => v.items[id]).filter(Boolean);
+      const gone = o.itemIds.length - list.length;
+      const showPhoto = !!o.photo && v.view !== 'collage';
+      const seg = o.photo
+        ? '<div class="seg od-seg"><button type="button" data-rv="photo" class="' + (showPhoto ? 'on' : '') + '">착용 사진</button><button type="button" data-rv="collage" class="' + (showPhoto ? '' : 'on') + '">옷 모음</button></div>'
+        : '';
+      $('socialBody').innerHTML = seg +
+        '<div class="outfit-detail">' + (showPhoto
+          ? '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진"></span></div>'
+          : collageHtml(list)) + '</div>' +
+        '<p class="hint" style="text-align:center;margin-top:10px">옷 ' + list.length + '벌' + (o.createdAt ? ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') + ' 저장' : '') + '</p>' +
+        (o.memo ? '<p class="od-memo">' + escapeHtml(o.memo) + '</p>' : '') +
+        '<ul class="outfit-items">' + list.map((i) => {
+          const c = catOf(i.category);
+          const sub = [c.name, colorLabel(i), i.brand, i.size ? '사이즈 ' + i.size : ''].filter(Boolean).map(escapeHtml).join(' · ');
+          return '<li data-rii="' + escapeHtml(i.id) + '" title="옷 정보 보기">' + thumbHtml(i, 'mini', 22) +
+            '<div><div class="oi-name">' + escapeHtml(i.name) + '</div><div class="oi-meta">' + sub + '</div></div></li>';
+        }).join('') + (gone ? '<li class="gone">보여 드릴 수 없는 옷 ' + gone + '벌은 빼고 보여 드려요</li>' : '') + '</ul>' +
+        '<p class="ro-note">구경만 할 수 있어요.</p>';
+    }
+    $('socialBody').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-rid], [data-roid]')) e.target.click();
+    });
+
     $('profBtn').addEventListener('click', () => openSocialModal());
     $('openProfileBtn').addEventListener('click', () => { closeAcctModal(); openSocialModal(); });
     $('socialCloseBtn').addEventListener('click', closeSocialModal);
@@ -3720,6 +3977,31 @@
       }
     });
     $('socialBody').addEventListener('click', (e) => {
+      const vb = e.target.closest('[data-vv]');
+      if (vb) { if (!vb.disabled) setPrivacy(vb.closest('[data-vk]').dataset.vk, vb.dataset.vv); return; }
+      const v0 = curSocial();
+      const ct = e.target.closest('[data-ct]');
+      if (ct) { if (v0.type === 'closet') { v0.tab = ct.dataset.ct; redrawCloset(v0); startClosetTab(v0); } return; }
+      const rv = e.target.closest('[data-rv]');
+      if (rv) { if (v0.type === 'routfit') { v0.view = rv.dataset.rv; drawSocialROutfit(v0); } return; }
+      const rid = e.target.closest('[data-rid]');
+      if (rid) {
+        const it = (v0.items || []).find((x) => x.id === rid.dataset.rid);
+        if (it) pushSocial({ type: 'ritem', item: it });
+        return;
+      }
+      const roid = e.target.closest('[data-roid]');
+      if (roid) {
+        const o = (v0.outfits || []).find((x) => x.id === roid.dataset.roid);
+        if (o) pushSocial({ type: 'routfit', outfit: o, items: v0.oItems || {}, view: 'photo' });
+        return;
+      }
+      const rii = e.target.closest('[data-rii]');
+      if (rii) {
+        const it = v0.type === 'routfit' && v0.items[rii.dataset.rii];
+        if (it) pushSocial({ type: 'ritem', item: it });
+        return;
+      }
       const pf = e.target.closest('[data-pf]');
       if (pf) { toggleFollow(socialPeople[+pf.dataset.pf], pf); return; }
       const pi = e.target.closest('[data-pi]');
@@ -3735,6 +4017,12 @@
         pushSocial({ type: 'list', nickname: nick, kind: act });
       }
       else if (act === 'follow' && v.profile) toggleFollow(v.profile, b);
+      else if (act === 'peek' && v.type === 'user' && v.profile) {
+        const pr = v.profile;
+        pushSocial({ type: 'closet', nickname: pr.nickname, profile: pr, tab: pr.canCloset ? 'items' : 'outfits' });
+      }
+      else if (act === 'more-items' && v.type === 'closet') loadClosetItems(v);
+      else if (act === 'more-outfits' && v.type === 'closet') loadClosetOutfits(v);
       else if (act === 'avatar-pick') $('avatarFile').click();
       else if (act === 'avatar-remove') { editAvatar = null; drawAvatarPreview(); }
       else if (act === 'cancel-edit') popSocial();
