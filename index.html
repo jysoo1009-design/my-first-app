@@ -374,6 +374,50 @@
     .grid.remote, .outfit-grid.remote { padding-bottom: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     @media (min-width: 640px) { .grid.remote, .outfit-grid.remote { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     #socialModal .outfit-detail .collage { margin-top: 0; }
+    /* 게시물: 사진 넘겨 보기 */
+    .pcar-wrap { position: relative; width: min(340px, 100%, calc(54vh * 0.8)); margin: 0 auto; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); background: #ebe1d3; }
+    .pcar { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; aspect-ratio: 4 / 5; overscroll-behavior-x: contain; }
+    .pcar::-webkit-scrollbar { display: none; }
+    .pslide { flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always; height: 100%; }
+    .pslide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pcount { position: absolute; top: 10px; right: 10px; background: rgba(46, 36, 28, 0.72); color: #fbf3e6; font-size: 0.75rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+    .pnav { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; }
+    .pnav.prev { left: 8px; } .pnav.next { right: 8px; } .pnav.next svg { transform: scaleX(-1); }
+    @media (hover: none) { .pnav { display: none; } }
+    .pdots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
+    .pdots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); }
+    .pdots i.on { background: #fff; width: 16px; border-radius: 3px; }
+    .post-by { text-align: center; color: var(--sub); font-size: 0.85rem; margin: -4px 0 10px; }
+    .post-by b { color: var(--ink); }
+    .post-acts { display: flex; align-items: center; gap: 4px; margin: 12px auto 0; width: min(340px, 100%); flex-wrap: wrap; }
+    .post-acts .grow { flex: 1; }
+    .act-btn { width: 42px; height: 42px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--ink); }
+    .act-btn:hover { background: #f1e6d7; }
+    .act-btn.like.on { color: #d1495b; }
+    .act-btn.mark.on { color: var(--primary); }
+    .act-btn.on svg { fill: currentColor; }
+    .post-likes { flex-basis: 100%; font-weight: 800; font-size: 0.9rem; padding: 0 6px; }
+    .post-cap { width: min(340px, 100%); margin: 6px auto 0; padding: 0 6px; font-size: 0.93rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+    .post-cap b { margin-right: 6px; }
+    .cmt-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .cmt-list li { display: flex; gap: 8px; align-items: flex-start; padding: 9px 12px; border-radius: 12px; background: #f6eee3; font-size: 0.9rem; line-height: 1.5; }
+    .cmt-list .ct { flex: 1; min-width: 0; word-break: break-word; white-space: pre-wrap; }
+    .cmt-list b { margin-right: 6px; }
+    .cmt-list small { color: var(--sub); font-size: 0.75rem; margin-left: 6px; }
+    .cmt-list .cdel { color: var(--danger); font-size: 0.78rem; font-weight: 700; padding: 2px 4px; flex: 0 0 auto; }
+    .cmt-list .none { color: var(--sub); text-align: center; background: none; justify-content: center; }
+    .cmt-form { display: flex; gap: 8px; }
+    .cmt-form input { flex: 1; min-width: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fffdf9; font-size: 16px; }
+    .cmt-form .btn { border-radius: 12px; padding: 0 16px; }
+    .oc-stats { color: var(--sub); font-size: 0.78rem; margin-top: 3px; min-height: 1em; }
+    .o-seg { max-width: 300px; margin: 0 0 14px; }
+    .ph-list { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ph { position: relative; width: 74px; height: 92px; border-radius: 12px; overflow: hidden; background: #f1e6d7; flex: 0 0 auto; }
+    .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ph .ph-del { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%; background: rgba(46, 36, 28, 0.75); color: #fff; font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center; }
+    .ph em { position: absolute; left: 4px; bottom: 4px; font-style: normal; font-size: 0.65rem; font-weight: 800; background: rgba(255, 255, 255, 0.92); border-radius: 999px; padding: 1px 6px; }
+    .ph.add { border: 1.5px dashed #d8c5ac; background: #fffaf3; color: var(--sub); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; }
+    .ph.add:hover { border-color: var(--primary); }
     #socialModal .id-info { margin-bottom: 4px; }
     .acct-avatar { overflow: hidden; }
     .acct-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1102,6 +1146,10 @@
           </div>
           <button type="button" class="btn btn-primary" data-action="new-outfit"><span data-icon="plus"></span>새 코디</button>
         </div>
+        <div class="seg o-seg" id="outfitSeg">
+          <button type="button" data-otab="mine" class="on">내 코디</button>
+          <button type="button" data-otab="saved">저장한 코디</button>
+        </div>
         <section class="outfit-grid" id="outfitGrid"></section>
       </div>
     </main>
@@ -1344,17 +1392,14 @@
         <input id="oName" type="text" maxlength="30" placeholder="예: 가을 출근룩, 주말 나들이" autocomplete="off">
       </div>
       <div class="field">
-        <label for="oMemo">메모 (선택)</label>
-        <textarea id="oMemo" maxlength="200" placeholder="예: 비 오는 날, 결혼식 하객룩"></textarea>
+        <label for="oMemo">글 (선택)</label>
+        <textarea id="oMemo" maxlength="300" placeholder="이 코디에 대한 짧은 글을 적어 보세요. 예: 비 오는 날 결혼식 하객룩"></textarea>
       </div>
       <div class="field">
-        <span class="field-label">착용 사진 (선택)</span>
-        <label class="photo-drop" for="oPhoto">
-          <span class="photo-thumb" id="oPhotoThumb"></span>
-          <span><strong id="oPhotoText">착용 사진 올리기</strong><small>이 코디를 입은 사진이에요. 없으면 옷 사진 모음이 보여요.</small></span>
-          <button type="button" class="photo-remove" id="oPhotoRemove">지우기</button>
-        </label>
-        <input id="oPhoto" type="file" accept="image/*" hidden>
+        <span class="field-label">사진 (선택)</span>
+        <div class="ph-list" id="oPhotos"></div>
+        <input id="oPhoto" type="file" accept="image/*" multiple hidden>
+        <p class="hint">이 코디를 입은 사진을 5장까지 올릴 수 있어요. 첫 번째 사진이 대표 사진이고, 없으면 옷 사진 모음이 보여요.</p>
       </div>
       <div class="actions">
         <button type="button" class="btn btn-soft" id="outfitCancelBtn">취소</button>
@@ -1377,7 +1422,6 @@
       </div>
       <div id="odCollage"></div>
       <div class="od-photo-acts" id="odPhotoActs"></div>
-      <input type="file" id="odPhotoFile" accept="image/*" hidden>
       <p class="hint" id="odMeta" style="text-align:center;margin-top:10px"></p>
       <p id="odMemo" class="od-memo" hidden></p>
       <ul class="outfit-items" id="odItems"></ul>
@@ -1481,6 +1525,8 @@
       users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4"/><path d="M18 14.4c2.2.7 3.5 2.8 3.5 5.6"/>',
       back: '<path d="m15 6-6 6 6 6"/>',
       lock: '<rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+      comment: '<path d="M4 5.5h16v11H10l-5 4v-4H4v-11Z"/>',
+      bookmark: '<path d="M7 4h10v16l-5-3.6L7 20V4Z"/>',
       instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none"/>'
     };
     function svg(name, size) {
@@ -1560,14 +1606,18 @@
 
     // ---------- 코디(옷 여러 벌 묶음) ----------
     const OUTFIT_KEY = 'my-closet-outfits-v1';
+    const MAX_OUTFIT_PHOTOS = 5;
+    const okOutfitImg = (x) => typeof x === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(x);
     function normalizeOutfit(o) {
+      let ph = Array.isArray(o.photos) ? o.photos.filter(okOutfitImg) : [];
+      if (!ph.length && okOutfitImg(o.photo)) ph = [o.photo];
       const ids = Array.isArray(o.itemIds) ? o.itemIds.filter((x) => typeof x === 'string') : [];
       return {
         id: String(o.id),
         name: String(o.name || '이름 없는 코디').slice(0, 30),
-        memo: String(o.memo || '').slice(0, 200),
+        memo: String(o.memo || '').slice(0, 300),
         itemIds: Array.from(new Set(ids)),
-        photo: typeof o.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(o.photo) ? o.photo : '',
+        photos: ph.slice(0, MAX_OUTFIT_PHOTOS),
         createdAt: o.createdAt || Date.now(),
         updatedAt: o.updatedAt || o.createdAt || Date.now()
       };
@@ -1583,19 +1633,22 @@
       try { localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits)); return true; } catch (e) { showToast('저장 공간이 부족해요'); return false; }
     }
     // 착용 사진을 바꾼 뒤 저장. 공간이 모자라면 예전 사진으로 되돌림
-    function setOutfitPhoto(o, photo) {
-      const before = o.photo || '';
-      o.photo = photo || '';
+    function setOutfitPhotos(o, photos) {
+      const before = o.photos || [];
+      o.photos = (photos || []).slice(0, MAX_OUTFIT_PHOTOS);
       try {
         localStorage.setItem(OUTFIT_KEY, JSON.stringify(outfits));
       } catch (e) {
-        o.photo = before;
+        o.photos = before;
         showToast('이 기기에 사진을 저장할 공간이 부족해요');
         return false;
       }
       return true;
     }
-    let outfitFormPhoto = '';        // 코디 저장 창에서 고른 착용 사진
+    let outfitFormPhotos = [];       // 코디 저장 창에서 고른 사진들
+    var outfitTab = 'mine';          // 코디 리스트: mine | saved
+    var ownStats = {};               // 내 코디의 좋아요·댓글 숫자
+    var ownStatsAt = 0;
     let odView = 'photo';            // 코디 자세히 보기: photo | collage
     let outfits = loadOutfits();
     let viewMode = 'items';          // items | outfits
@@ -1913,9 +1966,25 @@
       }).join('') + '</div>';
     }
     function outfitCoverHtml(o) {
-      if (!o.photo) return collageHtml(outfitItems(o));
-      return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진" loading="lazy"></span>' +
-        '<span class="photo-badge">' + svg('camera', 13) + '착용 사진</span></div>';
+      if (!o.photos.length) return collageHtml(outfitItems(o));
+      return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photos[0] + '" alt="' + escapeHtml(o.name) + ' 사진" loading="lazy"></span>' +
+        '<span class="photo-badge">' + svg('camera', 13) + (o.photos.length > 1 ? o.photos.length + '장' : '착용 사진') + '</span></div>';
+    }
+    const statsText = (s) => (s && (s.likes || s.comments) ? '♥ ' + s.likes + ' · 댓글 ' + s.comments : '');
+    function paintOwnStats() {
+      document.querySelectorAll('#outfitGrid .oc-stats[data-sid]').forEach((el) => { el.textContent = session ? statsText(ownStats[el.dataset.sid]) : ''; });
+      if (detailOutfitId && $('outfitDetailModal').classList.contains('open')) renderOutfitDetail();
+    }
+    async function loadOwnStats(force) {
+      if (!session || !outfits.length) return;
+      if (!force && Date.now() - ownStatsAt < 15000) return;
+      ownStatsAt = Date.now();
+      const ids = outfits.slice().sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 30).map((o) => o.id);
+      try {
+        const res = await socialRpc('closet_outfit_stats', { p_nickname: session.nickname, p_ids: ids });
+        (res.stats || []).forEach((st) => { ownStats[st.id] = st; });
+        paintOwnStats();
+      } catch (e) {}
     }
     function outfitMeta(o) {
       const list = outfitItems(o);
@@ -1926,6 +1995,9 @@
     function renderOutfits() {
       $('vsItemsN').textContent = items.length;
       $('vsOutfitsN').textContent = outfits.length;
+      $('outfitSeg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.otab === outfitTab));
+      document.querySelector('#outfitsPane .outfit-head .btn').hidden = outfitTab === 'saved';
+      if (outfitTab === 'saved') { renderSaved(); return; }
       $('outfitCount').textContent = outfits.length ? '저장한 코디 ' + outfits.length + '개' : '함께 입을 옷을 묶어 두세요';
       if (!outfits.length) {
         $('outfitGrid').innerHTML = '<div class="empty"><div class="ic">' + svg('layers', 34) + '</div>' +
@@ -1937,8 +2009,11 @@
       $('outfitGrid').innerHTML = list.map((o) =>
         '<article class="outfit-card" tabindex="0" data-oid="' + o.id + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' +
         outfitCoverHtml(o) +
-        '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">' + outfitMeta(o) + '</div></div></article>'
+        '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">' + outfitMeta(o) + '</div>' +
+        '<div class="oc-stats" data-sid="' + o.id + '"></div></div></article>'
       ).join('');
+      paintOwnStats();
+      loadOwnStats(false);
     }
     function setViewMode(mode) {
       viewMode = mode;
@@ -1993,9 +2068,9 @@
       const ids = o ? o.itemIds : Array.from(selectedIds);
       const list = ids.map((id) => items.find((i) => i.id === id)).filter(Boolean);
       $('outfitTitle').textContent = o ? '코디 수정' : '코디 저장하기 (' + list.length + '벌)';
-      outfitFormPhoto = o ? (o.photo || '') : '';
+      outfitFormPhotos = o ? (o.photos || []).slice() : [];
       $('oPhoto').value = '';
-      updateOutfitFormPhoto();
+      updateOutfitFormPhotos();
       $('oPreview').innerHTML = list.map((i) => thumbHtml(i, 'mini', 24)).join('');
       $('oName').value = o ? o.name : '';
       $('oMemo').value = o ? o.memo : '';
@@ -2015,7 +2090,8 @@
         const o = outfits.find((x) => x.id === outfitFormId);
         if (o) {
           o.name = name; o.memo = memo; o.updatedAt = Date.now();
-          if ((o.photo || '') !== outfitFormPhoto) setOutfitPhoto(o, outfitFormPhoto); else saveOutfits();
+          const same = (o.photos || []).length === outfitFormPhotos.length && (o.photos || []).every((x, k) => x === outfitFormPhotos[k]);
+          if (!same) setOutfitPhotos(o, outfitFormPhotos); else saveOutfits();
           markPending(o.id);
         }
         closeOutfitModal();
@@ -2025,9 +2101,9 @@
         return;
       }
       const now = Date.now();
-      const o = { id: 'outfit_' + now + Math.random().toString(36).slice(2, 6), name: name, memo: memo, itemIds: Array.from(selectedIds), photo: '', createdAt: now, updatedAt: now };
+      const o = { id: 'outfit_' + now + Math.random().toString(36).slice(2, 6), name: name, memo: memo, itemIds: Array.from(selectedIds), photos: [], createdAt: now, updatedAt: now };
       outfits.push(o);
-      if (outfitFormPhoto) setOutfitPhoto(o, outfitFormPhoto); else saveOutfits();
+      if (outfitFormPhotos.length) setOutfitPhotos(o, outfitFormPhotos); else saveOutfits();
       markPending(o.id);
       closeOutfitModal();
       exitSelectMode();
@@ -2043,18 +2119,13 @@
       const list = outfitItems(o);
       const gone = o.itemIds.length - list.length;
       $('odTitle').textContent = o.name;
-      const showPhoto = !!o.photo && odView === 'photo';
-      $('odSeg').hidden = !o.photo;
+      const showPhoto = o.photos.length > 0 && odView === 'photo';
+      $('odSeg').hidden = !o.photos.length;
       $('odSeg').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.odv === (showPhoto ? 'photo' : 'collage')));
-      $('odCollage').innerHTML = showPhoto
-        ? '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진"></span></div>'
-        : collageHtml(list);
-      $('odPhotoActs').innerHTML = !o.photo
-        ? '<button type="button" class="btn btn-light" data-od="photo-add">' + svg('camera', 16) + '착용 사진 추가</button>'
-        : showPhoto
-          ? '<button type="button" class="btn btn-light" data-od="photo-add">' + svg('camera', 16) + '사진 바꾸기</button>' +
-            '<button type="button" class="btn btn-danger" data-od="photo-remove">사진 지우기</button>'
-          : '';
+      $('odCollage').innerHTML = showPhoto ? carouselHtml(o.photos, o.name) : collageHtml(list);
+      const st = ownStats[o.id];
+      $('odPhotoActs').innerHTML = (o.photos.length ? '' : '<button type="button" class="btn btn-light" data-od="rename">' + svg('camera', 16) + '사진 추가</button>') +
+        (session ? '<button type="button" class="btn btn-light" data-od="social">' + svg('heart', 16) + (st ? '좋아요 ' + st.likes + ' · 댓글 ' + st.comments : '좋아요 · 댓글') + ' 보기</button>' : '');
       $('odMeta').textContent = outfitMeta(o) + ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') + ' 저장';
       $('odMemo').hidden = !o.memo;
       $('odMemo').textContent = o.memo;
@@ -2568,55 +2639,45 @@
         openOutfitModal(null);
       }
     });
+    function openOutfitCard(card) {
+      if (card.dataset.sbi !== undefined) openSavedOutfit(+card.dataset.sbi);
+      else if (card.dataset.oid) openOutfitDetail(card.dataset.oid);
+    }
     $('outfitsPane').addEventListener('click', (e) => {
       if (e.target.closest('[data-action="new-outfit"]')) { enterSelectMode(); return; }
+      const tab = e.target.closest('[data-otab]');
+      if (tab) { outfitTab = tab.dataset.otab; renderOutfits(); return; }
+      if (e.target.closest('[data-action="login"]')) { openAcctModal(); return; }
+      if (e.target.closest('[data-action="more-saved"]')) { loadSaved(); return; }
       const card = e.target.closest('.outfit-card');
-      if (card) openOutfitDetail(card.dataset.oid);
+      if (card) openOutfitCard(card);
     });
     $('outfitsPane').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && e.target.classList.contains('outfit-card')) openOutfitDetail(e.target.dataset.oid);
+      if (e.key === 'Enter' && e.target.classList.contains('outfit-card')) openOutfitCard(e.target);
     });
     $('outfitForm').addEventListener('submit', (e) => { e.preventDefault(); saveOutfitForm(); });
-    function updateOutfitFormPhoto() {
-      $('oPhotoThumb').innerHTML = outfitFormPhoto ? '<img src="' + outfitFormPhoto + '" alt="">' : svg('camera', 24);
-      $('oPhotoText').textContent = outfitFormPhoto ? '사진 바꾸기' : '착용 사진 올리기';
-      $('oPhotoRemove').style.display = outfitFormPhoto ? 'block' : 'none';
+    function updateOutfitFormPhotos() {
+      const n = outfitFormPhotos.length;
+      $('oPhotos').innerHTML = outfitFormPhotos.map((ph, i) =>
+        '<span class="ph"><img src="' + ph + '" alt="사진 ' + (i + 1) + '"><button type="button" class="ph-del" data-phdel="' + i + '" aria-label="사진 지우기">×</button>' + (i === 0 ? '<em>대표</em>' : '') + '</span>'
+      ).join('') + (n < MAX_OUTFIT_PHOTOS ? '<label class="ph add" for="oPhoto">' + svg('camera', 22) + '<small>' + n + '/' + MAX_OUTFIT_PHOTOS + '</small></label>' : '');
     }
+    $('oPhotos').addEventListener('click', (e) => {
+      const d = e.target.closest('[data-phdel]');
+      if (!d) return;
+      outfitFormPhotos.splice(+d.dataset.phdel, 1);
+      updateOutfitFormPhotos();
+    });
     $('oPhoto').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      try {
-        outfitFormPhoto = await resizeImage(file, 720, 0.78);
-        updateOutfitFormPhoto();
-      } catch (err) {
-        showToast('사진을 불러오지 못했어요');
-      }
-    });
-    $('oPhotoRemove').addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      outfitFormPhoto = '';
-      $('oPhoto').value = '';
-      updateOutfitFormPhoto();
-    });
-    $('odPhotoFile').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
+      const files = Array.from(e.target.files || []);
       e.target.value = '';
-      const o = outfits.find((x) => x.id === detailOutfitId);
-      if (!file || !o) return;
-      try {
-        const data = await resizeImage(file, 720, 0.78);
-        if (!setOutfitPhoto(o, data)) return;
-        o.updatedAt = Date.now();
-        saveOutfits();
-        markPending(o.id);
-        odView = 'photo';
-        renderOutfitDetail();
-        renderOutfits();
-        showToast('착용 사진을 추가했어요');
-      } catch (err) {
-        showToast('사진을 불러오지 못했어요');
+      if (!files.length) return;
+      const room = MAX_OUTFIT_PHOTOS - outfitFormPhotos.length;
+      if (files.length > room) showToast('사진은 ' + MAX_OUTFIT_PHOTOS + '장까지 올릴 수 있어요');
+      for (const f of files.slice(0, Math.max(room, 0))) {
+        try { outfitFormPhotos.push(await resizeImage(f, 640, 0.74)); } catch (err) { showToast('사진을 불러오지 못했어요'); }
       }
+      updateOutfitFormPhotos();
     });
     $('outfitCloseBtn').addEventListener('click', closeOutfitModal);
     $('outfitCancelBtn').addEventListener('click', closeOutfitModal);
@@ -2631,10 +2692,9 @@
         if (act.dataset.od === 'reselect') { closeOutfitDetail(); enterSelectMode(o.itemIds, o.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         else if (act.dataset.od === 'rename') openOutfitModal(o.id);
         else if (act.dataset.od === 'delete') deleteOutfit(o.id);
-        else if (act.dataset.od === 'photo-add') $('odPhotoFile').click();
-        else if (act.dataset.od === 'photo-remove') {
-          if (!confirm('착용 사진을 지울까요?\n지우면 옷 사진 모음이 다시 보여요.')) return;
-          if (setOutfitPhoto(o, '')) { o.updatedAt = Date.now(); saveOutfits(); markPending(o.id); renderOutfitDetail(); renderOutfits(); showToast('착용 사진을 지웠어요'); }
+        else if (act.dataset.od === 'social') {
+          closeOutfitDetail();
+          openSocialModal({ type: 'routfit', owner: session.nickname, outfit: o, items: Object.fromEntries(items.map((i) => [i.id, i])), view: 'photo', stats: ownStats[o.id] || null });
         }
         return;
       }
@@ -2797,7 +2857,11 @@
       SELF_FOLLOW: '나 자신은 팔로우할 수 없어요.',
       BAD_INSTAGRAM: '인스타그램 아이디를 확인해 주세요. (영문·숫자·마침표·밑줄, 30자까지)',
       BAD_VISIBILITY: '공개 범위를 바꾸지 못했어요. 다시 해 주세요.',
-      PRIVATE: '공개되지 않은 옷장이에요.'
+      PRIVATE: '공개되지 않은 옷장이에요.',
+      EMPTY_COMMENT: '댓글 내용을 적어 주세요.',
+      COMMENT_TOO_LONG: '댓글은 200자까지 쓸 수 있어요.',
+      TOO_FAST: '댓글을 너무 빨리 남기고 있어요. 잠시 뒤에 다시 해 주세요.',
+      FORBIDDEN: '이 댓글은 지울 수 없어요.'
     };
     function errText(code, res) {
       if (code === 'LOCKED') {
@@ -2878,7 +2942,13 @@
           ? { brands: brands, brandsUpdated: sentB }
           : null;
         const chunks = [];
-        for (let i = 0; i < payload.length; i += 20) chunks.push(payload.slice(i, i + 20));
+        let cur = [], curSize = 0;
+        payload.forEach((pl) => {
+          const sz = JSON.stringify(pl).length;
+          if (cur.length && (cur.length >= 20 || curSize + sz > 1500000)) { chunks.push(cur); cur = []; curSize = 0; }
+          cur.push(pl); curSize += sz;
+        });
+        if (cur.length) chunks.push(cur);
         if (!chunks.length && sendSettings) chunks.push([]);
         const token = session.token;
         for (let c = 0; c < chunks.length; c++) {
@@ -3434,7 +3504,7 @@
       else if (v.type === 'user') loadSocialUser(v, seq);
       else if (v.type === 'closet') loadSocialCloset(v);
       else if (v.type === 'ritem') drawSocialRItem(v);
-      else if (v.type === 'routfit') drawSocialROutfit(v);
+      else if (v.type === 'routfit') loadSocialPost(v);
     }
 
     function profileHeadHtml(p, isMe) {
@@ -3777,9 +3847,13 @@
     function cleanRemoteOutfit(id, d) {
       if (!d || typeof d !== 'object') return null;
       const ids = Array.isArray(d.itemIds) ? d.itemIds.filter((x) => typeof x === 'string').slice(0, 60).map((x) => x.slice(0, 64)) : [];
+      let photos = Array.isArray(d.photos) ? d.photos.filter((x) => typeof x === 'string' && SAFE_IMG.test(x)) : [];
+      if (!photos.length && typeof d.photo === 'string' && SAFE_IMG.test(d.photo)) photos = [d.photo];
+      photos = photos.slice(0, MAX_OUTFIT_PHOTOS);
+      const pc = Number(d.photoCount);
       return {
-        id: String(id).slice(0, 64), name: String(d.name || '이름 없는 코디').slice(0, 30), memo: String(d.memo || '').slice(0, 200),
-        itemIds: Array.from(new Set(ids)), photo: typeof d.photo === 'string' && SAFE_IMG.test(d.photo) ? d.photo : '',
+        id: String(id).slice(0, 64), name: String(d.name || '이름 없는 코디').slice(0, 30), memo: String(d.memo || '').slice(0, 300),
+        itemIds: Array.from(new Set(ids)), photos: photos, photoCount: Number.isFinite(pc) && pc >= photos.length && pc <= MAX_OUTFIT_PHOTOS ? pc : photos.length,
         createdAt: Number(d.createdAt) > 0 ? Number(d.createdAt) : 0
       };
     }
@@ -3804,7 +3878,7 @@
         (i.size ? '<div class="chips"><span class="chip size">' + escapeHtml(i.size) + '</span></div>' : '') + '</div></article>';
     }
     function remoteCoverHtml(o, map) {
-      if (o.photo) return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="" loading="lazy"></span><span class="photo-badge">' + svg('camera', 13) + '착용 사진</span></div>';
+      if (o.photos.length) return '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photos[0] + '" alt="" loading="lazy"></span><span class="photo-badge">' + svg('camera', 13) + (o.photoCount > 1 ? o.photoCount + '장' : '착용 사진') + '</span></div>';
       return collageHtml(o.itemIds.map((id) => map[id]).filter(Boolean));
     }
     function closetHeadHtml(v) {
@@ -3840,7 +3914,8 @@
       return '<div class="outfit-grid remote">' + v.outfits.map((o) => {
         const n = o.itemIds.filter((id) => v.oItems[id]).length;
         return '<article class="outfit-card" tabindex="0" data-roid="' + escapeHtml(o.id) + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' + remoteCoverHtml(o, v.oItems) +
-          '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">옷 ' + n + '벌</div></div></article>';
+          '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">옷 ' + n + '벌</div>' +
+          '<div class="oc-stats">' + escapeHtml(statsText(v.stats && v.stats[o.id])) + '</div></div></article>';
       }).join('') + '</div>' + (v.outfitsBusy ? LOADING_HTML : (!v.outfitsDone ? moreBtn('more-outfits', '코디 더 보기') : ''));
     }
     function drawSocialCloset(v) {
@@ -3891,6 +3966,8 @@
       try {
         const res = await socialRpc('closet_view_outfits', { p_nickname: v.nickname, p_offset: v.outfitsOff || 0 });
         (res.items || []).forEach((r) => { const c = cleanRemoteItem(r.id, r.data); if (c) v.oItems[c.id] = c; });
+        v.stats = v.stats || {};
+        (res.stats || []).forEach((st) => { v.stats[st.id] = st; });
         const rows = res.outfits || [];
         rows.forEach((r) => { const o = cleanRemoteOutfit(r.id, r.data); if (o) v.outfits.push(o); });
         v.outfitsOff = (v.outfitsOff || 0) + rows.length;
@@ -3924,28 +4001,271 @@
         '<dl class="id-info">' + rows.map((r) => '<dt>' + r[0] + '</dt><dd>' + r[1] + '</dd>').join('') + '</dl>' +
         '<p class="ro-note" style="margin-top:12px">구경만 할 수 있어요.</p>';
     }
+    // ---------- 게시물(코디) 보기: 사진 넘기기 · 좋아요 · 댓글 · 북마크 ----------
+    function carouselHtml(photos, alt) {
+      const many = photos.length > 1;
+      return '<div class="pcar-wrap"><div class="pcar" tabindex="0" role="group" aria-label="' + escapeHtml(alt) + ' 사진 ' + photos.length + '장">' +
+        photos.map((ph, i) => '<div class="pslide"><img src="' + ph + '" alt="' + escapeHtml(alt) + ' 사진 ' + (i + 1) + '" loading="' + (i ? 'lazy' : 'eager') + '"></div>').join('') + '</div>' +
+        (many ? '<span class="pcount">1/' + photos.length + '</span>' +
+          '<button type="button" class="pnav prev" data-car="-1" aria-label="이전 사진">' + svg('back', 18) + '</button>' +
+          '<button type="button" class="pnav next" data-car="1" aria-label="다음 사진">' + svg('back', 18) + '</button>' +
+          '<div class="pdots">' + photos.map((_, i) => '<i class="' + (i ? '' : 'on') + '"></i>').join('') + '</div>' : '') + '</div>';
+    }
+    document.addEventListener('scroll', (e) => {
+      const car = e.target;
+      if (!car || !car.classList || !car.classList.contains('pcar')) return;
+      const idx = Math.round(car.scrollLeft / Math.max(car.clientWidth, 1));
+      const wrap = car.parentNode;
+      wrap.querySelectorAll('.pdots i').forEach((d, i) => d.classList.toggle('on', i === idx));
+      const cnt = wrap.querySelector('.pcount');
+      if (cnt) cnt.textContent = (idx + 1) + '/' + car.children.length;
+    }, true);
+    document.addEventListener('click', (e) => {
+      const nb = e.target.closest && e.target.closest('[data-car]');
+      if (!nb) return;
+      const car = nb.parentNode.querySelector('.pcar');
+      car.scrollBy({ left: +nb.dataset.car * car.clientWidth, behavior: 'smooth' });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!e.target.classList || !e.target.classList.contains('pcar')) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        e.target.scrollBy({ left: (e.key === 'ArrowRight' ? 1 : -1) * e.target.clientWidth, behavior: 'smooth' });
+      }
+    });
+    function relTime(ms) {
+      const d = Date.now() - ms;
+      if (d < 60000) return '방금';
+      if (d < 3600000) return Math.floor(d / 60000) + '분 전';
+      if (d < 86400000) return Math.floor(d / 3600000) + '시간 전';
+      if (d < 7 * 86400000) return Math.floor(d / 86400000) + '일 전';
+      return new Date(ms).toLocaleDateString('ko-KR');
+    }
+    var savedState = null;   // 저장한 코디 목록 (북마크를 바꾸면 비워서 다시 불러옴)
+    function postLive(v) { return isSocialOpen() && curSocial() === v && $('postCover'); }
+    function syncPostStats(owner, st) {
+      if (!st || !st.id) return;
+      socialStack.forEach((x) => {
+        if (x.type === 'closet' && x.nickname === owner) { x.stats = x.stats || {}; x.stats[st.id] = st; }
+        if (x.type === 'routfit' && x.owner === owner && x.outfit.id === st.id) x.stats = st;
+      });
+      if (session && owner === session.nickname) { ownStats[st.id] = st; paintOwnStats(); }
+    }
     function drawSocialROutfit(v) {
       const o = v.outfit;
       $('socialTitle').textContent = o.name;
+      $('socialBody').innerHTML =
+        '<p class="post-by"><b>' + escapeHtml(v.owner) + '</b>님의 코디' + (o.createdAt ? ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') : '') + '</p>' +
+        '<div id="postSeg"></div><div class="outfit-detail" id="postCover"></div>' +
+        '<div class="post-acts" id="postActs"></div><div id="postText"></div>' +
+        '<ul class="outfit-items" id="postItems"></ul>' +
+        '<div class="cmts"><p class="section-title-sm" id="cmtHead"></p><ul class="cmt-list" id="cmtList"></ul>' +
+        '<div class="cmt-form" id="cmtForm"><input id="cmtInput" type="text" maxlength="200" placeholder="댓글을 남겨 보세요" autocomplete="off" enterkeyhint="send" aria-label="댓글">' +
+        '<button type="button" class="btn btn-primary" data-pa="send">등록</button></div></div>';
+      paintPost(v);
+    }
+    function paintPost(v) {
+      if (!postLive(v)) return;
+      const o = v.outfit;
+      paintPostCover(v);
+      paintPostActs(v);
+      $('postText').innerHTML = o.memo ? '<p class="post-cap"><b>' + escapeHtml(v.owner) + '</b>' + escapeHtml(o.memo) + '</p>' : '';
       const list = o.itemIds.map((id) => v.items[id]).filter(Boolean);
       const gone = o.itemIds.length - list.length;
-      const showPhoto = !!o.photo && v.view !== 'collage';
-      const seg = o.photo
-        ? '<div class="seg od-seg"><button type="button" data-rv="photo" class="' + (showPhoto ? 'on' : '') + '">착용 사진</button><button type="button" data-rv="collage" class="' + (showPhoto ? '' : 'on') + '">옷 모음</button></div>'
+      $('postItems').innerHTML = list.map((i) => {
+        const c = catOf(i.category);
+        const sub = [c.name, colorLabel(i), i.brand, i.size ? '사이즈 ' + i.size : ''].filter(Boolean).map(escapeHtml).join(' · ');
+        return '<li data-rii="' + escapeHtml(i.id) + '" title="옷 정보 보기">' + thumbHtml(i, 'mini', 22) +
+          '<div><div class="oi-name">' + escapeHtml(i.name) + '</div><div class="oi-meta">' + sub + '</div></div></li>';
+      }).join('') + (gone ? '<li class="gone">보여 드릴 수 없는 옷 ' + gone + '벌은 빼고 보여 드려요</li>' : '');
+      paintPostComments(v);
+    }
+    function paintPostCover(v) {
+      if (!postLive(v)) return;
+      const o = v.outfit;
+      const list = o.itemIds.map((id) => v.items[id]).filter(Boolean);
+      const showPhoto = o.photos.length > 0 && v.view !== 'collage';
+      $('postSeg').innerHTML = o.photos.length
+        ? '<div class="seg od-seg"><button type="button" data-rv="photo" class="' + (showPhoto ? 'on' : '') + '">사진</button><button type="button" data-rv="collage" class="' + (showPhoto ? '' : 'on') + '">옷 모음</button></div>'
         : '';
-      $('socialBody').innerHTML = seg +
-        '<div class="outfit-detail">' + (showPhoto
-          ? '<div class="collage n1 has-photo"><span class="tile" style="--c:#ebe1d3"><img src="' + o.photo + '" alt="' + escapeHtml(o.name) + ' 착용 사진"></span></div>'
-          : collageHtml(list)) + '</div>' +
-        '<p class="hint" style="text-align:center;margin-top:10px">옷 ' + list.length + '벌' + (o.createdAt ? ' · ' + new Date(o.createdAt).toLocaleDateString('ko-KR') + ' 저장' : '') + '</p>' +
-        (o.memo ? '<p class="od-memo">' + escapeHtml(o.memo) + '</p>' : '') +
-        '<ul class="outfit-items">' + list.map((i) => {
-          const c = catOf(i.category);
-          const sub = [c.name, colorLabel(i), i.brand, i.size ? '사이즈 ' + i.size : ''].filter(Boolean).map(escapeHtml).join(' · ');
-          return '<li data-rii="' + escapeHtml(i.id) + '" title="옷 정보 보기">' + thumbHtml(i, 'mini', 22) +
-            '<div><div class="oi-name">' + escapeHtml(i.name) + '</div><div class="oi-meta">' + sub + '</div></div></li>';
-        }).join('') + (gone ? '<li class="gone">보여 드릴 수 없는 옷 ' + gone + '벌은 빼고 보여 드려요</li>' : '') + '</ul>' +
-        '<p class="ro-note">구경만 할 수 있어요.</p>';
+      $('postCover').innerHTML = showPhoto ? carouselHtml(o.photos, o.name) : collageHtml(list);
+    }
+    function paintPostActs(v) {
+      if (!postLive(v)) return;
+      const st = v.stats;
+      if (v.noSync) { $('postActs').innerHTML = '<p class="hint" style="width:100%;text-align:center">동기화가 끝나면 좋아요와 댓글을 쓸 수 있어요.</p>'; return; }
+      if (!st) { $('postActs').innerHTML = ''; return; }
+      $('postActs').innerHTML =
+        '<button type="button" class="act-btn like' + (st.liked ? ' on' : '') + '" data-pa="like" aria-pressed="' + !!st.liked + '" aria-label="좋아요">' + svg('heart', 25) + '</button>' +
+        '<button type="button" class="act-btn" data-pa="comments" aria-label="댓글 쓰기">' + svg('comment', 25) + '</button>' +
+        '<span class="grow"></span>' +
+        '<button type="button" class="act-btn mark' + (st.bookmarked ? ' on' : '') + '" data-pa="bookmark" aria-pressed="' + !!st.bookmarked + '" aria-label="북마크">' + svg('bookmark', 25) + '</button>' +
+        '<div class="post-likes">' + (st.likes ? '좋아요 ' + st.likes + '개' : '첫 번째로 좋아요를 눌러 보세요') + '</div>';
+    }
+    function paintPostComments(v) {
+      if (!postLive(v)) return;
+      const usable = !v.noSync && !!v.stats;
+      $('cmtForm').hidden = !usable;
+      $('cmtHead').hidden = !usable && !v.comments;
+      $('cmtHead').textContent = '댓글' + (v.stats ? ' ' + v.stats.comments : '');
+      if (v.noSync) { $('cmtList').innerHTML = ''; return; }
+      if (v.cmtErr) { $('cmtList').innerHTML = '<li class="none">' + escapeHtml(v.cmtErr) + '</li>'; return; }
+      if (!v.comments) { $('cmtList').innerHTML = '<li class="none">불러오는 중…</li>'; return; }
+      $('cmtList').innerHTML = v.comments.length
+        ? v.comments.map((c) => '<li><div class="ct"><b>' + escapeHtml(c.nickname) + '</b>' + escapeHtml(c.body) + '<small>' + relTime(c.at) + '</small></div>' +
+            (c.canDelete ? '<button type="button" class="cdel" data-cdel="' + c.id + '" aria-label="댓글 지우기">지우기</button>' : '') + '</li>').join('')
+        : '<li class="none">아직 댓글이 없어요.</li>';
+    }
+    function loadSocialPost(v) {
+      drawSocialROutfit(v);
+      if (v.loaded || v.pending) return;
+      v.pending = (async () => {
+        const oid = v.outfit.id;
+        try {
+          const res = await socialRpc('closet_outfit_get', { p_nickname: v.owner, p_outfit: oid });
+          const o = cleanRemoteOutfit(res.outfit.id, res.outfit.data);
+          if (o) v.outfit = o;
+          const map = {};
+          (res.items || []).forEach((r) => { const c = cleanRemoteItem(r.id, r.data); if (c) map[c.id] = c; });
+          if (Object.keys(map).length) v.items = map;
+          v.stats = res.stats;
+          syncPostStats(v.owner, res.stats);
+          v.loaded = true;
+        } catch (e) {
+          if (e && e.message === 'NOT_FOUND') v.noSync = true;
+          else if (session) v.cmtErr = errText(e && e.message);
+        }
+        paintPost(v);
+        if (v.loaded) {
+          try {
+            const cr = await socialRpc('closet_comments_list', { p_nickname: v.owner, p_outfit: oid });
+            v.comments = cr.comments || [];
+          } catch (e) { if (session) v.cmtErr = errText(e && e.message); }
+          paintPostComments(v);
+        }
+        v.pending = null;
+      })();
+    }
+    async function togglePost(v, kind) {
+      const st = v.stats;
+      if (!st || v.toggling) return;
+      v.toggling = true;
+      const key = kind === 'like' ? 'liked' : 'bookmarked';
+      const want = !st[key];
+      st[key] = want;
+      if (kind === 'like') st.likes += want ? 1 : -1;
+      paintPostActs(v);
+      try {
+        const res = await socialRpc('closet_outfit_toggle', { p_nickname: v.owner, p_outfit: v.outfit.id, p_kind: kind, p_on: want });
+        v.stats = res;
+        syncPostStats(v.owner, res);
+        if (kind === 'bookmark') { savedState = null; showToast(want ? '코디를 저장했어요' : '저장을 취소했어요'); }
+      } catch (e) {
+        st[key] = !want;
+        if (kind === 'like') st.likes += want ? -1 : 1;
+        if (session) showToast(errText(e && e.message));
+      }
+      v.toggling = false;
+      paintPostActs(v);
+    }
+    async function sendComment(v) {
+      const inp = $('cmtInput');
+      if (!inp || v.sending || !v.stats) return;
+      const body = inp.value.trim();
+      if (!body) return;
+      v.sending = true;
+      inp.disabled = true;
+      try {
+        const res = await socialRpc('closet_comment_add', { p_nickname: v.owner, p_outfit: v.outfit.id, p_body: body });
+        v.stats = res.stats;
+        syncPostStats(v.owner, res.stats);
+        v.comments = (v.comments || []).concat([{ id: res.id, body: body, at: Date.now(), nickname: session.nickname, mine: true, canDelete: true }]);
+        if (postLive(v)) inp.value = '';
+      } catch (e) {
+        if (session) showToast(errText(e && e.message));
+      }
+      v.sending = false;
+      if (postLive(v)) { inp.disabled = false; inp.focus(); }
+      paintPostActs(v);
+      paintPostComments(v);
+    }
+    async function deleteComment(v, id) {
+      if (!confirm('댓글을 지울까요?')) return;
+      try {
+        const res = await socialRpc('closet_comment_delete', { p_comment: id });
+        v.comments = (v.comments || []).filter((c) => c.id !== id);
+        v.stats = Object.assign({}, v.stats, res.stats, { liked: v.stats.liked, bookmarked: v.stats.bookmarked });
+        syncPostStats(v.owner, v.stats);
+      } catch (e) {
+        if (session) showToast(errText(e && e.message));
+      }
+      paintPostActs(v);
+      paintPostComments(v);
+    }
+    function postAction(v, act) {
+      if (act === 'like' || act === 'bookmark') togglePost(v, act);
+      else if (act === 'comments') { const i = $('cmtInput'); if (i) { i.scrollIntoView({ block: 'center', behavior: 'smooth' }); i.focus({ preventScroll: true }); } }
+      else if (act === 'send') sendComment(v);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.target.id === 'cmtInput' && e.key === 'Enter' && !e.isComposing) {
+        e.preventDefault();
+        const v = curSocial();
+        if (v.type === 'routfit') sendComment(v);
+      }
+    });
+
+    // ---------- 저장한(북마크한) 코디 ----------
+    function savedHtml() {
+      if (!session) {
+        return '<div class="empty" style="grid-column:1/-1"><div class="ic">' + svg('bookmark', 34) + '</div><strong>로그인하면 코디를 저장할 수 있어요</strong>' +
+          '친구의 코디에서 북마크를 눌러 저장해 두세요.<br><button class="btn btn-primary" data-action="login">로그인 · 가입</button></div>';
+      }
+      const S = savedState;
+      if (!S || (S.busy && !S.list.length)) return '<div class="social-empty" style="grid-column:1/-1">불러오는 중…</div>';
+      if (S.err) return '<div class="social-empty" style="grid-column:1/-1">' + escapeHtml(S.err) + '</div>';
+      if (!S.list.length) {
+        return '<div class="empty" style="grid-column:1/-1"><div class="ic">' + svg('bookmark', 34) + '</div><strong>저장한 코디가 없어요</strong>' +
+          '친구의 옷장을 구경하다가 마음에 드는 코디에서 북마크를 눌러 보세요.</div>';
+      }
+      return S.list.map((o, i) => {
+        const map = S.maps[o.owner] || {};
+        const n = o.itemIds.filter((id) => map[id]).length;
+        return '<article class="outfit-card" tabindex="0" data-sbi="' + i + '" aria-label="' + escapeHtml(o.name) + ' 코디 보기">' + remoteCoverHtml(o, map) +
+          '<div class="oc-info"><div class="oc-name">' + escapeHtml(o.name) + '</div><div class="oc-meta">' + escapeHtml(o.owner) + '님 · 옷 ' + n + '벌</div>' +
+          '<div class="oc-stats">' + escapeHtml(statsText(o.stats)) + '</div></div></article>';
+      }).join('') + (S.busy ? '' : (!S.done ? '<button type="button" class="btn btn-soft" style="grid-column:1/-1" data-action="more-saved">더 보기</button>' : ''));
+    }
+    function renderSaved() {
+      $('outfitCount').textContent = savedState && savedState.total != null ? '저장한 코디 ' + savedState.total + '개' : '마음에 드는 코디를 모아 봐요';
+      $('outfitGrid').innerHTML = savedHtml();
+      if (session && !savedState) loadSaved();
+    }
+    async function loadSaved() {
+      if (!session) return;
+      if (!savedState) savedState = { list: [], maps: {}, off: 0, done: false, busy: false, err: '', total: null };
+      const S = savedState;
+      if (S.busy || S.done) return;
+      S.busy = true;
+      if (outfitTab === 'saved') $('outfitGrid').innerHTML = savedHtml();
+      try {
+        const res = await socialRpc('closet_bookmarks_list', { p_offset: S.off });
+        (res.items || []).forEach((r) => { const c = cleanRemoteItem(r.id, r.data); if (c) { S.maps[r.owner] = S.maps[r.owner] || {}; S.maps[r.owner][c.id] = c; } });
+        const rows = res.outfits || [];
+        rows.forEach((r) => { const o = cleanRemoteOutfit(r.id, r.data); if (o) { o.owner = String(r.owner); o.stats = r.stats; S.list.push(o); } });
+        S.off += rows.length;
+        S.total = res.total;
+        S.done = !res.hasMore || !rows.length;
+      } catch (e) {
+        if (session) S.err = errText(e && e.message);
+      }
+      S.busy = false;
+      if (savedState === S && outfitTab === 'saved') renderSaved();
+    }
+    function openSavedOutfit(i) {
+      const o = savedState && savedState.list[i];
+      if (!o) return;
+      openSocialModal({ type: 'routfit', owner: o.owner, outfit: o, items: savedState.maps[o.owner] || {}, view: 'photo', stats: o.stats || null });
     }
     $('socialBody').addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-rid], [data-roid]')) e.target.click();
@@ -3983,7 +4303,11 @@
       const ct = e.target.closest('[data-ct]');
       if (ct) { if (v0.type === 'closet') { v0.tab = ct.dataset.ct; redrawCloset(v0); startClosetTab(v0); } return; }
       const rv = e.target.closest('[data-rv]');
-      if (rv) { if (v0.type === 'routfit') { v0.view = rv.dataset.rv; drawSocialROutfit(v0); } return; }
+      if (rv) { if (v0.type === 'routfit') { v0.view = rv.dataset.rv; paintPostCover(v0); } return; }
+      const pa = e.target.closest('[data-pa]');
+      if (pa) { if (v0.type === 'routfit') postAction(v0, pa.dataset.pa); return; }
+      const cd = e.target.closest('[data-cdel]');
+      if (cd) { if (v0.type === 'routfit') deleteComment(v0, +cd.dataset.cdel); return; }
       const rid = e.target.closest('[data-rid]');
       if (rid) {
         const it = (v0.items || []).find((x) => x.id === rid.dataset.rid);
@@ -3993,7 +4317,7 @@
       const roid = e.target.closest('[data-roid]');
       if (roid) {
         const o = (v0.outfits || []).find((x) => x.id === roid.dataset.roid);
-        if (o) pushSocial({ type: 'routfit', outfit: o, items: v0.oItems || {}, view: 'photo' });
+        if (o) pushSocial({ type: 'routfit', owner: v0.nickname, outfit: o, items: v0.oItems || {}, view: 'photo', stats: (v0.stats && v0.stats[o.id]) || null });
         return;
       }
       const rii = e.target.closest('[data-rii]');
