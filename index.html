@@ -3497,7 +3497,7 @@
       const mine = v.nickname === session.nickname;
       $('socialTitle').textContent = isFollowers ? '팔로워' : '팔로잉';
       const who = mine ? '나' : escapeHtml(v.nickname) + '님';
-      const intro = isFollowers ? who + (mine ? '를' : '을') + ' 팔로우하는 사람' : who + (mine ? '가' : '이') + ' 팔로우하는 사람';
+      const intro = isFollowers ? who + (mine ? '를' : '을') + ' 팔로우하는 사람' : (mine ? '내가' : who + '이') + ' 팔로우하는 사람';
       const empty = isFollowers ? '아직 팔로워가 없어요.' : '아직 팔로우한 사람이 없어요.';
       $('socialBody').innerHTML = '<p class="hint" style="margin:-6px 0 12px">' + intro + '</p><ul class="ppl" id="socialList">' +
         (v.people ? peopleHtml(v.people, empty) : LOADING_HTML) + '</ul>';
